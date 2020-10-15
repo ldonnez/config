@@ -1,0 +1,10 @@
+- name: Install redis with homebrew
+  homebrew: name=redis state=present
+  tags:
+    - redis
+
+- name: Starting redis...
+  become_user: root
+  command: brew services start redis
+  tags:
+    - redis

@@ -1,0 +1,16 @@
+- include: install_rubies.yml
+- include: install_extra_packages_with_homebrew.yml
+- include: configure_git.yml
+- include: configure_bat.yml
+- include: configure_zsh.yml
+- include: configure_vim.yml
+- include: configure_vifm.yml
+- include: configure_alacritty.yml
+- include: configure_tmux.yml
+- include: configure_ag.yml
+- include: configure_ssh.yml
+- include: configure_postgresql.yml
+- include: configure_redis.yml
+- include: configure_gnugpg.yml
+- include: configure_secrets.yml
+- include: configure_mutt.yml

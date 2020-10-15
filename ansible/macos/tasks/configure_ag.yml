@@ -1,0 +1,11 @@
+- name: Install ag with homebrew
+  homebrew: name=ag state=present
+  tags:
+    - ag
+
+- name: Symlink ~/.agignore from source {{ dotfiles_directory_path }}/.agignore
+  file: src={{ item.src }} dest={{ item.dest }} state=link
+  loop:
+    - { src: "{{ dotfiles_directory_path }}/.agignore", dest: "~/.agignore" }
+  tags:
+    - ag

@@ -1,0 +1,47 @@
+# Tell me your where your dotfiles live
+dotfiles_repo: "git@github.com:ldonnez/dotfiles.git"
+
+# Tell me your where I have to clone your dotfiles
+dotfiles_directory_path: "~/dotfiles"
+
+# Tell me your where your your secrets lie
+private_dotfiles_path: "~/SynologyDrive/config"
+
+# Tell me what to do
+install_dotfiles: yes
+install_rubies: yes
+install_extra_packages_with_homebrew: yes
+configure_git: yes
+configure_bat: yes
+configure_zsh: yes
+configure_vim: yes
+configure_vifm: yes
+configure_alacritty: yes # Make sure your private_dotfiles_path is correctly configured for this one!
+configure_tmux: yes
+configure_ag: yes
+configure_ssh: yes
+configure_postgresql: yes # Make sure your private_dotfiles_path is correctly configured for this one!
+configure_redis: yes # Make sure your private_dotfiles_path is correctly configured for this one!
+configure_gnugpg: yes # Make sure your private_dotfiles_path is correctly configured for this one!
+configure_secrets: yes
+configure_mutt: yes
+
+# Tell me what extra's to install with homebrew
+extra_packages_to_install_with_homebrew:
+  - coreutils
+  - htop
+  - fzf
+  - bat
+  - heroku
+  - mosh
+  - node
+  - yarn
+  - imagemagick
+  - jq
+  - go
+  - reattach-to-user-namespace
+  - python3
+  - watchman
+  - luarocks
+  - tree
+  - pgcli

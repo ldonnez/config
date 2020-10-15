@@ -1,0 +1,22 @@
+- name: Install gnupg
+  homebrew: name=gnupg state=present
+  tags:
+    - gnupg
+
+- name: Remove existing .gnupg directory
+  file: path=~/.gnupg state=absent
+  tags:
+    - gnupg
+
+
+- name: Symlink ~/.gnupg directory from source {{ private_dotfiles_path }}/.gnupg
+  file: src={{ item.src }} dest={{ item.dest }} state=link force=yes mode="0700"
+  loop:
+    - { src: "{{ private_dotfiles_path }}/.gnupg", dest: "~/.gnupg" }
+  tags:
+    - gnupg
+
+- name: Give correct access righs to ~/.gnupg
+  file: path="~/.gnupg" mode="0700" state=directory recurse=true
+  tags:
+    - gnupg

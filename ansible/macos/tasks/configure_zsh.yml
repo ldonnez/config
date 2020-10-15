@@ -1,0 +1,27 @@
+- name: Symlink ~/.zshrc from source {{ dotfiles_directory_path }}/.zshrc
+  file: src={{ item.src }} dest={{ item.dest }} state=link
+  loop:
+    - { src: "{{ dotfiles_directory_path }}/.zshrc", dest: "~/.zshrc" }
+  tags:
+    - zsh
+
+- name: Symlink ~/.zprofile from source {{ dotfiles_directory_path }}/.zshrc
+  file: src={{ item.src }} dest={{ item.dest }} state=link
+  loop:
+    - { src: "{{ dotfiles_directory_path }}/.zshrc", dest: "~/.zprofile" }
+  tags:
+    - zsh
+
+- name: Symlink ~/.zsh directory from source {{ dotfiles_directory_path }}/.zsh
+  file: src={{ item.src }} dest={{ item.dest }} state=link
+  loop:
+    - { src: "{{ dotfiles_directory_path }}/.zsh", dest: "~/.zsh" }
+  tags:
+    - zsh
+
+- name: Don't show last login message when opening a terminal
+  file:
+    path: "~/.hushlogin"
+    state: touch
+  tags:
+    - zsh

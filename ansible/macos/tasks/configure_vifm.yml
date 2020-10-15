@@ -1,0 +1,16 @@
+- name: Install vifm with homebrew
+  homebrew: name=vifm state=present
+  tags:
+    - vifm
+
+- name: Create ~/.config/vifm directory if not exists
+  file: path=~/.config/vifm state=directory recurse=yes
+  tags:
+    - vifm
+
+- name: Symlink ~/.config/vifm/vifm from source {{ dotfiles_directory_path }}/vifmrc
+  file: src={{ item.src }} dest={{ item.dest }} state=link
+  loop:
+    - { src: "{{ dotfiles_directory_path }}/vifmrc", dest: "~/.config/vifm/vifmrc" }
+  tags:
+    - vifm

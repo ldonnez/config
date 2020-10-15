@@ -1,0 +1,5 @@
+- name: Install extra packages with homebrew
+  homebrew: name={{ item }} state=present
+  loop: "{{ extra_packages_to_install_with_homebrew }}"
+  tags:
+    - packages

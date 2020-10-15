@@ -1,0 +1,57 @@
+---
+- hosts: local
+
+  vars_files:
+    - config.yml
+
+  tasks:
+    - import_tasks: tasks/install_dotfiles.yml
+      when: install_dotfiles
+
+    - import_tasks: tasks/install_rubies.yml
+      when: install_rubies
+
+    - import_tasks: tasks/install_extra_packages_with_homebrew.yml
+      when: install_extra_packages_with_homebrew
+
+    - import_tasks: tasks/configure_git.yml
+      when: configure_git
+
+    - import_tasks: tasks/configure_bat.yml
+      when: configure_bat
+
+    - import_tasks: tasks/configure_zsh.yml
+      when: configure_zsh
+
+    - import_tasks: tasks/configure_vim.yml
+      when: configure_vim
+
+    - import_tasks: tasks/configure_vifm.yml
+      when: configure_vifm
+
+    - import_tasks: tasks/configure_alacritty.yml
+      when: configure_alacritty
+
+    - import_tasks: tasks/configure_tmux.yml
+      when: configure_tmux
+
+    - import_tasks: tasks/configure_ag.yml
+      when: configure_ag
+
+    - import_tasks: tasks/configure_ssh.yml
+      when: configure_ssh
+
+    - import_tasks: tasks/configure_postgresql.yml
+      when: configure_postgresql
+
+    - import_tasks: tasks/configure_redis.yml
+      when: configure_redis
+
+    - import_tasks: tasks/configure_gnugpg.yml
+      when: configure_gnugpg
+
+    - import_tasks: tasks/configure_secrets.yml
+      when: configure_secrets
+
+    - import_tasks: tasks/configure_mutt.yml
+      when: configure_mutt

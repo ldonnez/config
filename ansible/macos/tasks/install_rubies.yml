@@ -1,0 +1,63 @@
+- name: Install rbenv with homebrew
+  homebrew: name=rbenv state=present
+  become_user: lenny
+  tags:
+    - rubies
+
+- name: Install ruby-build with homebrew
+  homebrew: name=ruby-build state=present
+  become_user: lenny
+  tags:
+    - rubies
+
+- name: Install latest ruby-build for rbenv
+  git: repo='https://github.com/rbenv/ruby-build.git' dest=~/.rbenv/plugins/ruby-build
+  tags:
+    - rubies
+
+- name: Create ~/.rbenv/versions if not exists
+  file: path=~/.rbenv/versions state=directory recurse=yes
+  become_user: lenny
+  tags:
+    - rubies
+
+- name: Install rbenv-bundler with homebrew
+  homebrew: name=rbenv-bundler state=present
+  become_user: lenny
+  tags:
+    - rubies
+
+- name: Create ~/.rbenv/plugins if not exists
+  file: path=~/.rbenv/plugins state=directory recurse=yes
+  become_user: lenny
+  tags:
+    - rubies
+
+- name: Install rbenv aliases with git
+  git: dest=~/.rbenv/plugins/rbenv-aliases repo=git://github.com/tpope/rbenv-aliases.git
+  become_user: lenny
+  tags:
+    - rubies
+
+- name: Register installed rubies
+  shell: ls ~/.rbenv/versions
+  ignore_errors: true
+  register: installed_rubies
+  changed_when: False
+  become_user: lenny
+  tags:
+    - rubies
+
+- name: Install lastest ruby with rbenv
+  shell: rbenv install -l | grep -v - | tail -1
+  ignore_errors: yes
+  become_user: lenny
+  tags:
+    - rubies
+
+- name: Set latest ruby as global with rbenv
+  shell: rbenv global | grep -v - | tail -1
+  ignore_errors: yes
+  become_user: lenny
+  tags:
+    - rubies

@@ -1,0 +1,16 @@
+- name: Install bat with homebrew
+  homebrew: name=bat state=present
+  tags:
+    - bat
+
+- name: Create ~/.config/bat directory if not exists
+  file: path=~/.config/bat state=directory recurse=yes
+  tags:
+    - bat
+
+- name: Symlink ~/.config/bat/bat_config from source {{ dotfiles_directory_path }}/bat_config
+  file: src={{ item.src }} dest={{ item.dest }} state=link
+  loop:
+    - { src: "{{ dotfiles_directory_path }}/bat_config", dest: "~/.config/bat/config" }
+  tags:
+    - bat
