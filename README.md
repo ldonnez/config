@@ -44,3 +44,25 @@ configure_mutt: yes
 extra_packages_to_install_with_homebrew:
   - <package-name>
 ```
+
+## Setup Windows
+
+Make sure to check the config file in `powershell/config.json`!
+
+- Clone this repo, preferably in your home directory
+- Configure the ansible playbook in `powershell/config.json` if necessary
+- Run `powershell/setup_windows.ps1` as Administrator
+
+### Configuration options
+
+You can configure the following options in `powershell/config.json`
+
+```json
+{
+  "dotfilesRepo": "git@github.com:ldonnez/dotfiles.git",
+  "dotfilesPath": <path>,
+  "installDotfiles": true,
+  "configureVim": true,
+  "extraPackagesToInstallWithChocolatey": [<packageName>]
+}
+```

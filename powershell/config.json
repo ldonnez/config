@@ -1,0 +1,7 @@
+{
+  "dotfilesRepo": "git@github.com:ldonnez/dotfiles.git",
+  "dotfilesPath": "~/dotfiles",
+  "installDotfiles": true,
+  "configureVim": true,
+  "extraPackagesToInstallWithChocolatey": ["bat", "fzf", "nodejs", "ag"]
+}
