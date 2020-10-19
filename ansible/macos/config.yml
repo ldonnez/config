@@ -5,7 +5,7 @@ dotfiles_repo: "git@github.com:ldonnez/dotfiles.git"
 dotfiles_directory_path: "~/dotfiles"
 
 # Tell me your where your your secrets lie
-private_dotfiles_path: "~/SynologyDrive/config"
+private_dotfiles_path: "~/SynologyDrive/private"
 
 # Tell me what to do
 install_dotfiles: yes
