@@ -1,0 +1,99 @@
+- name: Add neovim-ppa/stable
+  become: yes
+  apt_repository:
+    validate_certs: no
+    repo: "ppa:neovim-ppa/stable"
+    state: present
+
+- name: Install vim & neovim with apt
+  apt: name={{ item }} state=present
+  become: yes
+  loop:
+    - neovim
+    - vim
+  tags:
+    - vim
+
+- name: Create ~/.config/nvim directory if not exists
+  file: path=~/.config/nvim state=directory recurse=yes
+  tags:
+    - vim
+
+- name: Create ~/.vim directory if not exists
+  file: path=~/.vim state=directory recurse=yes
+  tags:
+    - vim
+
+- name: Create ~/.vim/backup directory if not exists
+  file: path=~/.vim/backup state=directory recurse=yes
+  tags:
+    - vim
+
+- name: Create ~/.vim/undo directory if not exists
+  file: path=~/.vim/undo state=directory recurse=yes
+  tags:
+    - vim
+
+- name: Create ~/.vim/swap directory if not exists
+  file: path=~/.vim/swap state=directory recurse=yes
+  tags:
+    - vim
+
+- name: Symlink ~/.vimrc from source {{ dotfiles_directory_path }}/.vimrc
+  file: src={{ item.src }} dest={{ item.dest }} state=link force=yes
+  loop:
+    - { src: "{{ dotfiles_directory_path }}/.vimrc", dest: "~/.vimrc" }
+  tags:
+    - vim
+
+- name: Symlink ~/.vim/coc-settings.json from source {{ dotfiles_directory_path }}/coc-settings.json
+  file: src={{ item.src }} dest={{ item.dest }} state=link force=yes
+  loop:
+    - { src: "{{ dotfiles_directory_path }}/coc-settings.json", dest: "~/.vim/coc-settings.json" }
+  tags:
+    - vim
+
+- name: Symlink ~/.config/nvim/coc-settings.json from source {{ dotfiles_directory_path }}/coc-settings.json
+  file: src={{ item.src }} dest={{ item.dest }} state=link force=yes
+  loop:
+      - { src: "{{ dotfiles_directory_path }}/coc-settings.json", dest: "~/.config/nvim/coc-settings.json" }
+  tags:
+    - vim
+
+- name: Configure neovim
+  copy: content="set runtimepath^=~/.vim runtimepath+=~/.vim/after\n let &packpath = &runtimepath\n source ~/.vimrc" dest=~/.config/nvim/init.vim
+  tags:
+    - vim
+
+- pip:
+    name: neovim
+    executable: pip3
+  tags:
+    - vim
+
+- pip:
+    name: neovim-remote
+    executable: pip3
+  tags:
+    - vim
+
+- pip:
+    name: pynvim
+    executable: pip3
+  tags:
+    - vim
+
+- name: Install neovim npm package globally
+  become_user: "{{ ansible_user_id }}"
+  npm:
+    name: neovim
+    global: yes
+  tags:
+    - vim
+
+- name: Install latexmk with apt
+  apt: name=latexmk state=present
+  become: yes
+  tags:
+    - vim
+

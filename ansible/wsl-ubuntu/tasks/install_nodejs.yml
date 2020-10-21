@@ -1,0 +1,21 @@
+- name: Add Node.js v14.x PPA
+  shell: curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+  tags:
+    - nodejs
+
+- name: Install nodejs with apt
+  become: yes
+  apt: name=nodejs state=present
+  tags:
+    - nodejs
+
+- name: Create ~/.npm/lib directory if not exists
+  file: path=~/.npm/lib state=directory recurse=yes
+  tags:
+    - nodejs
+
+- name: Set NPM prefix to ~/.npm
+  shell: npm config set prefix ~/.npm
+  tags:
+    - nodejs
+

@@ -1,0 +1,111 @@
+- name: Install isync, msmtp, links, urlview, notmuch, notmuch-mutt & neomutt
+  become: yes
+  apt: name={{ item }} state=present
+  loop:
+    - isync
+    - msmtp
+    - links
+    - urlview
+    - notmuch
+    - notmuch-mutt
+    - neomutt
+  tags:
+    - mutt
+
+- name: Symlink ~/.mbsyncrc from source {{ dotfiles_directory_path }}/.mbsyncrc
+  file: src={{ item.src }} dest={{ item.dest }} state=link
+  loop:
+    - { src: "{{ dotfiles_directory_path }}/.mbsyncrc", dest: "~/.mbsyncrc" }
+  tags:
+    - mutt
+
+
+- name: Symlink ~/.muttrc from source {{dotfiles_directory_path}}/.muttrc
+  file: src={{ item.src }} dest={{ item.dest }} state=link
+  loop:
+    - { src: "{{ dotfiles_directory_path }}/.muttrc", dest: "~/.muttrc" }
+  tags:
+    - mutt
+
+- name: Symlink ~/.mutt directory from source {{dotfiles_directory_path}}/.mutt
+  file: src={{ item.src }} dest={{ item.dest }} state=link
+  loop:
+    - { src: "{{ dotfiles_directory_path }}/.mutt", dest: "~/.mutt" }
+  tags:
+    - mutt
+
+- name: Symlink ~/.mutt-alias from source {{private_dotfiles_path}}/.mutt-alias
+  file: src={{ item.src }} dest={{ item.dest }} state=link
+  loop:
+    - { src: "{{ private_dotfiles_path }}/.mutt-alias", dest: "~/.mutt-alias" }
+  tags:
+    - mutt
+
+- name: Symlink ~/.msmtprc from source {{dotfiles_directory_path}}/.msmtprc
+  file: src={{ item.src }} dest={{ item.dest }} state=link
+  loop:
+    - { src: "{{ dotfiles_directory_path }}/.msmtprc", dest: "~/.msmtprc" }
+  tags:
+    - mutt
+
+- name: Symlink ~/.urlview from source {{dotfiles_directory_path}}/.urlview
+  file: src={{ item.src }} dest={{ item.dest }} state=link
+  loop:
+    - { src: "{{ dotfiles_directory_path }}/.urlview", dest: "~/.urlview" }
+  tags:
+    - mutt
+
+- name: Symlink ~/.mailcap from source {{dotfiles_directory_path}}/.mailcap
+  file: src={{ item.src }} dest={{ item.dest }} state=link
+  loop:
+    - { src: "{{ dotfiles_directory_path }}/.mailcap", dest: "~/.mailcap" }
+  tags:
+    - mutt
+
+- name: Symlink ~/.notmuch-config from source {{dotfiles_directory_path}}/.notmuch-config
+  file: src={{ item.src }} dest={{ item.dest }} state=link
+  loop:
+    - { src: "{{ dotfiles_directory_path }}/.notmuch-config", dest: "~/.notmuch-config" }
+  tags:
+    - mutt
+
+- name: Creates gmail directory
+  file: path=~/.mail/gmail/ state=directory
+  tags:
+    - mutt
+
+- name: Creates work directory
+  file: path=~/.mail/work/ state=directory
+  tags:
+    - mutt
+
+- name: Creates hotmail directory
+  file: path=~/.mail/hotmail/ state=directory
+  tags:
+    - mutt
+
+- name: "Initial syncing of all mailboxes"
+  ignore_errors: yes
+  command: mbsync -a
+  tags:
+    - mutt
+
+- name: "Index mails with notmuch"
+  ignore_errors: yes
+  command: notmuch new
+  tags:
+    - mutt
+
+- name: Check mail every minute with cron
+  cron:
+    name: "check mail"
+    minute: "*"
+    job: "mbsync -a; notmuch new"
+  tags:
+    - mutt
+
+- name: Enable cron service
+  become: yes
+  shell: service cron start
+  tags:
+    - mutt

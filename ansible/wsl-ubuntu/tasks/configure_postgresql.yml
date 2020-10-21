@@ -1,0 +1,15 @@
+- name: Install Postgresql with apt
+  become: yes
+  apt : name={{item}} state=present
+  loop:
+    - postgresql
+    - postgresql-contrib
+  tags:
+    - postgresql
+
+- name: Symlink ~/.psqlrc from source {{ dotfiles_directory_path }}/.psqlrc
+  file: src={{ item.src }} dest={{ item.dest }} state=link
+  loop:
+    - { src: "{{ dotfiles_directory_path }}/.psqlrc", dest: "~/.psqlrc" }
+  tags:
+    - postgresql

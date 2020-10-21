@@ -1,0 +1,6 @@
+- name: Install extra packages with apt
+  apt: name={{ item }} state=present
+  become: yes
+  loop: "{{ extra_packages_to_install_with_apt }}"
+  tags:
+    - packages

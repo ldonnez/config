@@ -1,0 +1,17 @@
+- name: Remove existing .ssh directory
+  file: path=~/.ssh state=absent
+  tags:
+    - gnupg
+
+- name: Symlink ~/.ssh directory from source {{ private_dotfiles_path }}/.ssh
+  file: src={{ item.src }} dest={{ item.dest }} state=link
+  loop:
+    - { src: "{{ private_dotfiles_path }}/.ssh", dest: "~/.ssh" }
+  tags:
+    - ssh
+
+- name: Give correct access righs to ~/ssh/.id_rsa
+  become_user: root
+  file: path="~/.ssh/id_rsa" mode="0700"
+  tags:
+    - ssh

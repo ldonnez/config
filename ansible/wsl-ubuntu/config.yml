@@ -1,0 +1,42 @@
+# Tell me your where your dotfiles live
+dotfiles_repo: "https://github.com/ldonnez/dotfiles.git"
+
+# Tell me your where I have to clone your dotfiles
+dotfiles_directory_path: "~/dotfiles"
+
+# Tell me your where your your secrets lie
+private_dotfiles_path: "~/private"
+
+# Tell me what to do
+install_dotfiles: yes
+install_extra_packages_with_apt: yes
+install_nodejs: yes
+configure_git: yes
+configure_bat: yes
+configure_zsh: yes
+configure_vim: yes
+configure_vifm: yes
+configure_tmux: yes
+configure_ag: yes
+configure_ssh: yes # Make sure your private_dotfiles_path is correctly configured for this one!
+configure_postgresql: yes
+configure_redis: yes
+configure_gnugpg: yes # Make sure your private_dotfiles_path is correctly configured for this one!
+configure_secrets: yes # Make sure your private_dotfiles_path is correctly configured for this one!
+configure_mutt: yes # Make sure your private_dotfiles_path is correctly configured for this one!
+
+# Tell me what extra's to install with apt
+extra_packages_to_install_with_apt:
+  - coreutils
+  - build-essential
+  - htop
+  - fzf
+  - bat
+  - mosh
+  - yarn
+  - imagemagick
+  - jq
+  - watchman
+  - luarocks
+  - tree
+  - pgcli
