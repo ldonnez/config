@@ -33,10 +33,10 @@
   tags:
     - mutt
 
-- name: Symlink ~/.mutt-alias from source {{dotfiles_directory_path}}/.mutt-alias
+- name: Symlink ~/.mutt-alias from source {{private_dotfiles_path}}/.mutt-alias
   file: src={{ item.src }} dest={{ item.dest }} state=link
   loop:
-    - { src: "{{ dotfiles_directory_path }}/.mutt-alias", dest: "~/.mutt-alias" }
+    - { src: "{{ private_dotfiles_path }}/.mutt-alias", dest: "~/.mutt-alias" }
   tags:
     - mutt
 
