@@ -69,6 +69,18 @@
   tags:
     - mutt
 
+- name: Symlink ~/.url_handler.sh from source {{dotfiles_directory_path}}/.url_handler.sh
+  file: src={{ item.src }} dest={{ item.dest }} state=link
+  loop:
+    - { src: "{{ dotfiles_directory_path }}/.url_handler.sh", dest: "~/.url_handler.sh" }
+  tags:
+    - mutt
+
+- name: Make ~/.url_handler.sh executable
+  file: dest=~/.url_handler.sh mode=a+x
+  tags:
+    - mutt
+
 - name: Creates gmail directory
   file: path=~/.mail/gmail/ state=directory
   tags:
