@@ -43,6 +43,15 @@ If ($config.configureVim) {
   New-Item -ItemType SymbolicLink -f -Path "$home\AppData\Local\nvim\init.vim" -Target "$dotfilesPath\.vimrc"
 }
 
+If ($config.configureAlacritty) {
+  Write-Host "***************** INSTALL ALACRITTY *****************" -ForegroundColor White -BackgroundColor Black
+  choco install alacritty -y
+
+  Write-Host "***************** SYMLINK $home\_vimrc WITH $dotfilesPath\.vimrc *****************" -ForegroundColor White -BackgroundColor Black
+  New-Item -ItemType SymbolicLink -f -Path "$home\AppData\Roaming\alacritty\alacritty.yml" -Target "$dotfilesPath\.alacritty.yml"
+}
+
+
 $packages = $extraPackagesToInstallWithChocolatey -join ", "
 Write-Host "***************** INSTALL $packages WITH CHOCOLATEY *****************" -ForegroundColor White -BackgroundColor Black
 $extraPackagesToInstallWithChocolatey | ForEach-Object { choco install $_ -y }

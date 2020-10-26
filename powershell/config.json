@@ -3,5 +3,6 @@
   "dotfilesPath": "~/dotfiles",
   "installDotfiles": true,
   "configureVim": true,
+  "configureAlacritty": true,
   "extraPackagesToInstallWithChocolatey": ["bat", "fzf", "nodejs", "ag"]
 }
