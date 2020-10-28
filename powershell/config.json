@@ -3,6 +3,7 @@
   "dotfilesPath": "~/dotfiles",
   "privateDotfilesPath": "~/SynologyDrive/private",
   "installDotfiles": true,
+  "configureGit": true,
   "configureVim": true,
   "configureAlacritty": true,
   "configureAg": true,

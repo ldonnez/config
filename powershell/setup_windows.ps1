@@ -11,8 +11,16 @@ $privateDotfilesPath = $config.privateDotfilesPath
 Write-Host "***************** INSTALL THE CHOCOLATEY PACKAGE MANAGER *****************"  -ForegroundColor White -BackgroundColor Black
 Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 
-Write-Host "***************** INSTALL GIT *****************"  -ForegroundColor White -BackgroundColor Black
-choco install git -y
+If ($config.configureGit) {
+  Write-Host "***************** INSTALL GIT *****************"  -ForegroundColor White -BackgroundColor Black
+  choco install git -y
+
+  Write-Host "***************** SYMLINK $home\.gitconfig WITH $dotfilesPath\.gitconfig *****************"  -ForegroundColor White -BackgroundColor Black
+  New-Item -ItemType SymbolicLink -f -Path "$home\.gitconfig" -Target "$dotfilesPath\.gitconfig"
+
+  Write-Host "***************** SYMLINK $home\.gitignore_global WITH $dotfilesPath\.gitignore_global *****************"  -ForegroundColor White -BackgroundColor Black
+  New-Item -ItemType SymbolicLink -f -Path "$home\.gitignore_global" -Target "$dotfilesPath\.gitignore_global"
+}
 
 $dotfilesExist = Test-Path -Path $config.dotfilesPath
 
@@ -23,12 +31,6 @@ If ($installDotfiles -And !$dotfilesExist) {
     Write-Host "***************** CLONE DOTFILES INTO $dotfilesPath *****************"
     git clone $dotfilesRepo $dofilesPath
 }
-
-Write-Host "***************** SYMLINK $home\.gitconfig WITH $dotfilesPath\.gitconfig *****************"  -ForegroundColor White -BackgroundColor Black
-New-Item -ItemType SymbolicLink -f -Path "$home\.gitconfig" -Target "$dotfilesPath\.gitconfig"
-
-Write-Host "***************** SYMLINK $home\.gitignore_global WITH $dotfilesPath\.gitignore_global *****************"  -ForegroundColor White -BackgroundColor Black
-New-Item -ItemType SymbolicLink -f -Path "$home\.gitignore_global" -Target "$dotfilesPath\.gitignore_global"
 
 If ($config.configureVim) {
   Write-Host "***************** INSTALL VIM *****************" -ForegroundColor White -BackgroundColor Black
