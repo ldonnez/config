@@ -5,6 +5,7 @@ $dotfilesRepo = $config.dotfilesRepo
 $dotfilesPath = $config.dotfilesPath
 $extraPackagesToInstallWithChocolatey = $config.extraPackagesToInstallWithChocolatey
 $installDotfiles = $config.installDotfiles
+$privateDotfilesPath = $config.privateDotfilesPath
 
 # Install chocolatey
 Write-Host "***************** INSTALL THE CHOCOLATEY PACKAGE MANAGER *****************"  -ForegroundColor White -BackgroundColor Black
@@ -51,6 +52,13 @@ If ($config.configureAlacritty) {
   New-Item -ItemType SymbolicLink -f -Path "$home\AppData\Roaming\alacritty\alacritty.yml" -Target "$dotfilesPath\.alacritty.yml"
 }
 
+If ($config.configureSsh) {
+  Write-Host "***************** SYMLINK $home\.ssh WITH $privateDotfilesPath\.ssh *****************" -ForegroundColor White -BackgroundColor Black
+  New-Item -ItemType SymbolicLink -f -Path "$home\.ssh" -Target "$privateDotfilesPath\.ssh"
+
+  Write-Host "SET SSH STARTUP TYPE TO MANUAL" -ForegroundColor White -BackgroundColor Black
+  Set-Service ssh-agent -StartupType Manual
+}
 
 $packages = $extraPackagesToInstallWithChocolatey -join ", "
 Write-Host "***************** INSTALL $packages WITH CHOCOLATEY *****************" -ForegroundColor White -BackgroundColor Black

@@ -1,8 +1,10 @@
 {
   "dotfilesRepo": "git@github.com:ldonnez/dotfiles.git",
   "dotfilesPath": "~/dotfiles",
+  "privateDotfilesPath": "~/SynologyDrive/private",
   "installDotfiles": true,
   "configureVim": true,
   "configureAlacritty": true,
+  "configureSsh": true,
   "extraPackagesToInstallWithChocolatey": ["bat", "fzf", "nodejs", "ag"]
 }
