@@ -5,6 +5,7 @@
   "installDotfiles": true,
   "configureVim": true,
   "configureAlacritty": true,
+  "configureAg": true,
   "configureSsh": true,
   "extraPackagesToInstallWithChocolatey": ["bat", "fzf", "nodejs", "ag"]
 }
