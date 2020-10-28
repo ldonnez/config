@@ -6,6 +6,7 @@
   "configureVim": true,
   "configureAlacritty": true,
   "configureAg": true,
+  "configureVifm": true,
   "configureSsh": true,
   "extraPackagesToInstallWithChocolatey": ["bat", "fzf", "nodejs", "ag"]
 }

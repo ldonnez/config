@@ -44,6 +44,14 @@ If ($config.configureVim) {
   New-Item -ItemType SymbolicLink -f -Path "$home\AppData\Local\nvim\init.vim" -Target "$dotfilesPath\.vimrc"
 }
 
+If ($config.configureVifm) {
+  Write-Host "***************** INSTALL VIFM  *****************" -ForegroundColor White -BackgroundColor Black
+  choco install vifm -y
+
+  Write-Host "***************** SYMLINK $home\AppData\Roaming\Vifm\vifmrc WITH $dotfilesPath\vifmrc *****************" -ForegroundColor White -BackgroundColor Black
+  New-Item -ItemType SymbolicLink -f -Path "$home\AppData\Roaming\Vifm\vifmrc" -Target "$dotfilesPath\vifmrc"
+}
+
 If ($config.configureAg) {
   Write-Host "***************** INSTALL AG (the silver searcher) *****************" -ForegroundColor White -BackgroundColor Black
   choco install ag -y
