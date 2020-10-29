@@ -19,13 +19,6 @@
   tags:
     - zsh
 
-- name: Symlink ~/.zprofile from source {{ dotfiles_directory_path }}/.zshrc
-  file: src={{ item.src }} dest={{ item.dest }} state=link force=yes
-  loop:
-    - { src: "{{ dotfiles_directory_path }}/.zshrc", dest: "~/.zprofile" }
-  tags:
-    - zsh
-
 - name: Symlink ~/.wslrc from source {{ dotfiles_directory_path }}/.wslrc
   file: src={{ item.src }} dest={{ item.dest }} state=link force=yes
   loop:
