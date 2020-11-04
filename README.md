@@ -51,6 +51,7 @@ Make sure to check the config file in `powershell/config.json`!
 
 - Clone this repo, preferably in your home directory
 - Configure the ansible playbook in `powershell/config.json` if necessary
+- Open Powershell with Administrator permissions and run `Set-ExecutionPolicy Unrestricted -Scope CurrentUser` to be able to run powershell scripts.
 - Run `powershell/setup_windows.ps1` as Administrator
 
 ### Configuration options
