@@ -53,6 +53,8 @@ Make sure to check the config file in `powershell/config.json`!
 - Configure the ansible playbook in `powershell/config.json` if necessary
 - Open Powershell with Administrator permissions and run `Set-ExecutionPolicy Unrestricted -Scope CurrentUser` to be able to run powershell scripts.
 - Run `powershell/setup_windows.ps1` as Administrator
+- Reboot
+- Open Powershell with Administrator permissions and run `wsl --set-default-version 2` to set wsl2 as default wsl version
 
 ### Configuration options
 
