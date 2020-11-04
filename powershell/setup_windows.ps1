@@ -11,10 +11,17 @@ $privateDotfilesPath = $config.privateDotfilesPath
 Write-Host "***************** INSTALL THE CHOCOLATEY PACKAGE MANAGER *****************"  -ForegroundColor White -BackgroundColor Black
 Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 
-If ($config.configureGit) {
-  Write-Host "***************** INSTALL GIT *****************"  -ForegroundColor White -BackgroundColor Black
-  choco install git -y
+Write-Host "***************** INSTALL GIT *****************"  -ForegroundColor White -BackgroundColor Black
+choco install git -y
 
+$dotfilesExist = Test-Path -Path $dotfilesPath
+
+If ($installDotfiles -And !$dotfilesExist) {
+    Write-Host "***************** CLONE DOTFILES INTO $dotfilesPath *****************" -ForegroundColor White -BackgroundColor Black
+    git clone $dotfilesRepo $dotfilesPath
+}
+
+If ($config.configureGit) {
   Write-Host "***************** SYMLINK $home\.gitconfig WITH $dotfilesPath\.gitconfig *****************"  -ForegroundColor White -BackgroundColor Black
   New-Item -ItemType SymbolicLink -f -Path "$home\.gitconfig" -Target "$dotfilesPath\.gitconfig"
 
