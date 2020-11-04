@@ -1,7 +1,7 @@
 {
   "dotfilesRepo": "https://github.com/ldonnez/dotfiles.git",
-  "dotfilesPath": "~/dotfiles",
-  "privateDotfilesPath": "~/SynologyDrive/private",
+  "dotfilesPath": "C:/Users/lenny/dotfiles",
+  "privateDotfilesPath": "C:/Users/lenny/SynologyDrive/private",
   "installDotfiles": true,
   "configureGit": true,
   "configureVim": true,
