@@ -9,5 +9,6 @@
   "configureAg": true,
   "configureVifm": true,
   "configureSsh": true,
-  "extraPackagesToInstallWithChocolatey": ["bat", "fzf", "nodejs", "ag"]
+  "configureWsl": true,
+  "extraPackagesToInstallWithChocolatey": ["bat", "fzf", "nodejs-lts", "ag"]
 }
