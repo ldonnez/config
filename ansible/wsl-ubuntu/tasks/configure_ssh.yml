@@ -15,3 +15,9 @@
   file: path="~/.ssh/id_rsa" mode="0700"
   tags:
     - ssh
+
+- name: Generate root key
+  become: yes
+  shell: ssh-keygen -A
+  tags:
+    - ssh
