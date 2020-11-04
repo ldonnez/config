@@ -29,16 +29,6 @@ If ($config.configureGit) {
   New-Item -ItemType SymbolicLink -f -Path "$home\.gitignore_global" -Target "$dotfilesPath\.gitignore_global"
 }
 
-$dotfilesExist = Test-Path -Path $config.dotfilesPath
-
-If ($installDotfiles -And !$dotfilesExist) {
-    Write-Host "***************** CREATE DOTFILES DIRECTORY $dotfilesPath *****************" -ForegroundColor White -BackgroundColor Black
-    New-Item -Path $dotfilesPath -ItemType Directory
-
-    Write-Host "***************** CLONE DOTFILES INTO $dotfilesPath *****************"
-    git clone $dotfilesRepo $dofilesPath
-}
-
 If ($config.configureVim) {
   Write-Host "***************** INSTALL VIM *****************" -ForegroundColor White -BackgroundColor Black
   choco install vim -y
@@ -81,8 +71,19 @@ If ($config.configureSsh) {
   Write-Host "***************** SYMLINK $home\.ssh WITH $privateDotfilesPath\.ssh *****************" -ForegroundColor White -BackgroundColor Black
   New-Item -ItemType SymbolicLink -f -Path "$home\.ssh" -Target "$privateDotfilesPath\.ssh"
 
-  Write-Host "SET SSH STARTUP TYPE TO MANUAL" -ForegroundColor White -BackgroundColor Black
+  Write-Host "*****************  SET SSH STARTUP TYPE TO MANUAL *****************" -ForegroundColor White -BackgroundColor Black
   Set-Service ssh-agent -StartupType Manual
+}
+
+If ($config.configureWsl) {
+  Write-Host "***************** ENABLE WSL *****************" -ForegroundColor White -BackgroundColor Black
+  dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+
+  Write-Host "*****************  ENABLE VIRTUAL MACHINE PLATFORM *****************" -ForegroundColor White -BackgroundColor Black
+  dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+
+  Write-Host "***************** SET WSL2 AS DEFAULT *****************" -ForegroundColor White -BackgroundColor Black
+  wsl --set-default-version 2
 }
 
 $packages = $extraPackagesToInstallWithChocolatey -join ", "
