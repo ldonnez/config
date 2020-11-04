@@ -1,5 +1,5 @@
 {
-  "dotfilesRepo": "git@github.com:ldonnez/dotfiles.git",
+  "dotfilesRepo": "https://github.com/ldonnez/dotfiles.git",
   "dotfilesPath": "~/dotfiles",
   "privateDotfilesPath": "~/SynologyDrive/private",
   "installDotfiles": true,
