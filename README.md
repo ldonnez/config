@@ -60,10 +60,16 @@ You can configure the following options in `powershell/config.json`
 
 ```json
 {
-  "dotfilesRepo": "git@github.com:ldonnez/dotfiles.git",
+  "dotfilesRepo": "https://github.com/ldonnez/dotfiles.git",
   "dotfilesPath": <path>,
   "installDotfiles": true,
+  "configureGit": true,
   "configureVim": true,
+  "configureAlacritty": true,
+  "configureAg": true,
+  "configureVifm": true,
+  "configureSsh": true,
+  "configureWsl": true,
   "extraPackagesToInstallWithChocolatey": [<packageName>]
 }
 ```
