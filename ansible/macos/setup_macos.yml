@@ -32,6 +32,9 @@
     - import_tasks: tasks/configure_alacritty.yml
       when: configure_alacritty
 
+    - import_tasks: tasks/configure_kitty.yml
+      when: configure_kitty
+
     - import_tasks: tasks/configure_tmux.yml
       when: configure_tmux
 
