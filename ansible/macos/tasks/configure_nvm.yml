@@ -1,0 +1,4 @@
+- name: Install NVM with curl
+  shell: curl -o- curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+  tags:
+    - nvm

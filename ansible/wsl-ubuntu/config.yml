@@ -24,6 +24,7 @@ configure_redis: yes
 configure_gnugpg: yes # Make sure your private_dotfiles_path is correctly configured for this one!
 configure_secrets: yes # Make sure your private_dotfiles_path is correctly configured for this one!
 configure_mutt: yes # Make sure your private_dotfiles_path is correctly configured for this one!
+configure_nvm: yes
 
 # Tell me what extra's to install with apt
 extra_packages_to_install_with_apt:

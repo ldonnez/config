@@ -26,6 +26,7 @@ configure_redis: yes # Make sure your private_dotfiles_path is correctly configu
 configure_gnugpg: yes # Make sure your private_dotfiles_path is correctly configured for this one!
 configure_secrets: yes
 configure_mutt: yes
+configure_nvm: yes
 
 # Tell me what extra's to install with homebrew
 extra_packages_to_install_with_homebrew:
