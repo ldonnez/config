@@ -21,7 +21,7 @@ Write-Host "***************** INSTALL $packages WITH CHOCOLATEY ****************
 $extraPackagesToInstallWithChocolatey | ForEach-Object { choco install $_ -y }
 
 Write-Host "***************** RELOAD ENV PATH *****************" -ForegroundColor White -BackgroundColor Black
-$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 
 If ($installDotfiles -And !$dotfilesExist) {
     Write-Host "***************** CLONE DOTFILES INTO $dotfilesPath *****************" -ForegroundColor White -BackgroundColor Black
@@ -51,7 +51,7 @@ If ($config.configureVim) {
 
   Write-Host "***************** SYMLINK $home\AppData\Local\nvim\lua WITH $dotfilesPath\.config\nvim\lua *****************" -ForegroundColor White -BackgroundColor Black
   New-Item -ItemType Junction -f -Path "$home\AppData\Local\nvim\lua" -Target "$dotfilesPath\.config\nvim\lua"
-   
+
   Write-Host "***************** CREATE $home\.config\nvim\backup if not exist *****************" -ForegroundColor White -BackgroundColor Black
   New-Item -Type Directory -Path "$home\.config\nvim\backup"
 }
