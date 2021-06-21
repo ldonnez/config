@@ -39,8 +39,14 @@ If ($config.configureVim) {
   Write-Host "***************** SYMLINK $home\_vimrc WITH $dotfilesPath\.vimrc *****************" -ForegroundColor White -BackgroundColor Black
   New-Item -ItemType SymbolicLink -f -Path "$home\_vimrc" -Target "$dotfilesPath\.vimrc"
 
-  Write-Host "***************** SYMLINK $home\AppData\Local\nvim\init.vim WITH $dotfilesPath\.vimrc *****************" -ForegroundColor White -BackgroundColor Black
-  New-Item -ItemType SymbolicLink -f -Path "$home\AppData\Local\nvim\init.vim" -Target "$dotfilesPath\.vimrc"
+  Write-Host "***************** SYMLINK $home\AppData\Local\nvim\init.lua WITH $dotfilesPath\.config\nvim\init.lua *****************" -ForegroundColor White -BackgroundColor Black
+  New-Item -ItemType SymbolicLink -f -Path "$home\AppData\Local\nvim\init.lua" -Target "$dotfilesPath\.config\nvim\init.lua"
+
+  Write-Host "***************** SYMLINK $home\AppData\Local\nvim\lua WITH $dotfilesPath\.config\nvim\lua *****************" -ForegroundColor White -BackgroundColor Black
+  New-Item -ItemType Junction -f -Path "$home\AppData\Local\nvim\lua" -Target "$dotfilesPath\.config\nvim\lua"
+   
+  Write-Host "***************** CREATE $home\.config\nvim\backup if not exist *****************" -ForegroundColor White -BackgroundColor Black
+  New-Item -Type Directory -Path "$home\.config\nvim\backup"
 }
 
 If ($config.configureVifm) {
@@ -48,7 +54,7 @@ If ($config.configureVifm) {
   choco install vifm -y
 
   Write-Host "***************** SYMLINK $home\AppData\Roaming\Vifm\vifmrc WITH $dotfilesPath\vifmrc *****************" -ForegroundColor White -BackgroundColor Black
-  New-Item -ItemType SymbolicLink -f -Path "$home\AppData\Roaming\Vifm\vifmrc" -Target "$dotfilesPath\vifmrc"
+  New-Item -ItemType SymbolicLink -f -Path "$home\AppData\Roaming\Vifm\vifmrc" -Target "$dotfilesPath\.config\vifm\vifmrc"
 }
 
 If ($config.configureAg) {
