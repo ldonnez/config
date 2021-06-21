@@ -14,7 +14,7 @@
   tags:
     - vim
 
-- name: Create directories if they not exist yet
+- name: Create directories if they dont exist
   file: name={{ item }} state=directory recurse=yes
   loop:
     - "~/.config/nvim"
@@ -95,5 +95,10 @@
     - "typescript-language-server"
     - "vscode-langservers-extracted"
     - "eslint_d"
+  tags:
+    - vim
+
+- name: Install efm-language server with go get
+  shell: go get github.com/mattn/efm-langserver
   tags:
     - vim
