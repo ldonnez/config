@@ -101,7 +101,3 @@ If ($config.configureWsl) {
   Write-Host "***************** SET WSL2 AS DEFAULT *****************" -ForegroundColor White -BackgroundColor Black
   wsl --set-default-version 2
 }
-
-$packages = $extraPackagesToInstallWithChocolatey -join ", "
-Write-Host "***************** INSTALL $packages WITH CHOCOLATEY *****************" -ForegroundColor White -BackgroundColor Black
-$extraPackagesToInstallWithChocolatey | ForEach-Object { choco install $_ -y }
