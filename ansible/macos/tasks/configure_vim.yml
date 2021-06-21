@@ -6,28 +6,17 @@
   tags:
     - vim
 
-- name: Create ~/.config/nvim directory if not exists
-  file: path=~/.config/nvim state=directory recurse=yes
-  tags:
-    - vim
-
-- name: Create ~/.vim directory if not exists
-  file: path=~/.vim state=directory recurse=yes
-  tags:
-    - vim
-
-- name: Create ~/.vim/backup directory if not exists
-  file: path=~/.vim/backup state=directory recurse=yes
-  tags:
-    - vim
-
-- name: Create ~/.vim/undo directory if not exists
-  file: path=~/.vim/undo state=directory recurse=yes
-  tags:
-    - vim
-
-- name: Create ~/.vim/swap directory if not exists
-  file: path=~/.vim/swap state=directory recurse=yes
+- name: Create directories if they not exist yet
+  file: name={{ item }} state=directory recurse=yes
+  loop:
+    - "~/.config/nvim"
+    - "~/.config/nvim/backup"
+    - "~/.config/nvim/swap"
+    - "~/.config/nvim/undo"
+    - "~/.vim"
+    - "~/.vim/backup"
+    - "~/.vim/swap"
+    - "~/.vim/undo"
   tags:
     - vim
 
@@ -38,6 +27,13 @@
   tags:
     - vim
 
+- name: Symlink ~/.config/nvim/init.lua from source {{ dotfiles_directory_path }}/.config/nvim/init.lua
+  file: src={{ item.src }} dest={{ item.dest }} state=link
+  loop:
+    - { src: "{{ dotfiles_directory_path }}/.config/nvim/init.lua", dest: "~/.config/nvim/init.lua" }
+  tags:
+    - vim
+
 - name: Symlink ~/.config/nvim/lua from source {{ dotfiles_directory_path }}/nvim/lua
   file: src={{ item.src }} dest={{ item.dest }} state=link
   loop:
@@ -45,29 +41,10 @@
   tags:
     - vim
 
-- name: Symlink ~/.vim/lua from source {{ dotfiles_directory_path }}/.nvim/lua
+- name: Symlink ~/.vim/coc-settings.json from source {{ dotfiles_directory_path }}/.vim/coc-settings.json
   file: src={{ item.src }} dest={{ item.dest }} state=link
   loop:
-    - { src: "{{ dotfiles_directory_path }}/.config/nvim/lua", dest: "~/.vim/lua" }
-  tags:
-    - vim
-
-- name: Symlink ~/.vim/coc-settings.json from source {{ dotfiles_directory_path }}/coc-settings.json
-  file: src={{ item.src }} dest={{ item.dest }} state=link
-  loop:
-    - { src: "{{ dotfiles_directory_path }}/.config/nvim/coc-settings.json", dest: "~/.vim/coc-settings.json" }
-  tags:
-    - vim
-
-- name: Symlink ~/.config/nvim/coc-settings.json from source {{ dotfiles_directory_path }}/coc-settings.json
-  file: src={{ item.src }} dest={{ item.dest }} state=link
-  loop:
-      - { src: "{{ dotfiles_directory_path }}/.config/nvim/coc-settings.json", dest: "~/.config/nvim/coc-settings.json" }
-  tags:
-    - vim
-
-- name: Configure neovim
-  copy: content="set runtimepath^=~/.vim runtimepath+=~/.vim/after\n let &packpath = &runtimepath\n source ~/.vimrc" dest=~/.config/nvim/init.vim
+    - { src: "{{ dotfiles_directory_path }}/.vim/coc-settings.json", dest: "~/.vim/coc-settings.json" }
   tags:
     - vim
 
