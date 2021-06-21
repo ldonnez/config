@@ -41,3 +41,4 @@ extra_packages_to_install_with_apt:
   - luarocks
   - tree
   - pgcli
+  - golang-go
