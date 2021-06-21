@@ -38,17 +38,31 @@
   tags:
     - vim
 
+- name: Symlink ~/.config/nvim/lua from source {{ dotfiles_directory_path }}/nvim/lua
+  file: src={{ item.src }} dest={{ item.dest }} state=link
+  loop:
+    - { src: "{{ dotfiles_directory_path }}/.config/nvim/lua", dest: "~/.config/nvim/lua" }
+  tags:
+    - vim
+
+- name: Symlink ~/.vim/lua from source {{ dotfiles_directory_path }}/.nvim/lua
+  file: src={{ item.src }} dest={{ item.dest }} state=link
+  loop:
+    - { src: "{{ dotfiles_directory_path }}/.config/nvim/lua", dest: "~/.vim/lua" }
+  tags:
+    - vim
+
 - name: Symlink ~/.vim/coc-settings.json from source {{ dotfiles_directory_path }}/coc-settings.json
   file: src={{ item.src }} dest={{ item.dest }} state=link
   loop:
-    - { src: "{{ dotfiles_directory_path }}/coc-settings.json", dest: "~/.vim/coc-settings.json" }
+    - { src: "{{ dotfiles_directory_path }}/.config/nvim/coc-settings.json", dest: "~/.vim/coc-settings.json" }
   tags:
     - vim
 
 - name: Symlink ~/.config/nvim/coc-settings.json from source {{ dotfiles_directory_path }}/coc-settings.json
   file: src={{ item.src }} dest={{ item.dest }} state=link
   loop:
-      - { src: "{{ dotfiles_directory_path }}/coc-settings.json", dest: "~/.config/nvim/coc-settings.json" }
+      - { src: "{{ dotfiles_directory_path }}/.config/nvim/coc-settings.json", dest: "~/.config/nvim/coc-settings.json" }
   tags:
     - vim
 
@@ -89,5 +103,22 @@
 - name: Install neovim gem
   become_user: lenny
   gem: name="neovim" state=latest
+  tags:
+    - vim
+
+- name: Install language servers & linters with npm
+  npm: name={{ item }} global=yes
+  loop:
+    - "typescript"
+    - "typescript-language-server"
+    - "vscode-langservers-extracted"
+    - "eslint_d"
+  tags:
+    - vim
+
+- name: Install language servers with homebrew
+  homebrew: name={{ item }} state=present
+  loop:
+    - "efm-langserver"
   tags:
     - vim

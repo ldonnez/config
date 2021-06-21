@@ -11,6 +11,6 @@
 - name: Symlink ~/.config/bat/bat_config from source {{ dotfiles_directory_path }}/bat_config
   file: src={{ item.src }} dest={{ item.dest }} state=link
   loop:
-    - { src: "{{ dotfiles_directory_path }}/bat_config", dest: "~/.config/bat/config" }
+    - { src: "{{ dotfiles_directory_path }}/.config/bat/config", dest: "~/.config/bat/config" }
   tags:
     - bat

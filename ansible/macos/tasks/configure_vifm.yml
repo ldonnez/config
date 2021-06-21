@@ -11,6 +11,6 @@
 - name: Symlink ~/.config/vifm/vifm from source {{ dotfiles_directory_path }}/vifmrc
   file: src={{ item.src }} dest={{ item.dest }} state=link
   loop:
-    - { src: "{{ dotfiles_directory_path }}/vifmrc", dest: "~/.config/vifm/vifmrc" }
+    - { src: "{{ dotfiles_directory_path }}/.config/vifm/vifmrc", dest: "~/.config/vifm/vifmrc" }
   tags:
     - vifm
