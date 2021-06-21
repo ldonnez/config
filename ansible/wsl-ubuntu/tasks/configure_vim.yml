@@ -21,6 +21,7 @@
     - "~/.config/nvim/backup"
     - "~/.config/nvim/swap"
     - "~/.config/nvim/undo"
+    - "~/.config/nvim/cache"
     - "~/.vim"
     - "~/.vim/backup"
     - "~/.vim/swap"
@@ -100,5 +101,17 @@
 
 - name: Install efm-language server with go get
   shell: go get github.com/mattn/efm-langserver
+  tags:
+    - vim
+
+- name: Clone Sumneko Lua Language Server
+  git:
+    repo: https://github.com/sumneko/lua-language-server
+    dest: ~/.config/nvim/cache/lua-language-server
+  tags:
+    - vim
+
+- name: Compile & Install Lua Language Server
+  shell: cd ~/.config/nvim/cache/lua-language-server && git submodule update --init --recursive && cd 3rd/luamake && compile/install.sh && cd ../.. && ./3rd/luamake/luamake rebuild
   tags:
     - vim
