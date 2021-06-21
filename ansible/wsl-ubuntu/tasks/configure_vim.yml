@@ -97,3 +97,8 @@
     - "eslint_d"
   tags:
     - vim
+
+- name: Install efm-language server with go get
+  shell: go get github.com/mattn/efm-langserver
+  tags:
+    - vim
