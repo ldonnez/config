@@ -16,6 +16,9 @@ choco install git -y
 
 $dotfilesExist = Test-Path -Path $dotfilesPath
 
+$packages = $extraPackagesToInstallWithChocolatey -join ", "
+Write-Host "***************** INSTALL $packages WITH CHOCOLATEY *****************" -ForegroundColor White -BackgroundColor Black
+$extraPackagesToInstallWithChocolatey | ForEach-Object { choco install $_ -y }
 If ($installDotfiles -And !$dotfilesExist) {
     Write-Host "***************** CLONE DOTFILES INTO $dotfilesPath *****************" -ForegroundColor White -BackgroundColor Black
     git clone $dotfilesRepo $dotfilesPath
