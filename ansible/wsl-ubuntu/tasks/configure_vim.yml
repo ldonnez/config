@@ -14,7 +14,7 @@
   tags:
     - vim
 
-- name: Create directories if they not exist yet
+- name: Create directories if they dont exist
   file: name={{ item }} state=directory recurse=yes
   loop:
     - "~/.config/nvim"
