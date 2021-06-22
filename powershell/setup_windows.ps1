@@ -55,6 +55,9 @@ If ($config.configureVim) {
   Write-Host "***************** CREATE $home\.config\nvim\backup if not exist *****************" -ForegroundColor White -BackgroundColor Black
   New-Item -Type Directory -Path "$home\.config\nvim\backup"
 
+  Write-Host "***************** INSTALL language servers with npm *****************" -ForegroundColor White -BackgroundColor Black
+  npm install typescript typescript-language-server vscode-langservers-extracted eslint_d -g
+
   Write-Host "***************** INSTALL efm-language-server with go get *****************" -ForegroundColor White -BackgroundColor Black
   go get github.com/mattn/efm-langserver
 }
