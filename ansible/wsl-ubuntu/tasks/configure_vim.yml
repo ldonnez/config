@@ -18,14 +18,8 @@
   file: name={{ item }} state=directory recurse=yes
   loop:
     - "~/.config/nvim"
-    - "~/.config/nvim/backup"
-    - "~/.config/nvim/swap"
-    - "~/.config/nvim/undo"
     - "~/.config/nvim/cache"
     - "~/.vim"
-    - "~/.vim/backup"
-    - "~/.vim/swap"
-    - "~/.vim/undo"
   tags:
     - vim
 
