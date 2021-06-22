@@ -16,3 +16,4 @@
 - include: configure_secrets.yml
 - include: configure_mutt.yml
 - include: configure_nvm.yml
+- include: configure_spotify.yml

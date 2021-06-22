@@ -1,0 +1,41 @@
+- name: Install spotifyd & spotify-tui with homebrew
+  homebrew: name={{ item }} state=present
+  loop:
+    - spotifyd
+    - spotify-tui
+  tags:
+    - spotify
+
+- name: Create directories if they dont exist
+  file: name={{ item }} state=directory recurse=yes
+  loop:
+    - "~/.config/spotifyd"
+    - "Library/Application Support/Spotify/PersistentCache/Storage"
+  tags:
+    - spotify
+
+- name: Symlink ~/.config/spotifyd/spotifyd.conf from source {{ dotfiles_directory_path }}/.config/spotifyd/spotifyd.conf
+  file: src={{ item.src }} dest={{ item.dest }} state=link
+  loop:
+    - { src: "{{ dotfiles_directory_path }}/.config/spotifyd/spotifyd.conf", dest: "~/.config/spotifyd/spotifyd.conf" }
+  tags:
+    - spotify
+
+- pause:
+   prompt: "Please enter spotify password"
+   echo: no
+  register: spotify_password
+  delegate_to: localhost
+  tags:
+    - spotify
+
+- name: Add spotifyd credentials to keychain
+  shell: "security add-generic-password -s spotifyd -D rust-keyring -a lenny.donnez@gmail.com -w {{ spotify_password.user_input }}"
+  ignore_errors: yes
+  tags:
+    - spotify
+
+- name: Starting spotifyd...
+  command: brew services start spotifyd
+  tags:
+    - spotify

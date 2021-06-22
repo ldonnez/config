@@ -61,3 +61,6 @@
 
     - import_tasks: tasks/configure_nvm.yml
       when: configure_nvm
+
+    - import_tasks: tasks/configure_spotify.yml
+      when: configure_spotify
