@@ -43,3 +43,4 @@ extra_packages_to_install_with_apt:
   - pgcli
   - golang-go
   - ninja-build
+  - mplayer
