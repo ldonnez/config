@@ -85,6 +85,7 @@
     - "typescript-language-server"
     - "vscode-langservers-extracted"
     - "eslint_d"
+    - "yaml-language-server"
   tags:
     - vim
 
