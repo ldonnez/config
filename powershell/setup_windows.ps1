@@ -52,9 +52,6 @@ If ($config.configureVim) {
   Write-Host "***************** SYMLINK $home\AppData\Local\nvim\lua WITH $dotfilesPath\.config\nvim\lua *****************" -ForegroundColor White -BackgroundColor Black
   New-Item -ItemType Junction -f -Path "$home\AppData\Local\nvim\lua" -Target "$dotfilesPath\.config\nvim\lua"
 
-  Write-Host "***************** CREATE $home\.config\nvim\backup if not exist *****************" -ForegroundColor White -BackgroundColor Black
-  New-Item -Type Directory -Path "$home\.config\nvim\backup"
-
   Write-Host "***************** INSTALL language servers with npm *****************" -ForegroundColor White -BackgroundColor Black
   npm install typescript typescript-language-server vscode-langservers-extracted eslint_d yaml-language-server -g
 
