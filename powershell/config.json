@@ -10,5 +10,5 @@
   "configureVifm": true,
   "configureSsh": true,
   "configureWsl": true,
-  "extraPackagesToInstallWithChocolatey": ["bat", "fzf", "nodejs-lts", "ag", "jq", "golang"]
+  "extraPackagesToInstallWithChocolatey": ["bat", "fzf", "nodejs-lts", "ag", "jq", "golang", "llvm", "visualstudio2019buildtools", "mingw"]
 }
