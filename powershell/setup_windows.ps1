@@ -11,6 +11,9 @@ $privateDotfilesPath = $config.privateDotfilesPath
 Write-Host "***************** INSTALL THE CHOCOLATEY PACKAGE MANAGER *****************"  -ForegroundColor White -BackgroundColor Black
 Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 
+Write-Host "***************** INSTALL VISUAL STUDIO BUILD TOOLS *****************"  -ForegroundColor White -BackgroundColor Black
+choco install visualstudio2019buildtools --package-parameters "--allWorkloads --includeRecommended --passive"
+
 Write-Host "***************** INSTALL GIT *****************"  -ForegroundColor White -BackgroundColor Black
 choco install git -y
 
