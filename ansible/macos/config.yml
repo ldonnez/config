@@ -50,3 +50,4 @@ extra_packages_to_install_with_homebrew:
   - pgcli
   - ninja
   - mplayer
+  - rust

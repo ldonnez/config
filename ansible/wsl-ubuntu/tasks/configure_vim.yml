@@ -100,6 +100,13 @@
   tags:
     - vim
 
+- name: Install language servers & linters with cargo
+  shell: cargo install {{ item }}
+  loop:
+    - "stylua"
+  tags:
+    - vim
+
 - name: Clone Sumneko Lua Language Server
   git:
     repo: https://github.com/sumneko/lua-language-server

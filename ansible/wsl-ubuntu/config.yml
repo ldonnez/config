@@ -44,3 +44,4 @@ extra_packages_to_install_with_apt:
   - golang-go
   - ninja-build
   - mplayer
+  - rustc

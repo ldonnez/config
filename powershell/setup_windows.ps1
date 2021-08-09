@@ -57,6 +57,9 @@ If ($config.configureVim) {
 
   Write-Host "***************** INSTALL efm-language-server with go get *****************" -ForegroundColor White -BackgroundColor Black
   go get github.com/mattn/efm-langserver
+
+  Write-Host "***************** INSTALL stylua with cargo *****************" -ForegroundColor White -BackgroundColor Black
+  cargo install stylua
 }
 
 If ($config.configureVifm) {
