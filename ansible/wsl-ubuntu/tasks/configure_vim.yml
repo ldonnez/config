@@ -91,6 +91,7 @@
     - "vscode-langservers-extracted"
     - "yaml-language-server"
     - "eslint_d"
+    - "prettier"
   tags:
     - vim
 
