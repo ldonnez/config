@@ -45,3 +45,4 @@ extra_packages_to_install_with_apt:
   - ninja-build
   - mplayer
   - rustc
+  - python3-venv
