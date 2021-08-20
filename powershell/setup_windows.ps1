@@ -63,6 +63,9 @@ If ($config.configureVim) {
 
   Write-Host "***************** INSTALL stylua with cargo *****************" -ForegroundColor White -BackgroundColor Black
   cargo install stylua
+
+  Write-Host "***************** INSTALL virtualenv with pip *****************" -ForegroundColor White -BackgroundColor Black
+  pip3 install virtualenv
 }
 
 If ($config.configureVifm) {
