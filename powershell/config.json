@@ -10,5 +10,5 @@
   "configureVifm": true,
   "configureSsh": true,
   "configureWsl": true,
-  "extraPackagesToInstallWithChocolatey": ["bat", "fzf", "nodejs", "ag", "jq", "golang", "llvm", "mingw", "rust", "python"]
+  "extraPackagesToInstallWithChocolatey": ["bat", "fzf", "nodejs", "ag", "jq", "golang", "llvm", "mingw", "rustup.install", "python"]
 }
