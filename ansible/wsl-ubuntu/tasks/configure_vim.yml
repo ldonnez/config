@@ -18,7 +18,6 @@
   file: name={{ item }} state=directory recurse=yes
   loop:
     - "~/.config/nvim"
-    - "~/.config/nvim/cache"
     - "~/.vim"
   tags:
     - vim
@@ -104,17 +103,5 @@
   shell: cargo install {{ item }}
   loop:
     - "stylua"
-  tags:
-    - vim
-
-- name: Clone Sumneko Lua Language Server
-  git:
-    repo: https://github.com/sumneko/lua-language-server
-    dest: ~/.config/nvim/cache/lua-language-server
-  tags:
-    - vim
-
-- name: Compile & Install Lua Language Server
-  shell: cd ~/.config/nvim/cache/lua-language-server && git submodule update --init --recursive && cd 3rd/luamake && compile/install.sh && cd ../.. && ./3rd/luamake/luamake rebuild
   tags:
     - vim
