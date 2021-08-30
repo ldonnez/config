@@ -10,5 +10,21 @@
   "configureVifm": true,
   "configureSsh": true,
   "configureWsl": true,
-  "extraPackagesToInstallWithChocolatey": ["bat", "fzf", "nodejs", "ag", "jq", "golang", "llvm", "mingw", "rustup.install", "python", "sqlite",  "wsl2", "wsl-ubuntu-2004", "microsoft-windows-terminal", "winrar"]
+  "extraPackagesToInstallWithChocolatey": [
+    "bat",
+    "fzf",
+    "nodejs",
+    "ag",
+    "jq",
+    "golang",
+    "llvm",
+    "mingw",
+    "rustup.install",
+    "python",
+    "sqlite",
+    "wsl2",
+    "wsl-ubuntu-2004",
+    "microsoft-windows-terminal",
+    "winrar"
+  ]
 }
