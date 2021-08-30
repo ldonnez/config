@@ -63,7 +63,7 @@ If ($config.configureVim) {
   npm install typescript typescript-language-server vscode-langservers-extracted eslint_d yaml-language-server prettier -g
 
   Write-Host "***************** INSTALL efm-language-server with go get *****************" -ForegroundColor White -BackgroundColor Black
-  go get github.com/mattn/efm-langserver
+  go install github.com/mattn/efm-langserver@latest
 
   Write-Host "***************** INSTALL stylua with cargo *****************" -ForegroundColor White -BackgroundColor Black
   cargo install stylua
