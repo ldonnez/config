@@ -10,5 +10,5 @@
   "configureVifm": true,
   "configureSsh": true,
   "configureWsl": true,
-  "extraPackagesToInstallWithChocolatey": ["bat", "fzf", "nodejs", "ag", "jq", "golang", "llvm", "mingw", "rustup.install", "python", "sqlite"]
+  "extraPackagesToInstallWithChocolatey": ["bat", "fzf", "nodejs", "ag", "jq", "golang", "llvm", "mingw", "rustup.install", "python", "sqlite", "microsoft-windows-terminal"]
 }
