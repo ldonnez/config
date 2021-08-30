@@ -7,6 +7,10 @@ $extraPackagesToInstallWithChocolatey = $config.extraPackagesToInstallWithChocol
 $installDotfiles = $config.installDotfiles
 $privateDotfilesPath = $config.privateDotfilesPath
 
+Write-Host "***************** ENABLE DEVELOPER MODE  *****************"  -ForegroundColor White -BackgroundColor Black
+REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" /t REG_DWORD /f /v "AllowDevelopmentWithoutDevLicense" /d "1"
+DISM /Online /Add-Capability /CapabilityName:Tools.DeveloperMode.Core~~~~0.0.1.0
+
 # Install chocolatey
 Write-Host "***************** INSTALL THE CHOCOLATEY PACKAGE MANAGER *****************"  -ForegroundColor White -BackgroundColor Black
 Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
