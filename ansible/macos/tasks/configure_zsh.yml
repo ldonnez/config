@@ -18,3 +18,9 @@
     state: touch
   tags:
     - zsh
+
+- name: Set maxfiles limit to a higher value
+  shell: sudo launchctl limit maxfiles 10240 unlimited
+  become: yes
+  tags:
+    - zsh
