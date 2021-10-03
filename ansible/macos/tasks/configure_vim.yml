@@ -84,8 +84,14 @@
     - "typescript-language-server"
     - "vscode-langservers-extracted"
     - "eslint_d"
-    - "yaml-language-server"
     - "prettier"
+  tags:
+    - vim
+
+- name: Install language servers & linters with yarn
+  npm: name={{ item }} global=yes
+  loop:
+    - "yaml-language-server"
   tags:
     - vim
 
