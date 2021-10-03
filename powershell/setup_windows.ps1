@@ -43,6 +43,11 @@ If ($config.configureGit) {
   New-Item -ItemType SymbolicLink -f -Path "$home\.gitignore_global" -Target "$dotfilesPath\.gitignore_global"
 }
 
+If ($config.configureYarn) {
+  Write-Host "***************** INSTALL YARN VIA NPM *****************" -ForegroundColor White -BackgroundColor Black
+  npm -g install yarn
+}
+
 If ($config.configureVim) {
   Write-Host "***************** INSTALL VIM *****************" -ForegroundColor White -BackgroundColor Black
   choco install vim -y

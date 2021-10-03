@@ -4,6 +4,7 @@
   "privateDotfilesPath": "C:/Users/lenny/SynologyDrive/private",
   "installDotfiles": true,
   "configureGit": true,
+  "configureYarn": true,
   "configureVim": true,
   "configureAlacritty": true,
   "configureAg": true,

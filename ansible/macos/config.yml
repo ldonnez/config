@@ -11,6 +11,7 @@ private_dotfiles_path: "~/SynologyDrive/private"
 install_dotfiles: yes
 install_rubies: yes
 install_extra_packages_with_homebrew: yes
+install_yarn: yes
 configure_git: yes
 configure_bat: yes
 configure_zsh: yes

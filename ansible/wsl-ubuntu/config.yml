@@ -11,6 +11,7 @@ private_dotfiles_path: "~/private"
 install_dotfiles: yes
 install_extra_packages_with_apt: yes
 install_nodejs: yes
+install_yarn: yes
 configure_git: yes
 configure_bat: yes
 configure_zsh: yes
@@ -34,7 +35,6 @@ extra_packages_to_install_with_apt:
   - fzf
   - bat
   - mosh
-  - yarn
   - imagemagick
   - jq
   - watchman
