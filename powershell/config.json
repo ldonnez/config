@@ -23,8 +23,6 @@
     "rustup.install",
     "python",
     "sqlite",
-    "wsl2",
-    "wsl-ubuntu-2004",
     "microsoft-windows-terminal",
     "winrar"
   ]

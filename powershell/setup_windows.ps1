@@ -121,4 +121,10 @@ If ($config.configureWsl) {
 
   Write-Host "***************** SET WSL2 AS DEFAULT *****************" -ForegroundColor White -BackgroundColor Black
   wsl --set-default-version 2
+
+  Write-Host "***************** INSTALL WSL2 *****************" -ForegroundColor White -BackgroundColor Black
+  choco install wsl2 -y
+
+  Write-Host "***************** INSTALL WSL UBUNTU 20.04 *****************" -ForegroundColor White -BackgroundColor Black
+  choco install wsl-ubuntu-2004 -y
 }
