@@ -89,7 +89,7 @@
     - vim
 
 - name: Install language servers & linters with yarn
-  npm: name={{ item }} global=yes
+  yarn: name={{ item }} global=yes
   loop:
     - "yaml-language-server"
   tags:
