@@ -108,3 +108,8 @@
     - "stylua"
   tags:
     - vim
+
+- name: Install neovim plugins
+  shell: nvim --headless -c "autocmd User PackerComplete quitall" -c "lua require('packer').sync()"
+  tags:
+    - vim
