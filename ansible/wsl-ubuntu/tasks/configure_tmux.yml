@@ -22,3 +22,8 @@
     - { src: "{{ dotfiles_directory_path }}/.tmux.conf", dest: "~/.tmux.conf" }
   tags:
     - tmux
+
+- name: Install tmux plugins
+  shell: ~/.tmux/plugins/tpm/bin/install_plugins
+  tags:
+    - tmux
