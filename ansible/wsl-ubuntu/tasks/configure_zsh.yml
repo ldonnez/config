@@ -31,20 +31,6 @@
   tags:
     - zsh
 
-- name: Clone zsh-z into ~/.zsh/plugins
-  git:
-    repo: "https://github.com/agkozak/zsh-z"
-    dest: "~/.zsh/plugins/zsh-z"
-  tags:
-    - zsh
-
-- name: Clone fzf-tab into ~/.zsh/plugins
-  git:
-    repo: "https://github.com/Aloxaf/fzf-tab"
-    dest: "~/.zsh/plugins/fzf-tab"
-  tags:
-    - zsh
-
 - name: Don't show last login message when opening a terminal
   file:
     path: "~/.hushlogin"
