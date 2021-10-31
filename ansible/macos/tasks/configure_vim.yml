@@ -95,13 +95,6 @@
   tags:
     - vim
 
-- name: Install language servers with homebrew
-  homebrew: name={{ item }} state=present
-  loop:
-    - "efm-langserver"
-  tags:
-    - vim
-
 - name: Install language servers & linters with cargo
   shell: cargo install {{ item }}
   loop:

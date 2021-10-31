@@ -70,9 +70,6 @@ If ($config.configureVim) {
   Write-Host "***************** INSTALL language servers with yarn *****************" -ForegroundColor White -BackgroundColor Black
   yarn global add yaml-language-server -g
 
-  Write-Host "***************** INSTALL efm-language-server with go get *****************" -ForegroundColor White -BackgroundColor Black
-  go install github.com/mattn/efm-langserver@latest
-
   Write-Host "***************** INSTALL stylua with cargo *****************" -ForegroundColor White -BackgroundColor Black
   cargo install stylua
 
