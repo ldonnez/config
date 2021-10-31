@@ -65,7 +65,7 @@ If ($config.configureVim) {
   New-Item -ItemType Junction -f -Path "$home\AppData\Local\nvim\lua" -Target "$dotfilesPath\.config\nvim\lua"
 
   Write-Host "***************** INSTALL language servers with npm *****************" -ForegroundColor White -BackgroundColor Black
-  npm install typescript typescript-language-server vscode-langservers-extracted eslint_d prettier -g
+  npm install typescript typescript-language-server vscode-langservers-extracted eslint_d @fsouza/prettierd -g
 
   Write-Host "***************** INSTALL language servers with yarn *****************" -ForegroundColor White -BackgroundColor Black
   yarn global add yaml-language-server -g

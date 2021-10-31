@@ -84,7 +84,7 @@
     - "typescript-language-server"
     - "vscode-langservers-extracted"
     - "eslint_d"
-    - "prettier"
+    - "@fsouza/prettierd"
   tags:
     - vim
 
