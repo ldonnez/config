@@ -1,0 +1,9 @@
+- name: Install asdf
+  git: repo='https://github.com/asdf-vm/asdf.git' dest=~/.asdf version="v0.8.1" force=yes
+  tags:
+    - asdf
+
+- name: Install nodejs asdf plugin
+  shell: ~/.asdf/bin/asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
+  tags:
+    - asdf

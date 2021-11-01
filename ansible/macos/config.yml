@@ -15,6 +15,7 @@ install_yarn: yes
 configure_git: yes
 configure_bat: yes
 configure_zsh: yes
+configure_asdf: yes
 configure_vim: yes
 configure_vifm: yes
 configure_alacritty: yes # Make sure your private_dotfiles_path is correctly configured for this one!
@@ -27,7 +28,6 @@ configure_redis: yes # Make sure your private_dotfiles_path is correctly configu
 configure_gnugpg: yes # Make sure your private_dotfiles_path is correctly configured for this one!
 configure_secrets: yes
 configure_mutt: yes
-configure_nvm: yes
 configure_spotify: yes
 
 # Tell me what extra's to install with homebrew

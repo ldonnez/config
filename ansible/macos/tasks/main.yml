@@ -4,6 +4,7 @@
 - include: configure_git.yml
 - include: configure_bat.yml
 - include: configure_zsh.yml
+- include: configure_asdf.yml
 - include: configure_vim.yml
 - include: configure_vifm.yml
 - include: configure_alacritty.yml
@@ -16,5 +17,4 @@
 - include: configure_gnugpg.yml
 - include: configure_secrets.yml
 - include: configure_mutt.yml
-- include: configure_nvm.yml
 - include: configure_spotify.yml
