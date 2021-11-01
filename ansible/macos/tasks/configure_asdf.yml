@@ -4,6 +4,37 @@
     - asdf
 
 - name: Install nodejs asdf plugin
+  ignore_errors: yes
   shell: ~/.asdf/bin/asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
+  tags:
+    - asdf
+
+- name: Install ruby asdf plugin
+  ignore_errors: yes
+  shell: ~/.asdf/bin/asdf plugin add ruby https://github.com/asdf-vm/asdf-ruby.git
+  tags:
+    - asdf
+
+- name: Install latest nodejs
+  ignore_errors: yes
+  shell: ~/.asdf/bin/asdf install nodejs latest
+  tags:
+    - asdf
+
+- name: set latest nodejs global
+  ignore_errors: yes
+  shell: ~/.asdf/bin/asdf global nodejs latest
+  tags:
+    - asdf
+
+- name: install latest ruby
+  ignore_errors: yes
+  shell: ~/.asdf/bin/asdf install ruby latest
+  tags:
+    - asdf
+
+- name: set latest ruby global
+  ignore_errors: yes
+  shell: ~/.asdf/bin/asdf global ruby latest
   tags:
     - asdf
