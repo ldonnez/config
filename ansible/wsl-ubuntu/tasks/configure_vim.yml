@@ -110,4 +110,20 @@
 - name: Install neovim plugins
   shell: nvim --headless -c "autocmd User PackerComplete quitall" -c "lua require('packer').sync()"
   tags:
+    - update
     - vim
+
+- name: Upgrade pip3
+  shell: pip3 install --upgrade pip
+  tags:
+    - update
+
+- name: Upgrade neovim pip
+  shell: pip3 install neovim --upgrade
+  tags:
+    - update
+
+- name: Upgrade pynvim
+  shell: pip3 install pynvim --upgrade
+  tags:
+    - update

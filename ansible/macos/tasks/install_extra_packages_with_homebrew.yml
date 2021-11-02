@@ -3,3 +3,9 @@
   loop: "{{ extra_packages_to_install_with_homebrew }}"
   tags:
     - packages
+
+- name: Update packages installed with homebrew
+  homebrew: update_homebrew=yes upgrade_all=yes
+  tags:
+    - update
+

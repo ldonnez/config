@@ -60,3 +60,28 @@
     - { src: "{{ dotfiles_directory_path }}/.asdfrc", dest: "~/.asdfrc" }
   tags:
     - asdf
+
+- name: Update asdf
+  shell: ~/.asdf/bin/asdf update
+  tags:
+    - update
+
+- name: Update asdf plugins
+  shell: ~/.asdf/bin/asdf plugin update --all
+  tags:
+    - update
+
+- name: Update global npm packages
+  shell: npm update -g
+  tags:
+    - update
+
+- name: Update global yarn packages
+  shell: yarn global upgrade
+  tags:
+    - update
+
+- name: Update global gems
+  shell: gem update
+  tags:
+    - update

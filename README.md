@@ -44,6 +44,13 @@ extra_packages_to_install_with_homebrew:
   - <package-name>
 ```
 
+### Update macOS packages
+
+Run inside `ansible/macos`
+```
+  ansible-playbook setup_macos.yml --tags=update
+```
+
 ## Setup Windows
 
 Make sure to check the config file in `powershell/config.json`!
@@ -113,4 +120,11 @@ configure_mutt: yes
 
 extra_packages_to_install_with_apt:
   - <package-name>
+```
+
+### Update WSL2 packages
+
+Run inside `ansible/wsl-ubuntu`
+```
+  ansible-playbook setup_wsl_ubuntu.yml --tags=update
 ```

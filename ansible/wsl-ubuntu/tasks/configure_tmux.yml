@@ -27,3 +27,8 @@
   shell: ~/.tmux/plugins/tpm/bin/install_plugins
   tags:
     - tmux
+
+- name: Update tmux plugins
+  shell: ~/.tmux/plugins/tpm/bin/update_plugins all
+  tags:
+    - update

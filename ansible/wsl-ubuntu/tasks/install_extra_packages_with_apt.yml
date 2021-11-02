@@ -4,3 +4,11 @@
   loop: "{{ extra_packages_to_install_with_apt }}"
   tags:
     - packages
+
+- name: Update and upgrade apt packages
+  become: yes
+  apt:
+    update_cache: yes
+    upgrade: yes
+  tags:
+    - update

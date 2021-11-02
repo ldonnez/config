@@ -72,7 +72,6 @@
     - vim
 
 - name: Install neovim gem
-  become_user: lenny
   gem: name="neovim" state=latest
   tags:
     - vim
@@ -105,4 +104,20 @@
 - name: Install neovim plugins
   shell: nvim --headless -c "autocmd User PackerComplete quitall" -c "lua require('packer').sync()"
   tags:
+    - update
     - vim
+
+- name: Upgrade pip2 && pip3
+  shell: pip2 install --upgrade pip && pip3 install --upgrade pip
+  tags:
+    - update
+
+- name: Upgrade neovim pip
+  shell: pip2 install neovim --upgrade && pip3 install neovim --upgrade
+  tags:
+    - update
+
+- name: Upgrade pynvim
+  shell: pip2 install pynvim --upgrade && pip3 install pynvim --upgrade
+  tags:
+    - update

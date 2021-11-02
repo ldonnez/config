@@ -37,3 +37,13 @@
     state: touch
   tags:
     - zsh
+
+- name: Update zsh-z plugin
+  git: repo='https://github.com/agkozak/zsh-z' dest=~/.zsh/plugins/zsh-z version="master" update=yes
+  tags:
+    - update
+
+- name: Update fzf-tab plugin
+  git: repo='https://github.com/Aloxaf/fzf-tab' dest=~/.zsh/plugins/fzf-tab version="master" update=yes
+  tags:
+    - update
