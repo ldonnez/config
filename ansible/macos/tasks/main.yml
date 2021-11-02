@@ -1,5 +1,4 @@
 - include: install_extra_packages_with_homebrew.yml
-- include: install_yarn.yml
 - include: configure_git.yml
 - include: configure_bat.yml
 - include: configure_zsh.yml

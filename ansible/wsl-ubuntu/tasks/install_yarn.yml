@@ -1,4 +1,0 @@
-- name: Install yarn package manager
-  npm: name=yarn global=yes
-  tags:
-    - yarn

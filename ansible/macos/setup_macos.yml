@@ -11,9 +11,6 @@
     - import_tasks: tasks/install_extra_packages_with_homebrew.yml
       when: install_extra_packages_with_homebrew
 
-    - import_tasks: tasks/install_yarn.yml
-      when: install_yarn
-
     - import_tasks: tasks/configure_git.yml
       when: configure_git
 

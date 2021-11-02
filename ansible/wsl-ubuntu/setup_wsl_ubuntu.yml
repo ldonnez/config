@@ -17,9 +17,6 @@
     - import_tasks: tasks/install_nodejs.yml
       when: install_nodejs
 
-    - import_tasks: tasks/install_yarn.yml
-      when: install_yarn
-
     - import_tasks: tasks/configure_zsh.yml
       when: configure_zsh
 
