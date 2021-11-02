@@ -70,6 +70,11 @@
   tags:
     - vim
 
+- name: Install neovim gem
+  gem: name="neovim" state=latest
+  tags:
+    - vim
+
 - name: Install latexmk with apt
   apt: name=latexmk state=present
   become: yes
