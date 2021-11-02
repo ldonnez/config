@@ -43,3 +43,14 @@
   npm:  name=yarn global=yes
   tags:
     - asdf
+
+- name: Set yarn bin to ~/.yarn
+  shell: yarn config set prefix ~/.yarn
+  tags:
+    - asdf
+
+- name: Set npm bin to ~/.npm
+  shell: npm config set prefix ~/.npm
+  tags:
+    - asdf
+
