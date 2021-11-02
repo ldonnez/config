@@ -38,3 +38,8 @@
   shell: ~/.asdf/bin/asdf global ruby latest
   tags:
     - asdf
+
+- name: Install yarn
+  npm:  name=yarn global=yes
+  tags:
+    - asdf
