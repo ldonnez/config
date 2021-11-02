@@ -9,7 +9,6 @@ private_dotfiles_path: "~/SynologyDrive/private"
 
 # Tell me what to do
 install_dotfiles: yes
-install_rubies: yes
 install_extra_packages_with_homebrew: yes
 install_yarn: yes
 configure_git: yes
@@ -36,9 +35,7 @@ extra_packages_to_install_with_homebrew:
   - htop
   - fzf
   - bat
-  - heroku
   - mosh
-  - node
   - yarn
   - imagemagick
   - jq

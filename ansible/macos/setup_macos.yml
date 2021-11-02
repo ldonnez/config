@@ -8,9 +8,6 @@
     - import_tasks: tasks/install_dotfiles.yml
       when: install_dotfiles
 
-    - import_tasks: tasks/install_rubies.yml
-      when: install_rubies
-
     - import_tasks: tasks/install_extra_packages_with_homebrew.yml
       when: install_extra_packages_with_homebrew
 

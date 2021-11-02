@@ -1,4 +1,3 @@
-- include: install_rubies.yml
 - include: install_extra_packages_with_homebrew.yml
 - include: install_yarn.yml
 - include: configure_git.yml

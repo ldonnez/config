@@ -24,7 +24,6 @@ dotfiles_repo: "git@github.com:ldonnez/dotfiles.git"
 dotfiles_directory_path: <path>
 private_dotfiles_path: <path>
 
-install_rubies: yes
 install_extra_packages_with_homebrew: yes
 configure_git: yes
 configure_bat: yes
