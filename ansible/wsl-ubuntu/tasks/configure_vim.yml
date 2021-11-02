@@ -57,12 +57,6 @@
     - vim
 
 - pip:
-    name: neovim-remote
-    executable: pip3
-  tags:
-    - vim
-
-- pip:
     name: pynvim
     executable: pip3
   tags:
