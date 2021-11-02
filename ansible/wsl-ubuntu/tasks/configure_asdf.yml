@@ -22,25 +22,21 @@
     - asdf
 
 - name: Install latest nodejs
-  ignore_errors: yes
   shell: ~/.asdf/bin/asdf install nodejs latest
   tags:
     - asdf
 
 - name: set latest nodejs global
-  ignore_errors: yes
   shell: ~/.asdf/bin/asdf global nodejs latest
   tags:
     - asdf
 
 - name: install latest ruby
-  ignore_errors: yes
   shell: ~/.asdf/bin/asdf install ruby latest
   tags:
     - asdf
 
 - name: set latest ruby global
-  ignore_errors: yes
   shell: ~/.asdf/bin/asdf global ruby latest
   tags:
     - asdf
