@@ -15,6 +15,12 @@
   tags:
     - asdf
 
+- name: Install python asdf plugin
+  ignore_errors: yes
+  shell: ~/.asdf/bin/asdf plugin add python
+  tags:
+    - asdf
+
 - name: Install latest nodejs
   shell: ~/.asdf/bin/asdf install nodejs latest
   tags:
@@ -32,6 +38,21 @@
 
 - name: set latest ruby global
   shell: ~/.asdf/bin/asdf global ruby latest
+  tags:
+    - asdf
+
+- name: install latest python3
+  shell: ~/.asdf/bin/asdf install python latest
+  tags:
+    - asdf
+
+- name: install latest python2
+  shell: ~/.asdf/bin/asdf install python 2.7.18
+  tags:
+    - asdf
+
+- name: set latest python2 & python3 global
+  shell: ~/.asdf/bin/asdf global python latest 2.7.18
   tags:
     - asdf
 
@@ -79,5 +100,10 @@
 
 - name: Update global gems
   shell: gem update
+  tags:
+    - update
+
+- name: Upgrade pip2 && pip3
+  shell: pip2 install --upgrade pip && pip3 install --upgrade pip
   tags:
     - update

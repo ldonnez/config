@@ -87,3 +87,8 @@
   shell: gem update
   tags:
     - update
+
+- name: Upgrade pip2 && pip3
+  shell: pip2 install --upgrade pip && pip3 install --upgrade pip
+  tags:
+    - update

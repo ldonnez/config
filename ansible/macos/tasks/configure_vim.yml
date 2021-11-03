@@ -107,10 +107,6 @@
     - update
     - vim
 
-- name: Upgrade pip2 && pip3
-  shell: pip2 install --upgrade pip && pip3 install --upgrade pip
-  tags:
-    - update
 
 - name: Upgrade neovim pip
   shell: pip2 install neovim --upgrade && pip3 install neovim --upgrade

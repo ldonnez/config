@@ -39,7 +39,6 @@ extra_packages_to_install_with_homebrew:
   - jq
   - go
   - reattach-to-user-namespace
-  - python3
   - watchman
   - luarocks
   - tree
