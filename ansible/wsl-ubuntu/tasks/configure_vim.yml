@@ -51,8 +51,7 @@
     - vim
 
 - pip:
-    name: neovim
-    executable: pip3
+    name: pynvim
   tags:
     - vim
 
@@ -112,13 +111,7 @@
     - update
     - vim
 
-
-- name: Upgrade neovim pip
-  shell: pip3 install neovim --upgrade
-  tags:
-    - update
-
 - name: Upgrade pynvim
-  shell: pip3 install pynvim --upgrade
+  shell: pip2 install pynvim --upgrade && pip3 install pynvim --upgrade
   tags:
     - update
