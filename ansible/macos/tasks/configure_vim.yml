@@ -2,6 +2,7 @@
   homebrew: name={{ item }} state=present
   loop:
     - neovim
+    - neovim-qt
     - vim
   tags:
     - vim
