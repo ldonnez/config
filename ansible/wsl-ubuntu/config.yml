@@ -19,7 +19,7 @@ configure_vifm: yes
 configure_tmux: yes
 configure_ag: yes
 configure_ssh: yes # Make sure your private_dotfiles_path is correctly configured for this one!
-configure_postgresql: yes
+configure_pgcli: yes
 configure_redis: yes
 configure_gnugpg: yes # Make sure your private_dotfiles_path is correctly configured for this one!
 configure_secrets: yes # Make sure your private_dotfiles_path is correctly configured for this one!
@@ -38,7 +38,6 @@ extra_packages_to_install_with_apt:
   - watchman
   - luarocks
   - tree
-  - pgcli
   - golang-go
   - ninja-build
   - mplayer

@@ -21,7 +21,7 @@ configure_kitty: yes
 configure_tmux: yes
 configure_ag: yes
 configure_ssh: yes
-configure_postgresql: yes # Make sure your private_dotfiles_path is correctly configured for this one!
+configure_pgcli: yes # Make sure your private_dotfiles_path is correctly configured for this one!
 configure_redis: yes # Make sure your private_dotfiles_path is correctly configured for this one!
 configure_gnugpg: yes # Make sure your private_dotfiles_path is correctly configured for this one!
 configure_secrets: yes
@@ -42,7 +42,6 @@ extra_packages_to_install_with_homebrew:
   - watchman
   - luarocks
   - tree
-  - pgcli
   - ninja
   - mplayer
   - rust

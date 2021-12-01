@@ -35,8 +35,8 @@
     - import_tasks: tasks/configure_ag.yml
       when: configure_ag
 
-    - import_tasks: tasks/configure_postgresql.yml
-      when: configure_postgresql
+    - import_tasks: tasks/configure_pgcli.yml
+      when: configure_pgcli
 
     - import_tasks: tasks/configure_redis.yml
       when: configure_redis
