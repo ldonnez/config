@@ -9,15 +9,31 @@
   tags:
     - asdf
 
-- name: Install libssl-dev ruby dependency
+- name: Install ruby dependencies
   become: yes
-  apt : name=libssl-dev state=present
+  apt: name={{ item }} state=present
+  loop:
+    - libssl-dev
   tags:
     - asdf
 
 - name: Install ruby asdf plugin
   ignore_errors: yes
   shell: ~/.asdf/bin/asdf plugin add ruby https://github.com/asdf-vm/asdf-ruby.git
+  tags:
+    - asdf
+
+- name: Install python dependencies
+  become: yes
+  apt: name={{ item }} state=present
+  loop:
+    - libffi-dev
+  tags:
+    - asdf
+
+- name: Install python asdf plugin
+  ignore_errors: yes
+  shell: ~/.asdf/bin/asdf plugin add python
   tags:
     - asdf
 
@@ -41,8 +57,23 @@
   tags:
     - asdf
 
+- name: install latest python3
+  shell: ~/.asdf/bin/asdf install python latest
+  tags:
+    - asdf
+
+- name: install latest python2
+  shell: ~/.asdf/bin/asdf install python 2.7.18
+  tags:
+    - asdf
+
+- name: set latest python2 & python3 global
+  shell: ~/.asdf/bin/asdf global python latest 2.7.18
+  tags:
+    - asdf
+
 - name: Install yarn
-  npm:  name=yarn global=yes
+  npm: name=yarn global=yes
   tags:
     - asdf
 
@@ -84,7 +115,8 @@
     - update
 
 - name: Update global gems
-  shell: gem update
+  become_user: lenny
+  command: zsh -lc "gem update"
   tags:
     - update
 
