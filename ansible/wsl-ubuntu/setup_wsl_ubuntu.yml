@@ -38,9 +38,6 @@
     - import_tasks: tasks/configure_pgcli.yml
       when: configure_pgcli
 
-    - import_tasks: tasks/configure_redis.yml
-      when: configure_redis
-
     - import_tasks: tasks/configure_gnugpg.yml
       when: configure_gnugpg
 
