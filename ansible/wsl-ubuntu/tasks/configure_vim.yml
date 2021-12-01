@@ -52,6 +52,7 @@
 
 - pip:
     name: pynvim
+    executable: pip2
   tags:
     - vim
 
@@ -70,7 +71,8 @@
     - vim
 
 - name: Install neovim gem
-  gem: name="neovim" state=latest
+  become_user: lenny
+  command: zsh -lc "gem install neovim"
   tags:
     - vim
 
@@ -112,6 +114,6 @@
     - vim
 
 - name: Upgrade pynvim
-  shell: pip2 install pynvim --upgrade && pip3 install pynvim --upgrade
+  shell: pip install pynvim --upgrade
   tags:
     - update
