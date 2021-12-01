@@ -99,7 +99,8 @@
     - update
 
 - name: Update global gems
-  shell: gem update
+  become_user: lenny
+  command: zsh -lc "gem update"
   tags:
     - update
 
