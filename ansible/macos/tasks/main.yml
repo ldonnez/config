@@ -9,6 +9,8 @@
 - include: configure_kitty.yml
 - include: configure_tmux.yml
 - include: configure_ag.yml
+- include: configure_fd.yml
+- include: configure_rg.yml
 - include: configure_ssh.yml
 - include: configure_pgcli.yml
 - include: configure_gnugpg.yml

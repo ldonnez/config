@@ -8,6 +8,8 @@
   "configureVim": true,
   "configureAlacritty": true,
   "configureAg": true,
+  "configureFd": true,
+  "configureRg": true,
   "configureVifm": true,
   "configureSsh": true,
   "configureWsl": true,

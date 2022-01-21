@@ -20,6 +20,8 @@ configure_alacritty: yes # Make sure your private_dotfiles_path is correctly con
 configure_kitty: yes
 configure_tmux: yes
 configure_ag: yes
+configure_fd: yes
+configure_rg: yes
 configure_ssh: yes
 configure_pgcli: yes # Make sure your private_dotfiles_path is correctly configured for this one!
 configure_gnugpg: yes # Make sure your private_dotfiles_path is correctly configured for this one!

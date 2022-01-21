@@ -1,0 +1,11 @@
+- name: Install rg with homebrew
+  homebrew: name=rg state=present
+  tags:
+    - rg
+
+- name: Symlink ~/.rgignore from source {{ dotfiles_directory_path }}/.rgignore
+  file: src={{ item.src }} dest={{ item.dest }} state=link
+  loop:
+    - { src: "{{ dotfiles_directory_path }}/.agignore", dest: "~/.rgignore" }
+  tags:
+    - rg

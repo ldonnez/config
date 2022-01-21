@@ -93,6 +93,22 @@ If ($config.configureAg) {
   New-Item -ItemType SymbolicLink -f -Path "$home\.agignore" -Target "$dotfilesPath\.agignore"
 }
 
+If ($config.configureFd) {
+  Write-Host "***************** INSTALL FD *****************" -ForegroundColor White -BackgroundColor Black
+  choco install fd -y
+
+  Write-Host "***************** SYMLINK $home\.fdignore WITH $dotfilesPath\.agignore *****************" -ForegroundColor White -BackgroundColor Black
+  New-Item -ItemType SymbolicLink -f -Path "$home\.fdignore" -Target "$dotfilesPath\.agignore"
+}
+
+If ($config.configureRg) {
+  Write-Host "***************** INSTALL RG *****************" -ForegroundColor White -BackgroundColor Black
+  choco install ripgrep -y
+
+  Write-Host "***************** SYMLINK $home\.fdignore WITH $dotfilesPath\.agignore *****************" -ForegroundColor White -BackgroundColor Black
+  New-Item -ItemType SymbolicLink -f -Path "$home\.rgignore" -Target "$dotfilesPath\.agignore"
+}
+
 If ($config.configureAlacritty) {
   Write-Host "***************** INSTALL ALACRITTY *****************" -ForegroundColor White -BackgroundColor Black
   choco install alacritty -y

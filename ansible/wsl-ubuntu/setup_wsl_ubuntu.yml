@@ -35,6 +35,12 @@
     - import_tasks: tasks/configure_ag.yml
       when: configure_ag
 
+    - import_tasks: tasks/configure_fd.yml
+      when: configure_fd
+
+    - import_tasks: tasks/configure_rg.yml
+      when: configure_rg
+
     - import_tasks: tasks/configure_pgcli.yml
       when: configure_pgcli
 
