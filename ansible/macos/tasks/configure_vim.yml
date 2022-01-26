@@ -93,7 +93,7 @@
     - vim
     - update
 
-- name: Install neovim plugins
+- name: Install/Update neovim plugins
   shell: nvim --headless -c "autocmd User PackerComplete quitall" -c "lua require('packer').sync()"
   tags:
     - update
