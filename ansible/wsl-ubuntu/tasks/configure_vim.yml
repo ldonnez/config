@@ -100,12 +100,13 @@
   tags:
     - vim
 
-- name: Install language servers & linters with cargo
+- name: Install/Update language servers & linters with cargo
   shell: cargo install {{ item }}
   loop:
     - "stylua"
   tags:
     - vim
+    - update
 
 - name: Install neovim plugins
   shell: nvim --headless -c "autocmd User PackerComplete quitall" -c "lua require('packer').sync()"
