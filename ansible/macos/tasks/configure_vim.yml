@@ -45,11 +45,6 @@
 
 - pip:
     name: pynvim
-  tags:
-    - vim
-
-- pip:
-    name: pynvim
     executable: pip3
   tags:
     - vim
@@ -100,6 +95,6 @@
     - vim
 
 - name: Upgrade pynvim
-  shell: pip2 install pynvim --upgrade && pip3 install pynvim --upgrade
+  shell: pip3 install pynvim --upgrade
   tags:
     - update

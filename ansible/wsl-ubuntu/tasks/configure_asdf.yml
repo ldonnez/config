@@ -62,13 +62,8 @@
   tags:
     - asdf
 
-- name: install latest python2
-  shell: ~/.asdf/bin/asdf install python 2.7.18
-  tags:
-    - asdf
-
-- name: set latest python2 & python3 global
-  shell: ~/.asdf/bin/asdf global python latest 2.7.18
+- name: set latest python3 global
+  shell: ~/.asdf/bin/asdf global python latest
   tags:
     - asdf
 
@@ -120,7 +115,7 @@
   tags:
     - update
 
-- name: Upgrade pip2 && pip3
-  shell: pip2 install --upgrade pip && pip3 install --upgrade pip
+- name: Upgrade pip3
+  shell: pip3 install --upgrade pip
   tags:
     - update

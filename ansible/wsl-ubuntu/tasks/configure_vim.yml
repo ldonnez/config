@@ -52,12 +52,6 @@
 
 - pip:
     name: pynvim
-    executable: pip2
-  tags:
-    - vim
-
-- pip:
-    name: pynvim
     executable: pip3
   tags:
     - vim
