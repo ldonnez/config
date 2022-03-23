@@ -111,7 +111,7 @@
 
 - name: Update global gems
   become_user: lenny
-  command: zsh -lc "gem update"
+  command: "gem update"
   tags:
     - update
 
