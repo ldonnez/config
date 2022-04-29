@@ -14,7 +14,7 @@
 
 - name: Set maxfiles limit to a higher value
   shell: sudo launchctl limit maxfiles 10240 unlimited
-  become: yes
+  become: true
   tags:
     - zsh
 
