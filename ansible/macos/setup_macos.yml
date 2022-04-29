@@ -50,8 +50,8 @@
     - import_tasks: tasks/configure_ssh.yml
       when: configure_ssh
 
-    - import_tasks: tasks/configure_pgcli.yml
-      when: configure_pgcli
+    - import_tasks: tasks/configure_libpq.yml
+      when: configure_libpq
 
     - import_tasks: tasks/configure_gnugpg.yml
       when: configure_gnugpg

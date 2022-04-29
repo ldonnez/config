@@ -23,7 +23,7 @@ configure_ag: yes
 configure_fd: yes
 configure_rg: yes
 configure_ssh: yes
-configure_pgcli: yes # Make sure your private_dotfiles_path is correctly configured for this one!
+configure_libpq: yes # Make sure your private_dotfiles_path is correctly configured for this one!
 configure_gnugpg: yes # Make sure your private_dotfiles_path is correctly configured for this one!
 configure_secrets: yes
 configure_mutt: yes

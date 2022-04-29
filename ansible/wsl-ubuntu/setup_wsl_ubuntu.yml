@@ -41,8 +41,8 @@
     - import_tasks: tasks/configure_rg.yml
       when: configure_rg
 
-    - import_tasks: tasks/configure_pgcli.yml
-      when: configure_pgcli
+    - import_tasks: tasks/configure_libpq.yml
+      when: configure_libpq
 
     - import_tasks: tasks/configure_gnugpg.yml
       when: configure_gnugpg

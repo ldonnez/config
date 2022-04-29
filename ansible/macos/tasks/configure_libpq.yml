@@ -1,11 +1,11 @@
-- name: Install pgcli
-  homebrew: name=postgresql state=present
+- name: Install libpq
+  homebrew: name=libpq state=present
   tags:
-    - pgcli
+    - libpq
 
 - name: Symlink ~/.psqlrc from source {{ dotfiles_directory_path }}/.psqlrc
   file: src={{ item.src }} dest={{ item.dest }} state=link
   loop:
     - { src: "{{ dotfiles_directory_path }}/.psqlrc", dest: "~/.psqlrc" }
   tags:
-    - pgcli
+    - libpq

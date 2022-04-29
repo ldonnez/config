@@ -12,7 +12,7 @@
 - include: configure_fd.yml
 - include: configure_rg.yml
 - include: configure_ssh.yml
-- include: configure_pgcli.yml
+- include: configure_libpq.yml
 - include: configure_gnugpg.yml
 - include: configure_secrets.yml
 - include: configure_mutt.yml
