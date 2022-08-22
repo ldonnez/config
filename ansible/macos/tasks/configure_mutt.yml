@@ -83,13 +83,13 @@
     - mutt
 
 - name: "Initial syncing of all mailboxes"
-  ignore_errors: yes
+  ignore_errors: true
   command: mbsync -a
   tags:
     - mutt
 
 - name: "Index mails with notmuch"
-  ignore_errors: yes
+  ignore_errors: true
   command: notmuch new
   tags:
     - mutt

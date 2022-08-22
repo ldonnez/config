@@ -1,6 +1,6 @@
 - name: Install alacritty with homebrew
   homebrew: name=alacritty state=present
-  ignore_errors: yes
+  ignore_errors: true
   tags:
     - alacritty
 

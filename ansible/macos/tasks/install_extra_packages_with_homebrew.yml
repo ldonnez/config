@@ -6,7 +6,7 @@
 
 - name: Update packages installed with homebrew
   homebrew: update_homebrew=yes upgrade_all=yes
-  ignore_errors: yes
+  ignore_errors: true
   tags:
     - update
 
