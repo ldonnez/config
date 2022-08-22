@@ -58,7 +58,7 @@
 
 - name: Install neovim gem
   become_user: lenny
-  command: zsh -lc "gem install neovim"
+  command: gem install neovim
   tags:
     - vim
 
