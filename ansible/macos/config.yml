@@ -45,4 +45,5 @@ extra_packages_to_install_with_homebrew:
   - ninja
   - mplayer
   - rust
+  - python
   - virtualenv
