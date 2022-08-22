@@ -61,6 +61,3 @@
 
     - import_tasks: tasks/configure_mutt.yml
       when: configure_mutt
-
-    - import_tasks: tasks/configure_spotify.yml
-      when: configure_spotify

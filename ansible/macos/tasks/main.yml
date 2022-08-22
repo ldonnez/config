@@ -16,4 +16,3 @@
 - include: configure_gnugpg.yml
 - include: configure_secrets.yml
 - include: configure_mutt.yml
-- include: configure_spotify.yml
