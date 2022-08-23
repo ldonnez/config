@@ -16,7 +16,6 @@ configure_zsh: yes
 configure_asdf: yes
 configure_vim: yes
 configure_vifm: yes
-configure_alacritty: yes # Make sure your private_dotfiles_path is correctly configured for this one!
 configure_kitty: yes
 configure_tmux: yes
 configure_ag: yes

@@ -29,9 +29,6 @@
     - import_tasks: tasks/configure_vifm.yml
       when: configure_vifm
 
-    - import_tasks: tasks/configure_alacritty.yml
-      when: configure_alacritty
-
     - import_tasks: tasks/configure_kitty.yml
       when: configure_kitty
 

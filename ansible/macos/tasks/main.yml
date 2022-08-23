@@ -5,7 +5,6 @@
 - include: configure_asdf.yml
 - include: configure_vim.yml
 - include: configure_vifm.yml
-- include: configure_alacritty.yml
 - include: configure_kitty.yml
 - include: configure_tmux.yml
 - include: configure_ag.yml
