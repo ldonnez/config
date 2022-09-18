@@ -1,0 +1,29 @@
+- name: Synchronization ~/dotfiles
+  ansible.posix.synchronize:
+    src: ~/dotfiles
+    dest: ~/SynologyDrive
+    recursive: true
+    delete: true
+    checksum: true
+  tags:
+    - backup
+
+- name: Synchronization ~/config
+  ansible.posix.synchronize:
+    src: ~/config
+    dest: ~/SynologyDrive
+    recursive: true
+    delete: true
+    checksum: true
+  tags:
+    - backup
+
+- name: Synchronization ~/org
+  ansible.posix.synchronize:
+    src: ~/org
+    dest: ~/SynologyDrive
+    recursive: true
+    delete: true
+    checksum: true
+  tags:
+    - backup
