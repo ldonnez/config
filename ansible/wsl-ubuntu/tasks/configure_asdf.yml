@@ -23,20 +23,6 @@
   tags:
     - asdf
 
-- name: Install python dependencies
-  become: yes
-  apt: name={{ item }} state=present
-  loop:
-    - libffi-dev
-  tags:
-    - asdf
-
-- name: Install python asdf plugin
-  ignore_errors: yes
-  shell: ~/.asdf/bin/asdf plugin add python
-  tags:
-    - asdf
-
 - name: Install latest nodejs
   shell: ~/.asdf/bin/asdf install nodejs latest
   tags:
@@ -54,16 +40,6 @@
 
 - name: set latest ruby global
   shell: ~/.asdf/bin/asdf global ruby latest
-  tags:
-    - asdf
-
-- name: install latest python3
-  shell: ~/.asdf/bin/asdf install python latest
-  tags:
-    - asdf
-
-- name: set latest python3 global
-  shell: ~/.asdf/bin/asdf global python latest
   tags:
     - asdf
 
