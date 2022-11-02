@@ -31,7 +31,6 @@ extra_packages_to_install_with_apt:
   - coreutils
   - build-essential
   - htop
-  - fzf
   - bat
   - mosh
   - imagemagick
