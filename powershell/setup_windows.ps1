@@ -58,6 +58,9 @@ If ($config.configureVim) {
   Write-Host "***************** SYMLINK $home\_vimrc WITH $dotfilesPath\.vimrc *****************" -ForegroundColor White -BackgroundColor Black
   New-Item -ItemType SymbolicLink -f -Path "$home\_vimrc" -Target "$dotfilesPath\.vimrc"
 
+  Write-Host "***************** SYMLINK $home\AppData\Local\nvim\ginit.vim WITH $dotfilesPath\.config\nvim\ginit.vim *****************" -ForegroundColor White -BackgroundColor Black
+  New-Item -ItemType SymbolicLink -f -Path "$home\AppData\Local\nvim\ginit.vim" -Target "$dotfilesPath\.config\nvim\ginit.vim"
+
   Write-Host "***************** SYMLINK $home\AppData\Local\nvim\init.lua WITH $dotfilesPath\.config\nvim\init.lua *****************" -ForegroundColor White -BackgroundColor Black
   New-Item -ItemType SymbolicLink -f -Path "$home\AppData\Local\nvim\init.lua" -Target "$dotfilesPath\.config\nvim\init.lua"
 

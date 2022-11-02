@@ -36,6 +36,13 @@
   tags:
     - vim
 
+- name: Symlink ~/.config/nvim/ginit.vim from source {{ dotfiles_directory_path }}/.config/nvim/ginit.vim
+  file: src={{ item.src }} dest={{ item.dest }} state=link
+  loop:
+    - { src: "{{ dotfiles_directory_path }}/.config/nvim/ginit.vim", dest: "~/.config/nvim/ginit.vim" }
+  tags:
+    - vim
+
 - name: Symlink ~/.config/nvim/lua from source {{ dotfiles_directory_path }}/.config/nvim/lua
   file: src={{ item.src }} dest={{ item.dest }} state=link
   loop:
