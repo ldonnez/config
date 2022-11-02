@@ -45,3 +45,4 @@ extra_packages_to_install_with_apt:
   - cargo
   - python3-venv
   - clang
+  - wslu
