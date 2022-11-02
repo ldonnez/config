@@ -42,5 +42,6 @@ extra_packages_to_install_with_apt:
   - ninja-build
   - mplayer
   - rustc
+  - cargo
   - python3-venv
   - clang
