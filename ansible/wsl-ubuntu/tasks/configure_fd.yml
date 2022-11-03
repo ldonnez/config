@@ -10,3 +10,9 @@
     - { src: "{{ dotfiles_directory_path }}/.agignore", dest: "~/.fdignore" }
   tags:
     - fd
+
+- name: Add link fdfind -> fd
+  shell: ln -sf $(which fdfind) ~/.local/bin/fd
+  tags:
+    - fd
+
