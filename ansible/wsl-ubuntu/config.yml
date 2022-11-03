@@ -7,6 +7,8 @@ dotfiles_directory_path: "~/dotfiles"
 # Tell me your where your your secrets lie
 private_dotfiles_path: "~/private"
 
+private_dotfiles_source: "/mnt/c/Users/lenny/SynologyDrive/private"
+
 # Tell me what to do
 install_dotfiles: yes
 install_extra_packages_with_apt: yes

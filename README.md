@@ -82,9 +82,9 @@ You can configure the following options in `powershell/config.json`
 }
 ```
 
-## Setup WSL2 (Ubuntu-20.04)
+## Setup WSL2 (Ubuntu-22.04)
 
-Make sure to check the config file in `ansible/wsl-ubuntu/config.yml` and configure the location of the `private_dotfiles_path` option
+Make sure to check the config file in `ansible/wsl-ubuntu/config.yml`, configure the location of the `private_dotfiles_path` and `private_dotfiles_source` option
 This path should be the location of your `.ssh`, `.gnupg` & `.secrets` directories.
 
 - Clone this repo, preferably in your home directory
