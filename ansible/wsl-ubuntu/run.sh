@@ -20,7 +20,4 @@ pip3 install ansible
 # install wsl config
 sudo cp files/wsl.conf /etc/
 
-echo "************************************************************************************************************"
-echo "Run ansible-playbook setup_wsl_ubuntu.yml -K in this dir after running wsl --shutdown in a Powershell shell"
-echo "************************************************************************************************************"
-sleep 5s
+$HOME/.local/bin/ansible-playbook setup_wsl_ubuntu.yml -K
