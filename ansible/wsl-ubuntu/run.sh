@@ -9,7 +9,7 @@ mkdir -p ~/.local/bin
 # update apt
 sudo apt update && sudo apt upgrade
 
-sudo apt install git python python-setuptools python3-setuptools python3-pip
+sudo apt install git python3-setuptools python3-pip
 
 # upgrade pip
 pip3 install --user --upgrade pip
