@@ -94,7 +94,9 @@
     - update
 
 - name: Update global npm packages
-  command: npm update -g
+  shell: . ~/.asdf/asdf.sh && npm update -g
+  args:
+    executable: /bin/bash
   tags:
     - update
 
@@ -107,7 +109,9 @@
 
 - name: Update global gems
   become_user: lenny
-  command: "gem update"
+  shell: . ~/.asdf/asdf.sh && gem update
+  args:
+    executable: /bin/bash
   tags:
     - update
 

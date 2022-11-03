@@ -66,16 +66,16 @@
     - vim
 
 - name: Install neovim npm package globally
-  become_user: "{{ ansible_user_id }}"
-  npm:
-    name: neovim
-    global: yes
+  shell: . ~/.asdf/asdf.sh && npm install neovim -g
+  args:
+    executable: /bin/bash
   tags:
     - vim
 
 - name: Install neovim gem
-  become_user: lenny
-  command: zsh -lc "gem install neovim"
+  shell: . ~/.asdf/asdf.sh && gem install neovim
+  args:
+    executable: /bin/bash
   tags:
     - vim
 
@@ -86,7 +86,9 @@
     - vim
 
 - name: Install language servers & linters with npm
-  npm: name={{ item }} global=yes
+  shell: . ~/.asdf/asdf.sh && npm install {{ item }} neovim -g
+  args:
+    executable: /bin/bash
   loop:
     - "typescript"
     - "typescript-language-server"
@@ -97,7 +99,9 @@
     - vim
 
 - name: Install language servers & linters with yarn
-  shell: ~/.npm/bin/yarn global add {{ item }}
+  shell: . ~/.asdf/asdf.sh && ~/.npm/bin/yarn global add {{ item }}
+  args:
+    executable: /bin/bash
   loop:
     - "yaml-language-server"
   tags:
