@@ -5,6 +5,9 @@
     - config.yml
 
   tasks:
+    - import_tasks: tasks/configure_wsl.yml
+      when: configure_wsl
+
     - import_tasks: tasks/install_dotfiles.yml
       when: install_dotfiles
 

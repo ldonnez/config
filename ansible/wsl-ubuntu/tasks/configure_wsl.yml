@@ -1,0 +1,5 @@
+- name: Install wsl configuraton file in /etc
+  become: true
+  copy: src=../files/wsl.conf dest=/etc/
+  tags:
+    - wsl
