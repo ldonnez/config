@@ -5,7 +5,9 @@
 
 - name: Install nodejs asdf plugin
   ignore_errors: true
-  shell: ~/.asdf/bin/asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
+  shell: . ~/.asdf/asdf.sh && asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
+  args:
+    executable: /bin/bash
   tags:
     - asdf
 
@@ -19,42 +21,58 @@
 
 - name: Install ruby asdf plugin
   ignore_errors: true
-  shell: ~/.asdf/bin/asdf plugin add ruby https://github.com/asdf-vm/asdf-ruby.git
+  shell: . ~/.asdf/asdf.sh && asdf plugin add ruby https://github.com/asdf-vm/asdf-ruby.git
+  args:
+    executable: /bin/bash
   tags:
     - asdf
 
 - name: Install latest nodejs
-  shell: ~/.asdf/bin/asdf install nodejs latest
+  shell: . ~/.asdf/asdf.sh && asdf install nodejs latest
+  args:
+    executable: /bin/bash
   tags:
     - asdf
 
 - name: set latest nodejs global
-  shell: ~/.asdf/bin/asdf global nodejs latest
+  shell: . ~/.asdf/asdf.sh && asdf global nodejs latest
+  args:
+    executable: /bin/bash
   tags:
     - asdf
 
 - name: install latest ruby
-  shell: ~/.asdf/bin/asdf install ruby latest
+  shell: . ~/.asdf/asdf.sh && asdf install ruby latest
+  args:
+    executable: /bin/bash
   tags:
     - asdf
 
 - name: set latest ruby global
-  shell: ~/.asdf/bin/asdf global ruby latest
-  tags:
-    - asdf
-
-- name: Install yarn
-  npm: name=yarn global=yes
-  tags:
-    - asdf
-
-- name: Set yarn bin to ~/.yarn
-  shell: yarn config set prefix ~/.yarn
+  shell: . ~/.asdf/asdf.sh && asdf global ruby latest
+  args:
+    executable: /bin/bash
   tags:
     - asdf
 
 - name: Set npm bin to ~/.npm
-  shell: npm config set prefix ~/.npm
+  shell: . ~/.asdf/asdf.sh && npm config set prefix ~/.npm
+  args:
+    executable: /bin/bash
+  tags:
+    - asdf
+
+- name: Install yarn
+  shell: . ~/.asdf/asdf.sh && npm install yarn -g
+  args:
+    executable: /bin/bash
+  tags:
+    - asdf
+
+- name: Set yarn bin to ~/.yarn
+  shell: . ~/.asdf/asdf.sh && asdf reshim && ~/.npm/bin/yarn config set prefix ~/.yarn
+  args:
+    executable: /bin/bash
   tags:
     - asdf
 
@@ -66,22 +84,22 @@
     - asdf
 
 - name: Update asdf
-  shell: ~/.asdf/bin/asdf update
+  command: ~/.asdf/bin/asdf update
   tags:
     - update
 
 - name: Update asdf plugins
-  shell: ~/.asdf/bin/asdf plugin update --all
+  command: ~/.asdf/bin/asdf plugin update --all
   tags:
     - update
 
 - name: Update global npm packages
-  shell: npm update -g
+  command: npm update -g
   tags:
     - update
 
 - name: Update global yarn packages
-  shell: yarn global upgrade
+  command: yarn global upgrade
   tags:
     - update
 
@@ -92,6 +110,6 @@
     - update
 
 - name: Upgrade pip3
-  shell: pip3 install --upgrade pip
+  command: pip3 install --upgrade pip
   tags:
     - update
