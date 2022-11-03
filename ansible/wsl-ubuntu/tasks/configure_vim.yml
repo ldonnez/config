@@ -2,8 +2,10 @@
   become: true
   apt_repository:
     validate_certs: no
-    repo: "ppa:neovim-ppa/stable"
+    repo: "ppa:neovim-ppa/unstable"
     state: present
+  tags:
+    - vim
 
 - name: Install vim & neovim with apt
   apt: name={{ item }} state=present
@@ -79,7 +81,7 @@
 
 - name: Install latexmk with apt
   apt: name=latexmk state=present
-  become: yes
+  become: true
   tags:
     - vim
 
