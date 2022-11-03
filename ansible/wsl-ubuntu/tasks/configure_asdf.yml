@@ -99,7 +99,9 @@
     - update
 
 - name: Update global yarn packages
-  command: yarn global upgrade
+  shell: . ~/.asdf/asdf.sh && asdf reshim && ~/.npm/bin/yarn global upgrade
+  args:
+    executable: /bin/bash
   tags:
     - update
 
