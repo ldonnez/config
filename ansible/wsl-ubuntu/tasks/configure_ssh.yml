@@ -16,6 +16,12 @@
   tags:
     - ssh
 
+- name: Give correct access righs to ~/ssh/config
+  become_user: root
+  file: path="~/.ssh/config" mode="0700"
+  tags:
+    - ssh
+
 - name: Generate root key
   become: true
   shell: ssh-keygen -A
