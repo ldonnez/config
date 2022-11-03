@@ -17,6 +17,11 @@
     - gnupg
 
 - name: Give correct access righs to ~/.gnupg
-  file: path="~/.gnupg" mode="0700" state=directory recurse=true
+  file:
+    path: "~/.gnupg"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+    state: directory
+    recurse: true
   tags:
     - gnupg
