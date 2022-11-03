@@ -6,8 +6,19 @@
   tags:
     - fzf
 
+- name: Update fzf
+  git:
+    repo: https://github.com/junegunn/fzf.git
+    dest: ~/.fzf
+    update: yes
+  tags:
+    - update
+    - update-fzf
+
 - name: Install fzf
   shell: ~/.fzf/install
   tags:
     - fzf
+    - update
+    - update-fzf
 
