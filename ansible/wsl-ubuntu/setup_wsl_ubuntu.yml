@@ -23,6 +23,9 @@
     - import_tasks: tasks/configure_asdf.yml
       when: configure_asdf
 
+    - import_tasks: tasks/configure_fzf.yml
+      when: configure_fzf
+
     - import_tasks: tasks/configure_vim.yml
       when: configure_vim
 

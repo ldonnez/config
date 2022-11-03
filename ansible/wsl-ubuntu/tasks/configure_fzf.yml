@@ -1,0 +1,13 @@
+- name: Install fzf with git
+  git:
+    repo: https://github.com/junegunn/fzf.git
+    depth: 1
+    dest: ~/.fzf
+  tags:
+    - fzf
+
+- name: Install fzf
+  shell: ~/.fzf/install
+  tags:
+    - fzf
+
