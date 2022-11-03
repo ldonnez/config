@@ -1,7 +1,7 @@
 - name: Remove existing .ssh directory
   file: path=~/.ssh state=absent
   tags:
-    - gnupg
+    - ssh
 
 - name: Symlink ~/.ssh directory from source {{ private_dotfiles_path }}/.ssh
   file: src={{ item.src }} dest={{ item.dest }} state=link
