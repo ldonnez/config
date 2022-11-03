@@ -1,4 +1,4 @@
-- name: Add neovim-ppa/stable
+- name: Add neovim-ppa/unstable
   become: true
   apt_repository:
     validate_certs: no
