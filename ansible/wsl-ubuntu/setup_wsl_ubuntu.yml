@@ -8,14 +8,14 @@
     - import_tasks: tasks/configure_wsl.yml
       when: configure_wsl
 
-    - import_tasks: tasks/configure_win32yank.yml
-      when: configure_win32yank
-
     - import_tasks: tasks/install_dotfiles.yml
       when: install_dotfiles
 
     - import_tasks: tasks/install_extra_packages_with_apt.yml
       when: install_extra_packages_with_apt
+
+    - import_tasks: tasks/configure_win32yank.yml
+      when: configure_win32yank
 
     - import_tasks: tasks/configure_git.yml
       when: configure_git
