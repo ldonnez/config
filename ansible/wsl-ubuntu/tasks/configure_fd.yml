@@ -1,5 +1,5 @@
 - name: Install fd with apt
-  become: yes
+  become: true
   apt: name=fd-find state=present
   tags:
     - fd

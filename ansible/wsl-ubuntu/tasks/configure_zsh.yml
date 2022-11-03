@@ -1,11 +1,11 @@
 - name: Install zsh with apt
-  become: yes
+  become: true
   apt: name=zsh state=present
   tags:
     - zsh
 
 - name: change user shell to zsh
-  become: yes
+  become: true
   user:
     name: "{{ ansible_user_id }}"
     shell: /bin/zsh

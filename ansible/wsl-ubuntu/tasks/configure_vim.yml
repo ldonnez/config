@@ -1,5 +1,5 @@
 - name: Add neovim-ppa/stable
-  become: yes
+  become: true
   apt_repository:
     validate_certs: no
     repo: "ppa:neovim-ppa/stable"
@@ -7,7 +7,7 @@
 
 - name: Install vim & neovim with apt
   apt: name={{ item }} state=present
-  become: yes
+  become: true
   loop:
     - neovim
     - vim

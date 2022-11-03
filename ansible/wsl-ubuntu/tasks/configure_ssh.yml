@@ -17,7 +17,7 @@
     - ssh
 
 - name: Generate root key
-  become: yes
+  become: true
   shell: ssh-keygen -A
   tags:
     - ssh

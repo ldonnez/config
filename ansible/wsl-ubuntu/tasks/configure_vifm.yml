@@ -1,5 +1,5 @@
 - name: Install vifm with apt
-  become: yes
+  become: true
   apt: name=vifm state=present
   tags:
     - vifm

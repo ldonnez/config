@@ -1,5 +1,5 @@
 - name: Install isync, msmtp, links, urlview, notmuch, notmuch-mutt & neomutt
-  become: yes
+  become: true
   apt: name={{ item }} state=present
   loop:
     - isync
@@ -90,13 +90,13 @@
     - mutt
 
 - name: "Initial syncing of all mailboxes"
-  ignore_errors: yes
+  ignore_errors: true
   command: mbsync -a
   tags:
     - mutt
 
 - name: "Index mails with notmuch"
-  ignore_errors: yes
+  ignore_errors: true
   command: notmuch new
   tags:
     - mutt
@@ -110,7 +110,7 @@
     - mutt
 
 - name: Enable cron service
-  become: yes
+  become: true
   shell: service cron start
   tags:
     - mutt
