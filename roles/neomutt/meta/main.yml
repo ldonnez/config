@@ -1,0 +1,22 @@
+---
+galaxy_info:
+  role_name: neomutt
+  author: ldonnez
+  description: NeoMutt is a command line mail reader (or MUA). It’s a fork of Mutt with added features.
+  license: MIT
+  min_ansible_version: "2.10"
+
+  platforms:
+    - name: Ubuntu
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
+    - name: macOS
+      versions:
+        - all
+
+dependencies:
+  - role: dotfiles
+  - role: gnupg

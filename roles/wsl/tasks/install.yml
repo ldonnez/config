@@ -1,0 +1,7 @@
+- name: Install wslu with apt
+  ansible.builtin.apt:
+    name: wslu
+    state: present
+  become: true
+  tags:
+    - install

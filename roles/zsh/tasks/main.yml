@@ -1,0 +1,9 @@
+- name: Include install
+  ansible.builtin.import_tasks: install.yml
+  when: ansible_os_family == 'Debian'
+
+- name: Include configure
+  ansible.builtin.import_tasks: configure.yml
+
+- name: Include plugins
+  ansible.builtin.import_tasks: plugins.yml

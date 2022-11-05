@@ -1,0 +1,26 @@
+- name: Add neovim-ppa/unstable
+  become: true
+  ansible.builtin.apt_repository:
+    validate_certs: false
+    repo: "ppa:neovim-ppa/unstable"
+    state: present
+  when: ansible_os_family == "Debian"
+  tags:
+    - install
+
+- name: Install neovim with apt
+  ansible.builtin.apt:
+    name: neovim
+    state: present
+  become: true
+  when: ansible_os_family == "Debian"
+  tags:
+    - install
+
+- name: Install neovim & neovim-qt with homebrew
+  community.general.homebrew:
+    name: ["neovim", "neovim-qt"]
+    state: present
+  when: ansible_os_family == "Darwin"
+  tags:
+    - install

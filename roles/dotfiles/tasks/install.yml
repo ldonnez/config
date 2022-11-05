@@ -1,0 +1,15 @@
+- name: Check if dotfiles already exists
+  ansible.builtin.stat:
+    path: "{{ dotfiles_directory_path }}"
+  register: dotfiles_directory
+  tags:
+    - install
+
+- name: Clone dotfiles into dotfiles if not exists
+  when: not dotfiles_directory.stat.exists
+  ansible.builtin.git:
+    repo: "{{ dotfiles_repo }}"
+    dest: "{{ dotfiles_directory_path }}"
+    version: main
+  tags:
+    - install

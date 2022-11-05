@@ -1,0 +1,16 @@
+- name: Install gnupg with apt
+  ansible.builtin.apt:
+    name: gnupg
+    state: present
+  become: true
+  when: ansible_os_family == "Debian"
+  tags:
+    - install
+
+- name: Install gnupg with homebrew
+  community.general.homebrew:
+    name: gnupg
+    state: present
+  when: ansible_os_family == "Darwin"
+  tags:
+    - install

@@ -1,0 +1,19 @@
+- name: Tap homebrew repositories
+  community.general.homebrew_tap:
+    name: "{{ homebrew_taps }}"
+    state: present
+  tags:
+    - install
+
+- name: Install homebrew casks
+  community.general.homebrew_cask:
+    name: "{{ homebrew_casks }}"
+    state: present
+  tags:
+    - install
+
+- name: Upgrade all homebrew casks
+  community.general.homebrew_cask:
+    upgrade_all: true
+  tags:
+    - update

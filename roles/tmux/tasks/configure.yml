@@ -1,0 +1,25 @@
+- name: Install Tmux Plugin Manager with git
+  ansible.builtin.git:
+    repo: https://github.com/tmux-plugins/tpm
+    dest: "{{ ansible_env.HOME }}/.tmux/plugins/tpm"
+    version: master
+  tags:
+    - install
+
+- name: Symlink .tmux.conf
+  ansible.builtin.file:
+    src: "{{ dotfiles_directory_path }}/.tmux.conf"
+    dest: "{{ ansible_env.HOME }}/.tmux.conf"
+    state: link
+  tags:
+    - install
+
+- name: Install tmux plugins
+  ansible.builtin.command: "{{ ansible_env.HOME }}/.tmux/plugins/tpm/bin/install_plugins"
+  tags:
+    - install
+
+- name: Update tmux plugins
+  ansible.builtin.command: "{{ ansible_env.HOME }}/.tmux/plugins/tpm/bin/update_plugins all"
+  tags:
+    - update

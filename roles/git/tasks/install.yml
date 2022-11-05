@@ -1,0 +1,16 @@
+- name: Install git with apt
+  become: true
+  ansible.builtin.apt:
+    name: git
+    state: present
+  when: ansible_os_family == "Debian"
+  tags:
+    - install
+
+- name: Install git with homebrew
+  community.general.homebrew:
+    name: git
+    state: present
+  when: ansible_os_family == "Darwin"
+  tags:
+    - install

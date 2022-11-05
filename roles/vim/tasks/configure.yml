@@ -1,0 +1,25 @@
+- name: Ensure .vim
+  ansible.builtin.file:
+    name: "{{ ansible_env.HOME }}/.vim"
+    state: directory
+    recurse: true
+  tags:
+    - install
+
+- name: Symlink .vimrc
+  ansible.builtin.file:
+    src: "{{ dotfiles_directory_path }}/.vimrc"
+    dest: "{{ ansible_env.HOME }}/.vimrc"
+    state: link
+    force: true
+  tags:
+    - install
+
+- name: Symlink .vim/coc-settings.json
+  ansible.builtin.file:
+    src: "{{ dotfiles_directory_path }}/.vim/coc-settings.json"
+    dest: "{{ ansible_env.HOME }}/.vim/coc-settings.json"
+    state: link
+    force: true
+  tags:
+    - install

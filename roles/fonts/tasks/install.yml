@@ -1,0 +1,46 @@
+- name: Install fonts
+  when: ansible_os_family == "Darwin"
+  tags:
+    - install
+
+  block:
+    - name: Check if Hack Nerd Font Complete already exists
+      ansible.builtin.stat:
+        path: "{{ ansible_env.HOME }}/Library/Fonts/Hack Nerd Font Complete"
+      register: hack_directory
+
+    - name: Copy Hack Nerd Font Complete to Fonts location
+      when: not hack_directory.stat.exists
+      ansible.builtin.copy:
+        src: "Hack Nerd Font Complete"
+        dest: "{{ ansible_env.HOME }}/Library/Fonts"
+        mode: "0755"
+
+- name: Install fonts
+  when: ansible_os_family == "Debian"
+  tags:
+    - install
+
+  block:
+    - name: Check if Hack Nerd Font Complete already exists
+      ansible.builtin.stat:
+        path: "{{ ansible_env.HOME }}/.local/share/fonts/Hack Nerd Font Complete"
+      register: hack_directory
+
+    - name: "Ensure fonts directory"
+      when: not hack_directory.stat.exists
+      ansible.builtin.file:
+        name: "{{ ansible_env.HOME }}/.local/share/fonts"
+        state: directory
+        recurse: true
+
+    - name: Copy Hack Nerd Font Complete to Fonts location
+      when: not hack_directory.stat.exists
+      ansible.builtin.copy:
+        src: "Hack Nerd Font Complete"
+        dest: "{{ ansible_env.HOME }}/.local/share/fonts"
+        mode: "0755"
+
+    - name: Update font cache
+      when: not hack_directory.stat.exists
+      ansible.builtin.command: "fc-cache -f -v"

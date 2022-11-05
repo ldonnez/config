@@ -1,0 +1,21 @@
+---
+galaxy_info:
+  role_name: fzf
+  author: ldonnez
+  description: A general-purpose command-line fuzzy finder
+  license: MIT
+  min_ansible_version: "2.10"
+
+  platforms:
+    - name: Ubuntu
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
+    - name: macOS
+      versions:
+        - all
+
+dependencies:
+  - role: zsh

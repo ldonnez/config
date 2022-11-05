@@ -1,0 +1,7 @@
+- name: Symlink .fdignore
+  ansible.builtin.file:
+    src: "{{ dotfiles_directory_path }}/.agignore"
+    dest: "{{ ansible_env.HOME }}/.rgignore"
+    state: link
+  tags:
+    - install

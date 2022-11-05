@@ -1,0 +1,15 @@
+- name: Install common packages with homebrew
+  community.general.homebrew:
+    name: "{{ common_packages }}"
+    state: present
+  tags:
+    - install
+
+- name: Update packages installed with homebrew
+  community.general.homebrew:
+    update_homebrew: true
+    upgrade_all: true
+  register: homebrew_update_output
+  ignore_errors: "{{ ansible_check_mode }}"
+  tags:
+    - update

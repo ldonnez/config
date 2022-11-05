@@ -1,0 +1,21 @@
+---
+# defaults file for lsp
+
+npm_lsp:
+  [
+    "typescript",
+    "typescript-language-server",
+    "vscode-langservers-extracted",
+    "eslint_d",
+    "@fsouza/prettierd",
+  ]
+
+yarn_lsp:
+  [
+    "yaml-language-server"
+  ]
+
+cargo_lsp:
+  [
+    "stylua"
+  ]

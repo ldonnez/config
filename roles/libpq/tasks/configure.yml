@@ -1,0 +1,13 @@
+- name: Symlink .psqlrc
+  ansible.builtin.file:
+    src: "{{ dotfiles_directory_path }}/.psqlrc"
+    dest: "{{ ansible_env.HOME }}/.psqlrc"
+    state: link
+  tags:
+    - install
+
+- name: Force link to make psql work
+  ansible.builtin.command: brew link --force libpq
+  when: ansible_os_family == "Darwin"
+  tags:
+    - install

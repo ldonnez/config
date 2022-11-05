@@ -1,0 +1,8 @@
+- name: Install zsh with apt
+  become: true
+  ansible.builtin.apt:
+    name: zsh
+    state: present
+  when: ansible_os_family == 'Debian'
+  tags:
+    - install

@@ -1,0 +1,24 @@
+---
+# defaults file for asdf
+
+asdf_version: "v0.10.2"
+asdf_home: "{{ ansible_env.HOME }}/.asdf"
+
+asdf_plugins:
+  - name: "nodejs"
+    repository: "https://github.com/asdf-vm/asdf-nodejs"
+    apt_dependencies: []
+    homebrew_dependencies: []
+    versions:
+      - 16.15.0
+      - latest
+    global: latest
+
+  - name: "ruby"
+    repository: "https://github.com/asdf-vm/asdf-ruby"
+    apt_dependencies: ["libssl-dev"]
+    homebrew_dependencies: []
+    versions:
+      - 2.7.5
+      - latest
+    global: latest

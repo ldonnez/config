@@ -1,0 +1,7 @@
+- name: Symlink .asdfrc
+  ansible.builtin.file:
+    src: "{{ dotfiles_directory_path }}/.asdfrc"
+    dest: "{{ ansible_env.HOME }}/.asdfrc"
+    state: link
+  tags:
+    - install

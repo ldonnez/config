@@ -1,0 +1,8 @@
+- name: Synchronize
+  ansible.posix.synchronize:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    recursive: true
+    delete: true
+    checksum: true
+  loop: "{{ directories_to_synchronize }}"

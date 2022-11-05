@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  role_name: casks
+  author: ldonnez
+  description: Homebrew Cask extends Homebrew and brings its elegance, simplicity, and speed to the installation and management of GUI macOS applications
+  license: MIT
+  min_ansible_version: "2.10"
+
+  platforms:
+    - name: macOS
+      versions:
+        - all
+
+dependencies:
+  - role: common

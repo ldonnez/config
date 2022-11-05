@@ -1,0 +1,17 @@
+- name: Install fd with apt
+  ansible.builtin.apt:
+    name: fd-find
+    state: present
+  become: true
+  when: ansible_os_family == "Debian"
+  tags:
+    - install
+
+
+- name: Install fd with homebrew
+  community.general.homebrew:
+    name: fd
+    state: present
+  when: ansible_os_family == "Darwin"
+  tags:
+    - install

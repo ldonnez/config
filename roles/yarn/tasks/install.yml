@@ -1,0 +1,9 @@
+- name: Install yarn
+  ansible.builtin.command: npm install yarn -g
+  tags:
+    - install
+
+- name: Update global yarn packages
+  ansible.builtin.command: "{{ ansible_env.HOME }}/.npm/bin/yarn global upgrade"
+  tags:
+    - update

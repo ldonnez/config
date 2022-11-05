@@ -1,0 +1,34 @@
+- name: Install isync, msmtp, links, urlview, notmuch, notmuch-mutt & neomutt with apt
+  become: true
+  ansible.builtin.apt:
+    name:
+      [
+        "isync",
+        "msmtp",
+        "links",
+        "urlview",
+        "notmuch",
+        "notmuch-mutt",
+        "neomutt",
+      ]
+    state: present
+  when: ansible_os_family == "Debian"
+  tags:
+    - install
+
+- name: Install isync, msmtp, links, urlview, notmuch, notmuch-mutt & neomutt with hombrew
+  community.general.homebrew:
+    name:
+      [
+        "isync",
+        "msmtp",
+        "links",
+        "urlview",
+        "notmuch",
+        "notmuch-mutt",
+        "neomutt",
+      ]
+    state: present
+  when: ansible_os_family == "Darwin"
+  tags:
+    - install

@@ -1,0 +1,277 @@
+---
+- name: Setup MacOS
+  hosts: localhost
+  connection: local
+
+  vars:
+    dotfiles_repo: "https://github.com/ldonnez/dotfiles.git"
+    dotfiles_directory_path: "{{ ansible_env.HOME }}/dotfiles"
+    private_dotfiles_path: "{{ ansible_env.HOME }}/private"
+    private_dotfiles_source: "{{ ansible_env.HOME }}/SynologyDrive/private"
+
+    install_common_packages: true
+    install_homebrew_casks: true
+    install_mas_apps: true
+    install_dotfiles: true
+    install_fonts: true
+
+    configure_git: true
+    configure_zsh: true
+    configure_asdf: true
+    configure_npm: true
+    configure_yarn: true
+    configure_fzf: true
+    configure_vim: true
+    configure_lsp: true
+    configure_neovim: true
+    configure_vifm: true
+    configure_bat: true
+    configure_tmux: true
+    configure_ag: true
+    configure_fd: true
+    configure_rg: true
+    configure_libpq: true
+    configure_secrets: true
+    configure_gnupg: true
+    configure_ssh: true
+    configure_neomutt: true
+    configure_kitty: true
+
+    common_packages:
+      - coreutils
+      - htop
+      - mosh
+      - imagemagick
+      - jq
+      - go
+      - reattach-to-user-namespace
+      - watchman
+      - luarocks
+      - tree
+      - ninja
+      - mplayer
+      - rust
+      - python
+      - virtualenv
+
+    homebrew_taps:
+      - homebrew/cask-versions
+
+    homebrew_casks:
+      - firefox-developer-edition
+      - docker
+      - rectangle
+      - linearmouse
+      - calibre
+      - google-chrome
+      - insomnia
+      - signal
+      - whatsapp
+      - zulu
+      - android-studio
+      - drawio
+      - figma
+      - pgadmin4
+      - spotify
+
+    mas_apps:
+      - name: "Bitwarden"
+        id: 1352778147
+
+      - name: "Slack for Desktop"
+        id: 803453959
+
+      - name: "Amphetamine"
+        id: 937984704
+
+      - name: "Apple Developer"
+        id: 640199958
+
+      - name: "Xcode"
+        id: 497799835
+
+  tasks:
+    - name: Install common packages
+      ansible.builtin.import_role:
+        name: common
+      when: install_common_packages
+      tags:
+        - common
+
+    - name: Install dotfiles
+      ansible.builtin.import_role:
+        name: dotfiles
+      when: install_dotfiles
+      tags:
+        - dotfiles
+
+    - name: Install fonts
+      ansible.builtin.import_role:
+        name: fonts
+      when: install_fonts
+      tags:
+        - fonts
+
+    - name: Configure git
+      ansible.builtin.import_role:
+        name: git
+      when: configure_git
+      tags:
+        - git
+
+    - name: Configure zsh
+      ansible.builtin.import_role:
+        name: zsh
+      when: configure_zsh
+      tags:
+        - zsh
+
+    - name: Configure asdf
+      ansible.builtin.import_role:
+        name: asdf
+      when: configure_asdf
+      tags:
+        - asdf
+
+    - name: Configure npm
+      ansible.builtin.import_role:
+        name: npm
+      when: configure_npm
+      tags:
+        - npm
+
+    - name: Configure yarn
+      ansible.builtin.import_role:
+        name: yarn
+      when: configure_yarn
+      tags:
+        - yarn
+
+    - name: Configure fzf
+      ansible.builtin.import_role:
+        name: fzf
+      when: configure_fzf
+      tags:
+        - fzf
+
+    - name: Configure vim
+      ansible.builtin.import_role:
+        name: vim
+      when: configure_vim
+      tags:
+        - vim
+
+    - name: Configure lsp's
+      ansible.builtin.import_role:
+        name: lsp
+      when: configure_lsp
+      tags:
+        - lsp
+
+    - name: Configure neovim
+      ansible.builtin.import_role:
+        name: neovim
+      when: configure_neovim
+      tags:
+        - neovim
+
+    - name: Configure vifm
+      ansible.builtin.import_role:
+        name: vifm
+      when: configure_vifm
+      tags:
+        - vifm
+
+    - name: Configure bat
+      ansible.builtin.import_role:
+        name: bat
+      when: configure_bat
+      tags:
+        - bat
+
+    - name: Configure tmux
+      ansible.builtin.import_role:
+        name: tmux
+      when: configure_tmux
+      tags:
+        - tmux
+
+    - name: Configure ag
+      ansible.builtin.import_role:
+        name: ag
+      when: configure_ag
+      tags:
+        - ag
+
+    - name: Configure fd
+      ansible.builtin.import_role:
+        name: fd
+      when: configure_fd
+      tags:
+        - fd
+
+    - name: Configure rg
+      ansible.builtin.import_role:
+        name: rg
+      when: configure_rg
+      tags:
+        - rg
+
+    - name: Configure libpq
+      ansible.builtin.import_role:
+        name: libpq
+      when: configure_libpq
+      tags:
+        - libpq
+
+    - name: Configure secrets
+      ansible.builtin.import_role:
+        name: secrets
+      when: configure_secrets
+      tags:
+        - secrets
+
+    - name: Configure gnupg
+      ansible.builtin.import_role:
+        name: gnupg
+      when: configure_gnupg
+      tags:
+        - gnupg
+
+    - name: Configure ssh
+      ansible.builtin.import_role:
+        name: ssh
+      when: configure_ssh
+      tags:
+        - ssh
+
+    - name: Configure neomutt
+      ansible.builtin.import_role:
+        name: neomutt
+      when: configure_neomutt
+      tags:
+        - neomutt
+
+    - name: Configure kitty
+      ansible.builtin.import_role:
+        name: kitty
+      when: configure_kitty
+      tags:
+        - kitty
+
+    - name: Install homebrew casks
+      ansible.builtin.import_role:
+        name: casks
+      when: install_homebrew_casks
+      tags:
+        - casks
+
+    - name: Install apps from Mac AppStore
+      ansible.builtin.import_role:
+        name: mas
+      when: install_mas_apps
+      tags:
+        - mas
+
+  environment:
+    PATH: "{{ ansible_env.HOME}}/.asdf/shims:{{ ansible_env.HOME }}/.asdf/bin:{{ ansible_env.HOME }}/.npm/bin:{{ ansible_env.PATH }}"

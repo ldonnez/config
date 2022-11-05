@@ -1,0 +1,16 @@
+- name: "Ensure {{ vifm_config_dir }}"
+  ansible.builtin.file:
+    path: "{{ vifm_config_dir }}"
+    state: directory
+    recurse: true
+  tags:
+    - install
+
+- name: Symlink vifmrc
+  ansible.builtin.file:
+    src: "{{ vifm_dotfiles_path }}/vifmrc"
+    dest: "{{ vifm_config_dir }}/vifmrc"
+    state: link
+    force: true
+  tags:
+    - install

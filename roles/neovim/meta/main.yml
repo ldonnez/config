@@ -1,0 +1,23 @@
+---
+galaxy_info:
+  role_name: neovim
+  author: ldonnez
+  description: Hyperextensible Vim-based text editor
+  license: MIT
+  min_ansible_version: "2.10"
+
+  platforms:
+    - name: Ubuntu
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
+    - name: macOS
+      versions:
+        - all
+
+dependencies:
+  - role: lsp
+  - role: fd
+  - role: rg

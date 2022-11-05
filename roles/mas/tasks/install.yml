@@ -1,0 +1,19 @@
+- name: Install mas with homebrew
+  community.general.homebrew:
+    name: mas
+    state: present
+  tags:
+    - install
+
+- name: Install Mac AppStore Apps
+  community.general.mas:
+    id: "{{ mas_apps | map(attribute='id') }}"
+    state: present
+  tags:
+    - install
+
+- name: Upgrade all installed Mac App Store apps
+  community.general.mas:
+    upgrade_all: true
+  tags:
+    - update
