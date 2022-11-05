@@ -1,0 +1,16 @@
+- name: Install vifm with apt
+  become: true
+  ansible.builtin.apt:
+    name: vifm
+    state: present
+  when: ansible_os_family == "Debian"
+  tags:
+    - install
+
+- name: Install vifm with homebrew
+  community.general.homebrew:
+    name: vifm
+    state: present
+  when: ansible_os_family == "Darwin"
+  tags:
+    - install

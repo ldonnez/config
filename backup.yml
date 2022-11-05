@@ -1,0 +1,23 @@
+---
+- name: Backup to SynologyDrive folder
+  hosts: localhost
+  connection: local
+
+  vars:
+    directories_to_synchronize:
+      - name: "dotfiles"
+        src: "{{ansible_env.HOME}}/dotfiles"
+        dest: "{{ansible_env.HOME}}/SynologyDrive"
+
+      - name: "config"
+        src: "{{ansible_env.HOME}}/config"
+        dest: "{{ansible_env.HOME}}/SynologyDrive"
+
+      - name: "org"
+        src: "{{ansible_env.HOME}}/org"
+        dest: "{{ansible_env.HOME}}/SynologyDrive"
+
+  tasks:
+    - name: Synchronize
+      ansible.builtin.import_role:
+        name: synchronize

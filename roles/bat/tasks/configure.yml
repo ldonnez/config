@@ -1,0 +1,24 @@
+- name: "Ensure bat config dir"
+  ansible.builtin.file:
+    path: "{{ bat_config_dir }}"
+    state: directory
+    recurse: true
+  tags:
+    - install
+
+- name: Symlink catbat with bat
+  ansible.builtin.file:
+    src: /usr/bin/batcat
+    dest: "{{ ansible_env.HOME }}/.local/bin/bat"
+    state: link
+  when: ansible_os_family == "Debian"
+  tags:
+    - install
+
+- name: "Symlink bat config"
+  ansible.builtin.file:
+    src: "{{ bat_dotfiles_path }}/config"
+    dest: "{{ bat_config_dir }}/config"
+    state: link
+  tags:
+    - install

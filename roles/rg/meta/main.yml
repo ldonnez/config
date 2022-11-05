@@ -1,0 +1,21 @@
+---
+galaxy_info:
+  role_name: rg
+  author: ldonnez
+  description: Install base packages
+  license: MIT
+  min_ansible_version: "2.10"
+
+  platforms:
+    - name: Ubuntu
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
+    - name: macOS
+      versions:
+        - all
+
+dependencies:
+  - role: dotfiles

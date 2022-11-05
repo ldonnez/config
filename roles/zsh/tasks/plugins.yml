@@ -1,0 +1,19 @@
+- name: Install/Update zsh-z plugin
+  ansible.builtin.git:
+    repo: https://github.com/agkozak/zsh-z
+    dest: "{{ ansible_env.HOME }}/.zsh/plugins/zsh-z"
+    version: master
+    update: true
+  tags:
+    - install
+    - update
+
+- name: Install/Update fzf-tab plugin
+  ansible.builtin.git:
+    repo: https://github.com/Aloxaf/fzf-tab
+    dest: "{{ ansible_env.HOME }}/.zsh/plugins/fzf-tab"
+    version: master
+    update: true
+  tags:
+    - install
+    - update

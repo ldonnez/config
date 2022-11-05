@@ -1,0 +1,16 @@
+- name: Install ag with apt
+  ansible.builtin.apt:
+    name: silversearcher-ag
+    state: present
+  become: true
+  when: ansible_os_family == "Debian"
+  tags:
+    - install
+
+- name: Install ag with homebrew
+  community.general.homebrew:
+    name: ag
+    state: present
+  when: ansible_os_family == "Darwin"
+  tags:
+    - install

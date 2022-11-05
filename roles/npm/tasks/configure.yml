@@ -1,0 +1,9 @@
+- name: Set npm bin
+  ansible.builtin.command: "npm config set prefix {{ ansible_env.HOME }}/.npm"
+  tags:
+    - install
+
+- name: Update global npm packages
+  ansible.builtin.command: npm update -g
+  tags:
+    - update

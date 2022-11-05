@@ -1,0 +1,4 @@
+- name: Set yarn bin
+  ansible.builtin.command: "{{ ansible_env.HOME }}/.npm/bin/yarn config set prefix {{ ansible_env.HOME }}/.yarn"
+  tags:
+    - install

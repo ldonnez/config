@@ -1,0 +1,21 @@
+---
+galaxy_info:
+  role_name: tmux
+  author: ldonnez
+  description: tmux is an open-source terminal multiplexer for Unix-like operating systems
+  license: MIT
+  min_ansible_version: "2.10"
+
+  platforms:
+    - name: Ubuntu
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
+    - name: macOS
+      versions:
+        - all
+
+dependencies:
+  - role: dotfiles

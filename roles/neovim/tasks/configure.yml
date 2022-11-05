@@ -1,0 +1,61 @@
+- name: "Ensure {{ neovim_config_dir }}"
+  ansible.builtin.file:
+    name: "{{ neovim_config_dir }}"
+    state: directory
+    recurse: true
+  tags:
+    - install
+
+- name: Symlink init.lua
+  ansible.builtin.file:
+    src: "{{ neovim_dotfiles_path }}/init.lua"
+    dest: "{{ neovim_config_dir }}/init.lua"
+    state: link
+  tags:
+    - install
+
+- name: Symlink ginit.vim
+  ansible.builtin.file:
+    src: "{{ neovim_dotfiles_path }}/ginit.vim"
+    dest: "{{ neovim_config_dir }}/ginit.vim"
+    state: link
+  tags:
+    - install
+
+- name: Symlink lua from source
+  ansible.builtin.file:
+    src: "{{ neovim_dotfiles_path }}/lua"
+    dest: "{{ neovim_config_dir }}/lua"
+    state: link
+  tags:
+    - install
+
+- name: Install pynvim with pip3
+  ansible.builtin.pip:
+    name: pynvim
+    executable: pip3
+  tags:
+    - install
+
+- name: Install neovim npm package globally
+  community.general.npm:
+    name: neovim
+    global: true
+  tags:
+    - install
+
+- name: Install neovim gem
+  ansible.builtin.command: gem install neovim
+  tags:
+    - install
+
+- name: Install/Update neovim plugins
+  ansible.builtin.command: nvim --headless -c "autocmd User PackerComplete quitall" -c "lua require('packer').sync()"
+  tags:
+    - install
+    - update
+
+- name: Upgrade pynvim
+  ansible.builtin.command: pip install pynvim --upgrade
+  tags:
+    - update

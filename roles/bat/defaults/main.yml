@@ -1,0 +1,5 @@
+---
+# defaults file for bat
+
+bat_config_dir: "{{ ansible_env.HOME }}/.config/bat"
+bat_dotfiles_path: "{{ dotfiles_directory_path }}/.config/bat"

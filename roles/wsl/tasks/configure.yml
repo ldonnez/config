@@ -1,0 +1,24 @@
+- name: Symlink .wslrc
+  ansible.builtin.file:
+    src: "{{ dotfiles_directory_path }}/.wslrc"
+    dest: "{{ ansible_env.HOME }}/.wslrc"
+    state: link
+    force: true
+  tags:
+    - install
+
+- name: Symlink wslview with xdg-open
+  ansible.builtin.file:
+    src: /usr/bin/wslview
+    dest: "{{ ansible_env.HOME }}/.local/bin/xdg-open"
+    state: link
+  tags:
+    - install
+
+- name: Symlink wslview with open
+  ansible.builtin.file:
+    src: /usr/bin/wslview
+    dest: "{{ ansible_env.HOME }}/.local/bin/open"
+    state: link
+  tags:
+    - install

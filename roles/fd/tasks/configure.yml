@@ -1,0 +1,27 @@
+- name: Symlink .fdignore
+  ansible.builtin.file:
+    src: "{{ dotfiles_directory_path }}/.agignore"
+    dest: "{{ ansible_env.HOME }}/.fdignore"
+    state: link
+  tags:
+    - install
+
+- name: Link fdfind -> fd
+  when: ansible_os_family == "Debian"
+  tags:
+    - install
+
+  block:
+    - name: Getting fdfind binary location
+      ansible.builtin.command: which fdfind
+      register: fdfind_binary
+
+    - name: Link with fdfind binary location
+      ansible.builtin.file:
+        src: "{{ fdfind_binary.stdout }}"
+        dest: "{{ ansible_env.HOME }}/.local/bin/fd"
+        state: link
+        force: true
+      when: ansible_os_family == "Debian"
+      tags:
+        - install

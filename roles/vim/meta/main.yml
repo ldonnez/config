@@ -1,0 +1,22 @@
+---
+galaxy_info:
+  role_name: vim
+  author: ldonnez
+  description: Vim is a highly configurable text editor built to make creating and changing any kind of text very efficient
+  license: MIT
+  min_ansible_version: "2.10"
+
+  platforms:
+    - name: Ubuntu
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
+    - name: macOS
+      versions:
+        - all
+
+dependencies:
+  - role: fzf
+  - role: vifm

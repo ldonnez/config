@@ -1,0 +1,16 @@
+- name: Install rg with apt
+  ansible.builtin.apt:
+    name: ripgrep
+    state: present
+  become: true
+  when: ansible_os_family == "Debian"
+  tags:
+    - install
+
+- name: Install rg with homebrew
+  community.general.homebrew:
+    name: rg
+    state: present
+  when: ansible_os_family == "Darwin"
+  tags:
+    - install

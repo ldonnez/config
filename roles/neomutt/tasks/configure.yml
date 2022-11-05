@@ -1,0 +1,118 @@
+- name: Symlink .mbsyncrc
+  ansible.builtin.file:
+    src: "{{ dotfiles_directory_path }}/.mbsyncrc"
+    dest: "{{ ansible_env.HOME }}/.mbsyncrc"
+    state: link
+  tags:
+    - install
+
+- name: Symlink .muttrc
+  ansible.builtin.file:
+    src: "{{ dotfiles_directory_path }}/.muttrc"
+    dest: "{{ ansible_env.HOME }}/.muttrc"
+    state: link
+  tags:
+    - install
+
+- name: Symlink .mutt
+  ansible.builtin.file:
+    src: "{{ dotfiles_directory_path }}/.mutt"
+    dest: "{{ ansible_env.HOME }}/.mutt"
+    state: link
+  tags:
+    - install
+
+- name: Symlink .mutt-alias
+  ansible.builtin.file:
+    src: "{{ private_dotfiles_path }}/.mutt-alias"
+    dest: "{{ ansible_env.HOME }}/.mutt-alias"
+    state: link
+  tags:
+    - install
+
+- name: Symlink .msmtprc
+  ansible.builtin.file:
+    src: "{{ dotfiles_directory_path }}/.msmtprc"
+    dest: "{{ ansible_env.HOME }}/.msmtprc"
+    state: link
+  tags:
+    - install
+
+- name: Symlink .urlview
+  ansible.builtin.file:
+    src: "{{ dotfiles_directory_path }}/.urlview"
+    dest: "{{ ansible_env.HOME }}/.urlview"
+    state: link
+  tags:
+    - install
+
+- name: Symlink.mailcap
+  ansible.builtin.file:
+    src: "{{ dotfiles_directory_path }}/.mailcap"
+    dest: "{{ ansible_env.HOME }}/.mailcap"
+    state: link
+  tags:
+    - install
+
+- name: Symlink .notmuch-config
+  ansible.builtin.file:
+    src: "{{ dotfiles_directory_path }}/.notmuch-config"
+    dest: "{{ ansible_env.HOME }}/.notmuch-config"
+    state: link
+  tags:
+    - install
+
+- name: Ensure mail directories
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.mail/{{ item }}"
+    recurse: true
+    state: directory
+  loop:
+    - gmail
+    - work
+    - hotmail
+  tags:
+    - install
+
+- name: Check mail every minute with cron
+  when: ansible_os_family == "Debian"
+  tags:
+    - install
+
+  block:
+    - name: Getting flock binary location
+      ansible.builtin.command: which flock
+      register: flock_binary
+
+    - name: Check mail every minute with cron
+      ansible.builtin.cron:
+        name: "check mail"
+        minute: "*/2"
+        job: "{{ flock_binary.stdout }} -w 0 /var/lock/mbsync.lock mbsync -a; notmuch new"
+
+- name: Check mail every minute with launchctl
+  when: ansible_os_family == "Darwin"
+  tags:
+    - install
+
+  block:
+    - name: Unload homebrew.mxcl.isync.plist
+      ansible.builtin.command: launchctl unload ~/Library/LaunchAgents/homebrew.mxcl.isync.plist
+
+    - name: Delete existing homebrew.mxcl.isync.plist
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/Library/LaunchAgents/homebrew.mxcl.isync.plist"
+        state: absent
+
+    - name: Install configured homebrew.mxcl.isync.plist
+      ansible.builtin.copy:
+        src: homebrew.mxcl.isync.plist
+        dest: "{{ ansible_env.HOME }}/Library/LaunchAgents/"
+        mode: "0600"
+
+    - name: Load homebrew.mxcl.isync.plist
+      ansible.builtin.command: "launchctl load {{ ansible_env.HOME }}/Library/LaunchAgents/homebrew.mxcl.isync.plist"
+
+    - name: Starting mbsync
+      ansible.builtin.command: brew services restart isync
+      when: ansible_os_family == "Darwin"

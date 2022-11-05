@@ -1,0 +1,36 @@
+- name: Remove existing .ssh directory
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.ssh"
+    state: absent
+  tags:
+    - install
+
+- name: Symlink .ssh
+  ansible.builtin.file:
+    src: "{{ private_dotfiles_path }}/.ssh"
+    dest: "{{ ansible_env.HOME }}/.ssh"
+    state: link
+  tags:
+    - install
+
+- name: Ensure access rights id_rsa
+  become_user: root
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.ssh/id_rsa"
+    mode: "0700"
+  tags:
+    - install
+
+- name: Ensure access rights .ssh/config
+  become_user: root
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.ssh/config"
+    mode: "0700"
+  tags:
+    - install
+
+- name: Generate root key
+  become: true
+  ansible.builtin.command: ssh-keygen -A
+  tags:
+    - install

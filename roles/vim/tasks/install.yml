@@ -1,0 +1,16 @@
+- name: Install vim with apt
+  ansible.builtin.apt:
+    name: vim
+    state: present
+  when: ansible_os_family == 'Debian'
+  become: true
+  tags:
+    - install
+
+- name: Install vim with homebrew
+  community.general.homebrew:
+    name: vim
+    state: present
+  when: ansible_os_family == 'Darwin'
+  tags:
+    - install

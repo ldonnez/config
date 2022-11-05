@@ -1,0 +1,12 @@
+---
+galaxy_info:
+  role_name: mas
+  author: ldonnez
+  description: Install Apps from Mac AppStore
+  license: MIT
+  min_ansible_version: "2.10"
+
+  platforms:
+    - name: macOS
+      versions:
+        - all

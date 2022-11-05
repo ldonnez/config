@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  role_name: kitty
+  author: ldonnez
+  description: The fast, feature-rich, GPU based terminal emulator
+  license: MIT
+  min_ansible_version: "2.10"
+
+  platforms:
+    - name: macOS
+      versions:
+        - all
+
+dependencies:
+  - role: dotfiles

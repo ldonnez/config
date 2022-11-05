@@ -1,0 +1,23 @@
+- name: "Clone fzf"
+  ansible.builtin.git:
+    repo: https://github.com/junegunn/fzf.git
+    dest: "{{ ansible_env.HOME }}/.fzf"
+    depth: 1
+    version: master
+  tags:
+    - install
+
+- name: Install fzf
+  ansible.builtin.command: "{{ ansible_env.HOME }}/.fzf/install"
+  tags:
+    - update
+    - install
+
+- name: Update fzf
+  ansible.builtin.git:
+    repo: https://github.com/junegunn/fzf.git
+    dest: "{{ ansible_env.HOME }}/.fzf"
+    version: master
+    update: true
+  tags:
+    - update

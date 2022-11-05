@@ -1,0 +1,7 @@
+- name: Symlink kitty.conf
+  ansible.builtin.file:
+    src: "{{ kitty_dotfiles_path }}/kitty.conf"
+    dest: "{{ kitty_config_dir }}/kitty.conf"
+    state: link
+  tags:
+    - install

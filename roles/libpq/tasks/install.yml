@@ -1,0 +1,16 @@
+- name: Install libpq with apt
+  ansible.builtin.apt:
+    name: postgresql-client
+    state: present
+  become: true
+  when: ansible_os_family == "Debian"
+  tags:
+    - install
+
+- name: Install libpq with homebrew
+  community.general.homebrew:
+    name: libpq
+    state: present
+  when: ansible_os_family == "Darwin"
+  tags:
+    - install

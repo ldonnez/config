@@ -1,0 +1,13 @@
+- name: Install asdf
+  ansible.builtin.git:
+    repo: "https://github.com/asdf-vm/asdf.git"
+    dest: "{{ asdf_home }}"
+    version: "{{ asdf_version }}"
+    force: true
+  tags:
+    - install
+
+- name: Update asdf
+  ansible.builtin.command: asdf update
+  tags:
+    - update

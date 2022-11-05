@@ -1,0 +1,6 @@
+- name: Install kitty via homebrew cask
+  community.general.homebrew_cask:
+    name: kitty
+    state: present
+  tags:
+    - install

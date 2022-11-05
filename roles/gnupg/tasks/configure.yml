@@ -1,0 +1,24 @@
+- name: Remove existing .gnupg directory
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.gnupg"
+    state: absent
+  tags:
+    - install
+
+- name: Symlink .gnupg
+  ansible.builtin.file:
+    src: "{{ private_dotfiles_path }}/.gnupg"
+    dest: "{{ ansible_env.HOME }}/.gnupg"
+    state: link
+  tags:
+    - install
+
+- name: Ensure access rights to .gnupg
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.gnupg"
+    owner: "{{ ansible_user_id }}"
+    state: directory
+    mode: "0700"
+    recurse: true
+  tags:
+    - install

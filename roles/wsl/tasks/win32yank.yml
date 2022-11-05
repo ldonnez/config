@@ -1,0 +1,29 @@
+- name: Download win32yank
+  ansible.builtin.get_url:
+    force: true
+    url: https://github.com/equalsraf/win32yank/releases/download/v0.0.4/win32yank-x64.zip
+    dest: /tmp/win32yank.zip
+    mode: "0755"
+  tags:
+    - install
+
+- name: Extract /tmp/win32yank.zip
+  ansible.builtin.unarchive:
+    src: /tmp/win32yank.zip
+    dest: /tmp
+    creates: /tmp/win32yank.exe
+  tags:
+    - install
+
+- name: Changing perm of /tmp/win32yank.exe
+  ansible.builtin.file:
+    dest: /tmp/win32yank.exe
+    mode: +x
+  tags:
+    - install
+
+- name: Copy binary to .local/bin
+  ansible.builtin.copy:
+    src: /tmp/win32yank.exe
+    dest: "{{ ansible_env.HOME }}/.local/bin/"
+    mode: "0755"
