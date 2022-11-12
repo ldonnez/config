@@ -4,6 +4,8 @@ $config = Get-Content -Raw -Path "$PSScriptRoot/config.json" | ConvertFrom-Json
 $dotfilesRepo = $config.dotfilesRepo
 $dotfilesPath = $config.dotfilesPath
 $extraPackagesToInstallWithChocolatey = $config.extraPackagesToInstallWithChocolatey
+$extraPackagesToInstallFromMicrosoftStore = $config.extraPackagesToInstallFromMicrosoftStore
+$extraPackagesToInstallWithWinGet = $config.extraPackagesToInstallWithWinGet
 $installDotfiles = $config.installDotfiles
 $privateDotfilesPath = $config.privateDotfilesPath
 
@@ -26,6 +28,14 @@ $dotfilesExist = Test-Path -Path $dotfilesPath
 $packages = $extraPackagesToInstallWithChocolatey -join ", "
 Write-Host "***************** INSTALL $packages WITH CHOCOLATEY *****************" -ForegroundColor White -BackgroundColor Black
 $extraPackagesToInstallWithChocolatey | ForEach-Object { choco install $_ -y }
+
+$winGetPackages = $extraPackagesToInstallWithWinGet -join ", "
+Write-Host "***************** INSTALL $winGetPackages WITH WINGET *****************" -ForegroundColor White -BackgroundColor Black
+$extraPackagesToInstallWithWinGet | ForEach-Object { winget install "$_" --accept-source-agreements }
+
+$msStorePackages = $extraPackagesToInstallFromMicrosoftStore -join ", "
+Write-Host "***************** INSTALL $msStorePackages WITH WINGET SOURCE MSSTORE *****************" -ForegroundColor White -BackgroundColor Black
+$extraPackagesToInstallFromMicrosoftStore | ForEach-Object { winget install "$_" --source msstore --accept-source-agreements --accept-package-agreements }
 
 Write-Host "***************** RELOAD ENV PATH *****************" -ForegroundColor White -BackgroundColor Black
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
@@ -135,4 +145,7 @@ If ($config.configureWsl) {
 
   Write-Host "***************** INSTALL WSL2 *****************" -ForegroundColor White -BackgroundColor Black
   choco install wsl2 -y
+
+  Write-Host "***************** INSTALL Ubuntu 22.04.1 LTS WITH WINGET *****************" -ForegroundColor White -BackgroundColor Black
+  winget install "Ubuntu 22.04.1 LTS" --silent --source msstore --accept-source-agreements --accept-package-agreements
 }
