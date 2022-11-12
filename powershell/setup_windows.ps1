@@ -116,8 +116,11 @@ If ($config.configureSsh) {
   Write-Host "***************** SYMLINK $home\.ssh WITH $privateDotfilesPath\.ssh *****************" -ForegroundColor White -BackgroundColor Black
   New-Item -ItemType SymbolicLink -f -Path "$home\.ssh" -Target "$privateDotfilesPath\.ssh"
 
-  Write-Host "*****************  SET SSH STARTUP TYPE TO MANUAL *****************" -ForegroundColor White -BackgroundColor Black
-  Set-Service ssh-agent -StartupType Manual
+  Write-Host "*****************  SET GIT_SSH ENV VARIABLE TO WINDOWS ssh.exe LOCATION *****************" -ForegroundColor White -BackgroundColor Black
+  [System.Environment]::SetEnvironmentVariable('GIT_SSH','C:\Windows\System32\OpenSSH\ssh.exe')
+
+  Write-Host "*****************  SET SSH STARTUP TYPE TO AUTOMATIC *****************" -ForegroundColor White -BackgroundColor Black
+  Get-Service ssh-agent | Set-Service -StartupType Automatic -PassThru | Start-Service
 }
 
 If ($config.configureWsl) {
