@@ -29,7 +29,7 @@
     "nerdfont-hack",
     "make"
   ],
-  "wingetPackages": ["WinRar", "Signal"],
+  "wingetPackages": ["WinRar", "Signal", "calibre"],
   "msStorePackages": [
     "Windows Terminal",
     "Bitwarden",
