@@ -36,9 +36,5 @@
     "Mozilla Firefox",
     "WhatsApp"
   ],
-  "gamingMsStorePackages": [
-    "Discord",
-    "Steam",
-    "Epic Games Store"
-  ]
+  "gamingMsStorePackages": ["Discord", "Steam", "Epic Games Store"]
 }
