@@ -112,14 +112,6 @@ If ($config.configureRg) {
   New-Item -ItemType SymbolicLink -f -Path "$home\.rgignore" -Target "$dotfilesPath\.agignore"
 }
 
-If ($config.configureAlacritty) {
-  Write-Host "***************** INSTALL ALACRITTY *****************" -ForegroundColor White -BackgroundColor Black
-  choco install alacritty -y
-
-  Write-Host "***************** SYMLINK $home\AppData\Roaming\alacritty\alacritty.yml WITH $dotfilesPath\.alacritty.yml *****************" -ForegroundColor White -BackgroundColor Black
-  New-Item -ItemType SymbolicLink -f -Path "$home\AppData\Roaming\alacritty\alacritty.yml" -Target "$dotfilesPath\.alacritty.yml"
-}
-
 If ($config.configureSsh) {
   Write-Host "***************** SYMLINK $home\.ssh WITH $privateDotfilesPath\.ssh *****************" -ForegroundColor White -BackgroundColor Black
   New-Item -ItemType SymbolicLink -f -Path "$home\.ssh" -Target "$privateDotfilesPath\.ssh"
