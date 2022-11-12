@@ -13,7 +13,8 @@
   "configureVifm": true,
   "configureSsh": true,
   "configureWsl": true,
-  "extraPackagesToInstallWithChocolatey": [
+  "configureForGaming": true,
+  "chocolateyPackages": [
     "bat",
     "fzf",
     "nodejs",
@@ -28,6 +29,16 @@
     "nerdfont-hack",
     "make"
   ],
-  "extraPackagesToInstallWithWinGet": ["WinRar"],
-  "extraPackagesToInstallFromMicrosoftStore": ["Windows Terminal"]
+  "wingetPackages": ["WinRar", "Signal"],
+  "msStorePackages": [
+    "Windows Terminal",
+    "Bitwarden",
+    "Mozilla Firefox",
+    "WhatsApp"
+  ],
+  "gamingMsStorePackages": [
+    "Discord",
+    "Steam",
+    "Epic Games Store"
+  ]
 }

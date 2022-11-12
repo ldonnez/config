@@ -3,9 +3,10 @@ $config = Get-Content -Raw -Path "$PSScriptRoot/config.json" | ConvertFrom-Json
 
 $dotfilesRepo = $config.dotfilesRepo
 $dotfilesPath = $config.dotfilesPath
-$extraPackagesToInstallWithChocolatey = $config.extraPackagesToInstallWithChocolatey
-$extraPackagesToInstallFromMicrosoftStore = $config.extraPackagesToInstallFromMicrosoftStore
-$extraPackagesToInstallWithWinGet = $config.extraPackagesToInstallWithWinGet
+$chocolateyPackages = $config.chocolateyPackages
+$wingetPackages = $config.wingetPackages
+$msStorePackages = $config.msStorePackages
+$gamingMsStorePackages = $config.gamingMsStorePackages
 $installDotfiles = $config.installDotfiles
 $privateDotfilesPath = $config.privateDotfilesPath
 
@@ -25,17 +26,8 @@ choco install git -y
 
 $dotfilesExist = Test-Path -Path $dotfilesPath
 
-$packages = $extraPackagesToInstallWithChocolatey -join ", "
-Write-Host "***************** INSTALL $packages WITH CHOCOLATEY *****************" -ForegroundColor White -BackgroundColor Black
-$extraPackagesToInstallWithChocolatey | ForEach-Object { choco install $_ -y }
-
-$winGetPackages = $extraPackagesToInstallWithWinGet -join ", "
-Write-Host "***************** INSTALL $winGetPackages WITH WINGET *****************" -ForegroundColor White -BackgroundColor Black
-$extraPackagesToInstallWithWinGet | ForEach-Object { winget install "$_" --accept-source-agreements }
-
-$msStorePackages = $extraPackagesToInstallFromMicrosoftStore -join ", "
-Write-Host "***************** INSTALL $msStorePackages WITH WINGET SOURCE MSSTORE *****************" -ForegroundColor White -BackgroundColor Black
-$extraPackagesToInstallFromMicrosoftStore | ForEach-Object { winget install "$_" --source msstore --accept-source-agreements --accept-package-agreements }
+Write-Host "***************** INSTALL PACKAGES WITH CHOCOLATEY *****************" -ForegroundColor White -BackgroundColor Black
+$chocolateyPackages | ForEach-Object { choco install $_ -y }
 
 Write-Host "***************** RELOAD ENV PATH *****************" -ForegroundColor White -BackgroundColor Black
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
@@ -149,3 +141,18 @@ If ($config.configureWsl) {
   Write-Host "***************** INSTALL Ubuntu 22.04.1 LTS WITH WINGET *****************" -ForegroundColor White -BackgroundColor Black
   winget install "Ubuntu 22.04.1 LTS" --silent --source msstore --accept-source-agreements --accept-package-agreements
 }
+
+Write-Host "***************** INSTALL PACKAGES WITH WINGET *****************" -ForegroundColor White -BackgroundColor Black
+$wingetPackages | ForEach-Object { winget install "$_" --accept-source-agreements }
+
+Write-Host "***************** INSTALL PACKAGES WITH WINGET FROM MSSTORE *****************" -ForegroundColor White -BackgroundColor Black
+$msStorePackages | ForEach-Object { winget install "$_" --source msstore --accept-source-agreements --accept-package-agreements }
+
+Write-Host "***************** INSTALL PACKAGES WITH WINGET FROM MSSTORE *****************" -ForegroundColor White -BackgroundColor Black
+$msStorePackages | ForEach-Object { winget install "$_" --source msstore --accept-source-agreements --accept-package-agreements }
+
+If ($config.configureForGaming) {
+  Write-Host "***************** INSTALL GAMING PACKAGES WITH WINGET FROM MSSTORE *****************" -ForegroundColor White -BackgroundColor Black
+  $gamingMsStorePackages | ForEach-Object { winget install "$_" --source msstore --accept-source-agreements --accept-package-agreements }
+}
+
