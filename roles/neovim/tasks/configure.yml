@@ -56,6 +56,6 @@
     - update
 
 - name: Upgrade pynvim
-  ansible.builtin.command: pip install pynvim --upgrade
+  ansible.builtin.command: pip3 install pynvim --upgrade
   tags:
     - update
