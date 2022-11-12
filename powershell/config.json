@@ -25,6 +25,7 @@
     "rustup.install",
     "python",
     "sqlite",
+    "nerdfont-hack",
     "make"
   ],
   "extraPackagesToInstallWithWinGet": ["WinRar"],
