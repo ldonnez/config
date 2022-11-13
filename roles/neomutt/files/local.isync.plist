@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>EnvironmentVariables</key>
+	<dict>
+		<key>PATH</key>
+    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/sbin</string>
+	</dict>
+	<key>Label</key>
+	<string>local.isync</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/zsh</string>
+    <string>-c</string>
+    <string>$HOME/.mutt/sync-mail.sh</string>
+  </array>
+	<key>RunAtLoad</key>
+	<false/>
+	<key>StandardErrorPath</key>
+  <string>/dev/null</string>
+	<key>StandardOutPath</key>
+	<string>/dev/null</string>
+	<key>StartInterval</key>
+	<integer>120</integer>
+</dict>
+</plist>

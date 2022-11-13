@@ -88,7 +88,7 @@
       ansible.builtin.cron:
         name: "check mail"
         minute: "*/2"
-        job: "{{ flock_binary.stdout }} -w 0 /var/lock/mbsync.lock mbsync -a; notmuch new"
+        job: "{{ flock_binary.stdout }} -w 0 /var/lock/mbsync.lock bash -c $HOME/.mutt/sync-mail.sh"
 
 - name: Check mail every 2 minutes with launchctl
   when: ansible_os_family == "Darwin"
@@ -96,23 +96,27 @@
     - install
 
   block:
+    - name: Stop homebrew isync services
+      become: true
+      ansible.builtin.command: brew services stop isync
+
     - name: Unload homebrew.mxcl.isync.plist
-      ansible.builtin.command: launchctl unload ~/Library/LaunchAgents/homebrew.mxcl.isync.plist
+      ansible.builtin.command: launchctl unload -w ~/Library/LaunchAgents/homebrew.mxcl.isync.plist
 
     - name: Delete existing homebrew.mxcl.isync.plist
       ansible.builtin.file:
         path: "{{ ansible_env.HOME }}/Library/LaunchAgents/homebrew.mxcl.isync.plist"
         state: absent
 
-    - name: Install configured homebrew.mxcl.isync.plist
+    - name: Install local.isync.plist
       ansible.builtin.copy:
-        src: homebrew.mxcl.isync.plist
+        src: local.isync.plist
         dest: "{{ ansible_env.HOME }}/Library/LaunchAgents/"
         mode: "0600"
 
-    - name: Load homebrew.mxcl.isync.plist
-      ansible.builtin.command: "launchctl load {{ ansible_env.HOME }}/Library/LaunchAgents/homebrew.mxcl.isync.plist"
+    - name: Load local.isync.plist
+      ansible.builtin.command: "launchctl load {{ ansible_env.HOME }}/Library/LaunchAgents/local.isync.plist"
 
-    - name: Starting mbsync
-      ansible.builtin.command: brew services restart isync
+    - name: Starting isync
+      ansible.builtin.command: launchctl start local.isync
       when: ansible_os_family == "Darwin"
