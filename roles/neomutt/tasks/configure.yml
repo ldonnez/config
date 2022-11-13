@@ -74,7 +74,7 @@
   tags:
     - install
 
-- name: Check mail every minute with cron
+- name: Check mail every 2 minutes with cron
   when: ansible_os_family == "Debian"
   tags:
     - install
@@ -90,7 +90,7 @@
         minute: "*/2"
         job: "{{ flock_binary.stdout }} -w 0 /var/lock/mbsync.lock mbsync -a; notmuch new"
 
-- name: Check mail every minute with launchctl
+- name: Check mail every 2 minutes with launchctl
   when: ansible_os_family == "Darwin"
   tags:
     - install
