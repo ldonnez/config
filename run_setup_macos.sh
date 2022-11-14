@@ -8,9 +8,6 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/in
 # update brew
 brew update && brew upgrade
 
-# install pip
-easy_install pip
-
 # install ansible
 brew install ansible
 
