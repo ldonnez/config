@@ -15,6 +15,6 @@ sudo apt install git python3-setuptools python3-pip
 pip3 install --user --upgrade pip
 
 # install ansible
-pip3 install ansible
+pip3 install ansible ansible-lint
 
 $HOME/.local/bin/ansible-playbook setup_wsl_ubuntu.yml -K

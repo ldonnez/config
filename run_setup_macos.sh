@@ -9,7 +9,7 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/in
 brew update && brew upgrade
 
 # install ansible
-brew install ansible
+brew install ansible ansible-lint
 
 # run playbook
 ansible-playbook setup_macos.yml -K
