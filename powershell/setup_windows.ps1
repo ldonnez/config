@@ -69,6 +69,9 @@ If ($config.configureVim) {
   Write-Host "***************** SYMLINK $home\AppData\Local\nvim\lua WITH $dotfilesPath\.config\nvim\lua *****************" -ForegroundColor White -BackgroundColor Black
   New-Item -ItemType Junction -f -Path "$home\AppData\Local\nvim\lua" -Target "$dotfilesPath\.config\nvim\lua"
 
+  Write-Host "***************** SYMLINK $home\AppData\Local\nvim\snippets WITH $dotfilesPath\.config\nvim\snippets *****************" -ForegroundColor White -BackgroundColor Black
+  New-Item -ItemType Junction -f -Path "$home\AppData\Local\nvim\snippets" -Target "$dotfilesPath\.config\nvim\snippets"
+
   Write-Host "***************** INSTALL language servers with npm *****************" -ForegroundColor White -BackgroundColor Black
   npm install typescript typescript-language-server vscode-langservers-extracted eslint_d @fsouza/prettierd -g
 
