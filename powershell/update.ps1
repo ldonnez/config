@@ -8,4 +8,4 @@ winget upgrade --all
 
 #NEOVIM
 Write-Host "***************** NEOVIM PLUGINS *****************"  -ForegroundColor White -BackgroundColor Black
-nvim --headless -c "autocmd User PackerComplete quitall" -c "lua require('packer').sync()"
+nvim --headless "+Lazy! sync" +qa
