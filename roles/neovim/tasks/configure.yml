@@ -58,7 +58,7 @@
     - install
 
 - name: Install/Update neovim plugins
-  ansible.builtin.command: nvim --headless -c "autocmd User PackerComplete quitall" -c "lua require('packer').sync()"
+  ansible.builtin.command: nvim --headless "+Lazy! sync" +qa
   tags:
     - install
     - update
