@@ -27,6 +27,7 @@
     "python",
     "sqlite",
     "nerdfont-hack",
+    "hackfont",
     "make"
   ],
   "wingetPackages": ["WinRar", "Signal", "calibre"],
