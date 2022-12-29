@@ -52,7 +52,7 @@ If ($config.configureYarn) {
 
 If ($config.configureVim) {
   Write-Host "***************** INSTALL VIM *****************" -ForegroundColor White -BackgroundColor Black
-  choco install vim -y
+  winget install vim.vim --silent --source msstore --accept-source-agreements --accept-package-agreements
 
   Write-Host "***************** INSTALL NEOVIM *****************" -ForegroundColor White -BackgroundColor Black
   choco install neovim -y
