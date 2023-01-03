@@ -88,6 +88,9 @@ If ($config.configureNeovim) {
 
   Write-Host "***************** INSTALL virtualenv with pip *****************" -ForegroundColor White -BackgroundColor Black
   pip3 install virtualenv
+
+  Write-Host "***************** INSTALL plugins *****************"  -ForegroundColor White -BackgroundColor Black
+  nvim --headless "+Lazy! sync" +qa
 }
 
 If ($config.configureVifm) {
