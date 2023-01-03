@@ -32,3 +32,14 @@
     force: true
   tags:
     - install
+
+- name: Upgrade vim-plug
+  ansible.builtin.command: vim +PlugUpgrade +qall
+  tags:
+    - update
+
+- name: Install/Update vim plugins
+  ansible.builtin.command: vim +PlugUpdate +qall
+  tags:
+    - install
+    - update
