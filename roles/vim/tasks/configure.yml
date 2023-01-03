@@ -15,6 +15,15 @@
   tags:
     - install
 
+- name: Symlink .gvimrc
+  ansible.builtin.file:
+    src: "{{ dotfiles_directory_path }}/.gvimrc"
+    dest: "{{ ansible_env.HOME }}/.gvimrc"
+    state: link
+    force: true
+  tags:
+    - install
+
 - name: Symlink .vim/coc-settings.json
   ansible.builtin.file:
     src: "{{ dotfiles_directory_path }}/.vim/coc-settings.json"
