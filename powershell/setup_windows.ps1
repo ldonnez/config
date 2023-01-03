@@ -57,6 +57,10 @@ If ($config.configureVim) {
   Write-Host "***************** SYMLINK $home\_vimrc WITH $dotfilesPath\.vimrc *****************" -ForegroundColor White -BackgroundColor Black
   New-Item -ItemType SymbolicLink -f -Path "$home\_vimrc" -Target "$dotfilesPath\.vimrc"
 
+  Write-Host "***************** SYMLINK $home\_gvimrc WITH $dotfilesPath\.config\nvim\ginit.vim *****************" -ForegroundColor White -BackgroundColor Black
+  New-Item -ItemType SymbolicLink -f -Path "$home\_gvimrc" -Target "$dotfilesPath\.gvimrc"
+}
+
 If ($config.configureNeovim) {
   Write-Host "***************** INSTALL NEOVIM *****************" -ForegroundColor White -BackgroundColor Black
   choco install neovim -y
