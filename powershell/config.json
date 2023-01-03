@@ -6,6 +6,7 @@
   "configureGit": true,
   "configureYarn": true,
   "configureVim": true,
+  "configureNeovim": true,
   "configureAlacritty": true,
   "configureAg": true,
   "configureFd": true,
