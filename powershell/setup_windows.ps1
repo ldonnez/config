@@ -59,6 +59,9 @@ If ($config.configureVim) {
 
   Write-Host "***************** SYMLINK $home\_gvimrc WITH $dotfilesPath\.config\nvim\ginit.vim *****************" -ForegroundColor White -BackgroundColor Black
   New-Item -ItemType SymbolicLink -f -Path "$home\_gvimrc" -Target "$dotfilesPath\.gvimrc"
+
+  Write-Host "***************** INSTALL plugins *****************"  -ForegroundColor White -BackgroundColor Black
+  vim +PlugUpdate +qall
 }
 
 If ($config.configureNeovim) {
