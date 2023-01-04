@@ -52,7 +52,7 @@ If ($config.configureYarn) {
 
 If ($config.configureVim) {
   Write-Host "***************** INSTALL VIM *****************" -ForegroundColor White -BackgroundColor Black
-  winget install vim.vim --silent --source msstore --accept-source-agreements --accept-package-agreements
+  choco install vim -y
 
   Write-Host "***************** SYMLINK $home\_vimrc WITH $dotfilesPath\.vimrc *****************" -ForegroundColor White -BackgroundColor Black
   New-Item -ItemType SymbolicLink -f -Path "$home\_vimrc" -Target "$dotfilesPath\.vimrc"
