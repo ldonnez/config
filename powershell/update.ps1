@@ -6,6 +6,14 @@ choco upgrade all -y
 Write-Host "***************** UPDATE WINGET PACKAGES *****************"  -ForegroundColor White -BackgroundColor Black
 winget upgrade --all
 
+#VIM-PLUG
+Write-Host "***************** UPGRADE vim-plug ***********************"  -ForegroundColor White -BackgroundColor Black
+vim +PlugUpgrade +qall
+
+#VIM
+Write-Host "***************** VIM PLUGINS ***********************"  -ForegroundColor White -BackgroundColor Black
+vim +PlugUpdate +qall
+
 #NEOVIM
 Write-Host "***************** NEOVIM PLUGINS *****************"  -ForegroundColor White -BackgroundColor Black
 nvim --headless "+Lazy! sync" +qa
