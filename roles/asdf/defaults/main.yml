@@ -16,7 +16,7 @@ asdf_plugins:
 
   - name: "ruby"
     repository: "https://github.com/asdf-vm/asdf-ruby"
-    apt_dependencies: ["libssl-dev"]
+    apt_dependencies: ["libssl-dev", "libyaml-dev"]
     homebrew_dependencies: []
     versions:
       - 2.7.5
