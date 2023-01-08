@@ -77,6 +77,9 @@ If ($config.configureNeovim) {
   Write-Host "***************** SYMLINK $home\AppData\Local\nvim\lua WITH $dotfilesPath\.config\nvim\lua *****************" -ForegroundColor White -BackgroundColor Black
   New-Item -ItemType Junction -f -Path "$home\AppData\Local\nvim\lua" -Target "$dotfilesPath\.config\nvim\lua"
 
+  Write-Host "***************** SYMLINK $home\AppData\Local\nvim\lazy-lock.json WITH $dotfilesPath\.config\nvim\lazy-lock.json *****************" -ForegroundColor White -BackgroundColor Black
+  New-Item -ItemType SymbolicLink -f -Path "$home\AppData\Local\nvim\lazy-lock.json" -Target "$dotfilesPath\.config\nvim\lazy-lock.json"
+
   Write-Host "***************** SYMLINK $home\AppData\Local\nvim\snippets WITH $dotfilesPath\.config\nvim\snippets *****************" -ForegroundColor White -BackgroundColor Black
   New-Item -ItemType Junction -f -Path "$home\AppData\Local\nvim\snippets" -Target "$dotfilesPath\.config\nvim\snippets"
 

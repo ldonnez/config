@@ -30,6 +30,14 @@
   tags:
     - install
 
+- name: Symlink lazy-lock.json (lockfile)
+  ansible.builtin.file:
+    src: "{{ neovim_dotfiles_path }}/lazy-lock.json"
+    dest: "{{ neovim_config_dir }}/lazy-lock.json"
+    state: link
+  tags:
+    - install
+
 - name: Symlink snippets from source
   ansible.builtin.file:
     src: "{{ neovim_dotfiles_path }}/snippets"
