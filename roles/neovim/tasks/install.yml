@@ -4,7 +4,7 @@
     validate_certs: false
     repo: "ppa:neovim-ppa/unstable"
     state: present
-  when: ansible_os_family == "Debian"
+  when: ansible_distribution == 'Ubuntu'
   tags:
     - install
 
