@@ -1,12 +1,3 @@
-- name: Symlink .wslrc
-  ansible.builtin.file:
-    src: "{{ dotfiles_directory_path }}/.wslrc"
-    dest: "{{ ansible_env.HOME }}/.wslrc"
-    state: link
-    force: true
-  tags:
-    - install
-
 - name: Symlink wslview with xdg-open
   ansible.builtin.file:
     src: /usr/bin/wslview
@@ -20,5 +11,14 @@
     src: /usr/bin/wslview
     dest: "{{ ansible_env.HOME }}/.local/bin/open"
     state: link
+  tags:
+    - install
+
+- name: Copy wsl.conf to /etc
+  become: true
+  ansible.builtin.copy:
+    src: wsl.conf
+    dest: /etc
+    mode: 0600
   tags:
     - install

@@ -56,7 +56,9 @@ Make sure to check vars in `setup_wsl_ubuntu.yml`, configure the location of the
 This path should be the location of your `.ssh`, `.gnupg` & `.secrets` directories.
 
 - Clone this repo, preferably in your home directory
-- Run `sh run_setup_wsl_ubuntu.sh`. This will install python, pip & ansible and run the setup_wsl_ubuntu.yml playbook
+- Run `sh run_setup_wsl_ubuntu.sh`. This will install python, pip, ansible and makes sure the wsl.conf file is set to enable systemd.
+- Close The WSL session and run wsl.exe --shutdown in powershell shell to rerstart WSL
+- Open Ubuntu 22.04 again and run `ansible-playbook setup_wsl_ubuntu.yml -K`
 
 ### Update WSL2 (Ubuntu 22.04) packages
 
