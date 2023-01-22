@@ -153,7 +153,7 @@ If ($config.configureWsl) {
   wsl --set-default-version 2
 
   Write-Host "***************** INSTALL WSL2 *****************" -ForegroundColor White -BackgroundColor Black
-  choco install wsl2 -y
+  winget install "Windows Subsystem for Linux" --source msstore --accept-source-agreements --accept-package-agreements
 
   Write-Host "***************** INSTALL Ubuntu 22.04.1 LTS WITH WINGET *****************" -ForegroundColor White -BackgroundColor Black
   winget install "Ubuntu 22.04.1 LTS" --silent --source msstore --accept-source-agreements --accept-package-agreements
