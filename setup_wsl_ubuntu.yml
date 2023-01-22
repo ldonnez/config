@@ -33,6 +33,7 @@
     configure_gnupg: true
     configure_ssh: true
     configure_neomutt: true
+    configure_mbsync_with_cron: false
     configure_fonts: false
 
     common_packages:
