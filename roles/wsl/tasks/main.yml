@@ -3,6 +3,3 @@
 
 - name: Include configure
   ansible.builtin.import_tasks: configure.yml
-
-- name: Include win32yank
-  ansible.builtin.import_tasks: win32yank.yml
