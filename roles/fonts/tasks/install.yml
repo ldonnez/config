@@ -4,11 +4,15 @@
     - install
 
   block:
-    - name: Copy Hack Nerd Font Complete to Fonts location
-      ansible.builtin.copy:
-        src: "Hack Nerd Font Complete"
-        dest: "{{ ansible_env.HOME }}/Library/Fonts"
-        mode: "0755"
+    - name: Tap homebrew/cask-fonts
+      community.general.homebrew_tap:
+        name: "homebrew/cask-fonts"
+        state: present
+
+    - name: Install font-hack-nerd-font
+      community.general.homebrew_cask:
+        name: "font-hack-nerd-font"
+        state: present
 
 - name: Install fonts
   when: ansible_os_family == "Debian"
