@@ -27,8 +27,7 @@
     "rustup.install",
     "python",
     "sqlite",
-    "nerdfont-hack",
-    "hackfont",
+    "nerd-fonts-hack",
     "make"
   ],
   "wingetPackages": ["WinRar", "Signal", "calibre"],
