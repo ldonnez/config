@@ -11,7 +11,7 @@ This path should be the location of your `.ssh`, `.gnupg` & `.secrets` directori
 
 - When running from fresh install run `xcode-select --install` to install minimal tools like git etc
 - Clone this repo, preferably in your home directory
-- Run `sh run_setup_macos.sh`. This will install homebrew, pip & ansible and run the setup_macos.yml playbook
+- Run `sh run_setup_macos.sh`. This will install homebrew, pip & ansible, install the requirements specified in requirements.yml and run the setup_macos.yml playbook
 
 ### Update macOS packages
 
@@ -58,7 +58,7 @@ This path should be the location of your `.ssh`, `.gnupg` & `.secrets` directori
 - Clone this repo, preferably in your home directory
 - Run `sh run_setup_wsl_ubuntu.sh`. This will install python, pip, ansible and makes sure the wsl.conf file is set to enable systemd.
 - Close The WSL session and run wsl.exe --shutdown in powershell shell to rerstart WSL
-- Open Ubuntu 22.04 again and run `ansible-playbook setup_wsl_ubuntu.yml -K`
+- Open Ubuntu 22.04 again and run `ansible-galaxy install -r requirements.yml && ansible-playbook setup_wsl_ubuntu.yml -K`
 
 ### Update WSL2 (Ubuntu 22.04) packages
 

@@ -11,6 +11,9 @@ brew update && brew upgrade
 # install ansible
 brew install ansible ansible-lint
 
+# install requirements
+ansible-galaxy install -r requirements.yml
+
 # run playbook
 ansible-playbook setup_macos.yml -K
 
