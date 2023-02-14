@@ -74,6 +74,7 @@
       - figma
       - pgadmin4
       - spotify
+      - logseq
 
     mas_apps:
       - name: "Bitwarden"
