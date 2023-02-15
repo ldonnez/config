@@ -17,6 +17,10 @@
         src: "{{ansible_env.HOME}}/org"
         dest: "{{ansible_env.HOME}}/SynologyDrive"
 
+      - name: "Logseq"
+        src: "{{ansible_env.HOME}}/Library/Mobile Documents/iCloud~com~logseq~logseq/Documents/"
+        dest: "{{ansible_env.HOME}}/SynologyDrive/Logseq"
+
   tasks:
     - name: Synchronize
       ansible.builtin.import_role:
