@@ -8,6 +8,7 @@ npm_lsp:
     "vscode-langservers-extracted",
     "eslint_d",
     "@fsouza/prettierd",
+    "@tailwindcss/language-server",
   ]
 
 yarn_lsp:
