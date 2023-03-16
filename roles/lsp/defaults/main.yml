@@ -9,6 +9,7 @@ npm_lsp:
     "eslint_d",
     "@fsouza/prettierd",
     "@tailwindcss/language-server",
+    "@prisma/language-server"
   ]
 
 yarn_lsp:
