@@ -6,6 +6,10 @@ choco upgrade all -y
 Write-Host "***************** UPDATE WINGET PACKAGES *****************"  -ForegroundColor White -BackgroundColor Black
 winget upgrade --all
 
+# WSL
+Write-Host "***************** UPDATE WINGET PACKAGES *****************"  -ForegroundColor White -BackgroundColor Black
+wsl.exe --update
+
 #VIM-PLUG
 Write-Host "***************** UPGRADE vim-plug ***********************"  -ForegroundColor White -BackgroundColor Black
 vim +PlugUpgrade +qall
