@@ -66,7 +66,7 @@ If ($config.configureVim) {
 
 If ($config.configureNeovim) {
   Write-Host "***************** INSTALL NEOVIM *****************" -ForegroundColor White -BackgroundColor Black
-  choco install neovim -y
+  winget install neovim
 
   Write-Host "***************** SYMLINK $home\AppData\Local\nvim\ginit.vim WITH $dotfilesPath\.config\nvim\ginit.vim *****************" -ForegroundColor White -BackgroundColor Black
   New-Item -ItemType SymbolicLink -f -Path "$home\AppData\Local\nvim\ginit.vim" -Target "$dotfilesPath\.config\nvim\ginit.vim"
