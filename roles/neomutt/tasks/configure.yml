@@ -100,13 +100,13 @@
       ansible.builtin.copy:
         src: mbsync.service
         dest: "{{ ansible_env.HOME }}/.config/systemd/user"
-        mode: 0700
+        mode: "0700"
 
     - name: Copy mbsync.timer file
       ansible.builtin.copy:
         src: mbsync.timer
         dest: "{{ ansible_env.HOME }}/.config/systemd/user"
-        mode: 0700
+        mode: "0700"
 
     - name: Reload systemd
       become: true

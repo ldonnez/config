@@ -9,7 +9,7 @@
       fi
       export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
     create: true
-    mode: 0700
+    mode: "0700"
   tags:
     - install
 
