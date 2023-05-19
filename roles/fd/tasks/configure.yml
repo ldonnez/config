@@ -14,11 +14,11 @@
   block:
     - name: Getting fdfind binary location
       ansible.builtin.command: which fdfind
-      register: fdfind_binary
+      register: fd_fdfind_binary
 
     - name: Link with fdfind binary location
       ansible.builtin.file:
-        src: "{{ fdfind_binary.stdout }}"
+        src: "{{ fd_fdfind_binary.stdout }}"
         dest: "{{ ansible_env.HOME }}/.local/bin/fd"
         state: link
         force: true

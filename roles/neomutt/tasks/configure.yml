@@ -82,13 +82,13 @@
   block:
     - name: Getting flock binary location
       ansible.builtin.command: which flock
-      register: flock_binary
+      register: neomutt_flock_binary
 
     - name: Check mail every minute with cron
       ansible.builtin.cron:
         name: "check mail"
         minute: "*/2"
-        job: "{{ flock_binary.stdout }} -w 0 /var/lock/mbsync.lock bash -c $HOME/.mutt/sync-mail.sh"
+        job: "{{ neomutt_flock_binary.stdout }} -w 0 /var/lock/mbsync.lock bash -c $HOME/.mutt/sync-mail.sh"
 
 - name: Check mail every 2 minutes with systemd
   when: ansible_os_family == "Debian" and not configure_mbsync_with_cron

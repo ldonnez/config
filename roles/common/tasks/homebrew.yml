@@ -9,7 +9,7 @@
   community.general.homebrew:
     update_homebrew: true
     upgrade_all: true
-  register: homebrew_update_output
+  register: common_homebrew_update_output
   ignore_errors: "{{ ansible_check_mode }}"
   tags:
     - update
