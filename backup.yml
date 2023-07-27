@@ -25,6 +25,11 @@
         dest: "{{ansible_env.HOME}}/SynologyDrive/Logseq"
         delete: true
 
+      - name: "projects"
+        src: "{{ansible_env.HOME}}/projects/"
+        dest: "{{ansible_env.HOME}}/SynologyDrive/projects"
+        delete: false
+
   tasks:
     - name: Synchronize
       ansible.builtin.import_role:
