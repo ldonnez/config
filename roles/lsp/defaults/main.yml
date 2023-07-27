@@ -8,7 +8,6 @@ npm_lsp:
   [
     "typescript",
     "vscode-langservers-extracted",
-    "eslint_d",
     "@fsouza/prettierd",
     "@tailwindcss/language-server",
     "@prisma/language-server"
