@@ -21,3 +21,7 @@ vim +PlugUpdate +qall
 #NEOVIM
 Write-Host "***************** NEOVIM PLUGINS *****************"  -ForegroundColor White -BackgroundColor Black
 nvim --headless "+Lazy! sync" +qa
+
+#EFM-LANGSERVER
+Write-Host "***************** EFM lANGSERVER *****************"  -ForegroundColor White -BackgroundColor Black
+go install github.com/mattn/efm-langserver@latest

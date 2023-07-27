@@ -92,6 +92,12 @@ If ($config.configureNeovim) {
   Write-Host "***************** INSTALL stylua with cargo *****************" -ForegroundColor White -BackgroundColor Black
   cargo install stylua
 
+  Write-Host "***************** INSTALL efm-langserver with go *****************" -ForegroundColor White -BackgroundColor Black
+  go install github.com/mattn/efm-langserver@latest
+
+  Write-Host "***************** SYMLINK $home\AppData\Roaming\efm-langserver\config.yaml WITH $dotfilesPath\.config\efm-langserver\config.yaml *****************" -ForegroundColor White -BackgroundColor Black
+  New-Item -ItemType SymbolicLink -f -Path "$home\AppData\Roaming\efm-langserver\config.yaml" -Target "$dotfilesPath\.config\efm-langserver\config.yaml"
+
   Write-Host "***************** INSTALL virtualenv with pip *****************" -ForegroundColor White -BackgroundColor Black
   pip3 install virtualenv
 

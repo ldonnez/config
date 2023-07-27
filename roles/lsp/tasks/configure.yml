@@ -1,0 +1,15 @@
+- name: "Ensure {{ efm_config_dir }}"
+  ansible.builtin.file:
+    name: "{{ efm_config_dir }}"
+    state: directory
+    recurse: true
+  tags:
+    - install
+
+- name: Symlink efm config.lua
+  ansible.builtin.file:
+    src: "{{ efm_dotfiles_path }}/config.yaml"
+    dest: "{{ efm_config_dir }}/config.yaml"
+    state: link
+  tags:
+    - install
