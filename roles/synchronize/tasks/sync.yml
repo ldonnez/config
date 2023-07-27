@@ -3,6 +3,6 @@
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
     recursive: true
-    delete: true
+    delete: "{{ item.delete }}"
     checksum: true
   loop: "{{ directories_to_synchronize }}"
