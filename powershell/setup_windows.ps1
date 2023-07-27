@@ -84,7 +84,7 @@ If ($config.configureNeovim) {
   New-Item -ItemType Junction -f -Path "$home\AppData\Local\nvim\snippets" -Target "$dotfilesPath\.config\nvim\snippets"
 
   Write-Host "***************** INSTALL language servers with npm *****************" -ForegroundColor White -BackgroundColor Black
-  npm install typescript typescript-language-server vscode-langservers-extracted eslint_d @fsouza/prettierd -g
+  npm install typescript vscode-langservers-extracted eslint_d @fsouza/prettierd -g
 
   Write-Host "***************** INSTALL language servers with yarn *****************" -ForegroundColor White -BackgroundColor Black
   yarn global add yaml-language-server -g
