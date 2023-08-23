@@ -41,6 +41,7 @@
     common_packages:
       - coreutils
       - htop
+      - btop
       - mosh
       - imagemagick
       - jq
