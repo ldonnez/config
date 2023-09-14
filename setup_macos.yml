@@ -37,6 +37,7 @@
     configure_neomutt: true
     configure_mbsync_with_cron: false
     configure_kitty: true
+    configure_linearmouse: true
 
     common_packages:
       - coreutils
@@ -63,7 +64,6 @@
       - firefox-developer-edition
       - docker
       - rectangle
-      - linearmouse
       - calibre
       - google-chrome
       - insomnia
@@ -261,6 +261,13 @@
       when: configure_kitty
       tags:
         - kitty
+
+    - name: Configure linearmouse
+      ansible.builtin.import_role:
+        name: linearmouse
+      when: configure_linearmouse
+      tags:
+        - linearmouse
 
     - name: Install homebrew casks
       ansible.builtin.import_role:

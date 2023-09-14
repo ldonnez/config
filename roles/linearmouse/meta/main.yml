@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  role_name: linearmouse
+  author: ldonnez
+  description: The mouse and trackpad utility for Mac.
+  license: MIT
+  min_ansible_version: "2.10"
+
+  platforms:
+    - name: macOS
+      versions:
+        - all
+
+dependencies:
+  - role: dotfiles

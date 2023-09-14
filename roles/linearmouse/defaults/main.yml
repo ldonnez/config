@@ -1,0 +1,5 @@
+---
+# defaults file for linearmouse
+
+linearmouse_config_dir: "{{ ansible_env.HOME }}/.config/linearmouse"
+linearmouse_dotfiles_path: "{{ dotfiles_directory_path }}/.config/linearmouse"

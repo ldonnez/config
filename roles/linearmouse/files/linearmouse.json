@@ -1,0 +1,36 @@
+{
+  "$schema" : "https:\/\/schema.linearmouse.app\/0.8.0",
+  "schemes" : [
+    {
+      "pointer" : {
+        "disableAcceleration" : true
+      },
+      "if" : {
+        "device" : {
+          "productName" : "Sensei Raw Gaming Mouse",
+          "productID" : "0x1369",
+          "category" : "mouse",
+          "vendorID" : "0x1038"
+        }
+      }
+    },
+    {
+      "pointer" : {
+        "disableAcceleration" : true
+      },
+      "if" : {
+        "device" : {
+          "productName" : "SteelSeries Sensei Ten",
+          "productID" : "0x1832",
+          "category" : "mouse",
+          "vendorID" : "0x1038"
+        }
+      },
+      "scrolling" : {
+        "acceleration" : {
+          "vertical" : 1
+        }
+      }
+    }
+  ]
+}
