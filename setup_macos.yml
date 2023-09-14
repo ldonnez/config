@@ -15,6 +15,7 @@
     install_dotfiles: true
     install_fonts: true
 
+    configure_preferences: true
     configure_git: true
     configure_zsh: true
     configure_asdf: true
@@ -100,6 +101,13 @@
       when: install_common_packages
       tags:
         - common
+
+    - name: Configure preferences
+      ansible.builtin.import_role:
+        name: preferences
+      when: configure_preferences
+      tags:
+        - preferences
 
     - name: Install dotfiles
       ansible.builtin.import_role:

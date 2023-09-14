@@ -1,0 +1,227 @@
+- name: Configure Dock
+  tags:
+    - install
+
+  block:
+    - name: Set icon size
+      community.general.osx_defaults:
+        domain: com.apple.dock
+        key: tilesize
+        type: float
+        value: 36
+        state: present
+
+    - name: Autohide
+      community.general.osx_defaults:
+        domain: com.apple.dock
+        key: autohide
+        type: bool
+        value: true
+        state: present
+
+    - name: Minimize applications into their icon
+      community.general.osx_defaults:
+        domain: com.apple.dock
+        key: minimize-to-application
+        type: bool
+        value: true
+        state: present
+
+    - name: Show indicator lights for open applications
+      community.general.osx_defaults:
+        domain: com.apple.dock
+        key: show-process-indicators
+        type: bool
+        value: true
+        state: present
+
+    - name: Dont show recents
+      community.general.osx_defaults:
+        domain: com.apple.dock
+        key: show-recents
+        type: bool
+        value: false
+        state: present
+
+    - name: Restart
+      ansible.builtin.command: killall Dock
+
+- name: Configure Finder
+  tags:
+    - install
+
+  block:
+    - name: Dont save documents to iCloud by default
+      community.general.osx_defaults:
+        domain: NSGlobalDomain
+        key: NSDocumentSaveNewDocumentsToCloud
+        type: bool
+        value: false
+        state: present
+
+    - name: Keep folders on top in Finder
+      community.general.osx_defaults:
+        domain: com.apple.finder
+        key: _FXSortFoldersFirst
+        type: bool
+        value: true
+        state: present
+
+    - name: Show path bar in the bottom of Finder windows
+      community.general.osx_defaults:
+        domain: com.apple.finder
+        key: ShowPathbar
+        type: bool
+        value: true
+        state: present
+
+    - name: Show all filename extensions
+      community.general.osx_defaults:
+        domain: NSGlobalDomain
+        key: AppleShowAllExtensions
+        type: bool
+        value: true
+        state: present
+
+    - name: Restart
+      ansible.builtin.command: killall Finder
+
+- name: Configure Keyboard
+  tags:
+    - install
+
+  block:
+    - name: Set Initial Keyboard repeat
+      community.general.osx_defaults:
+        domain: NSGlobalDomain
+        key: KeyRepeat
+        type: int
+        value: 2
+        state: present
+
+    - name: Set Keyboard repeat
+      community.general.osx_defaults:
+        domain: NSGlobalDomain
+        key: InitialKeyRepeat
+        type: int
+        value: 15
+        state: present
+
+    - name: Disable automatic capitalization
+      community.general.osx_defaults:
+        domain: NSGlobalDomain
+        key: NSAutomaticCapitalizationEnabled
+        type: bool
+        value: false
+        state: present
+
+    - name: Disable smart dashes
+      community.general.osx_defaults:
+        domain: NSGlobalDomain
+        key: NSAutomaticDashSubstitutionEnabled
+        type: bool
+        value: false
+        state: present
+
+    - name: Disable automatic period substitution
+      community.general.osx_defaults:
+        domain: NSGlobalDomain
+        key: NSAutomaticPeriodSubstitutionEnabled
+        type: bool
+        value: false
+        state: present
+
+    - name: Disable smart quotes substitution
+      community.general.osx_defaults:
+        domain: NSGlobalDomain
+        key: NSAutomaticQuoteSubstitutionEnabled
+        type: bool
+        value: false
+        state: present
+
+    - name: Disable auto-correct
+      community.general.osx_defaults:
+        domain: NSGlobalDomain
+        key: NSAutomaticSpellingCorrectionEnabled
+        type: bool
+        value: false
+        state: present
+
+- name: Disable Siri
+  tags:
+    - install
+
+  block:
+    - name: Disable assistant
+      community.general.osx_defaults:
+        domain: com.apple.assistant.support
+        key: Assistant Enabled
+        type: bool
+        value: false
+        state: present
+
+    - name: Remove Siri from menu bar
+      community.general.osx_defaults:
+        domain: com.apple.Siri
+        key: StatusMenuVisible
+        type: bool
+        value: false
+        state: present
+
+- name: Set clock format
+  community.general.osx_defaults:
+    domain: com.apple.menuextra.clock
+    key: DateFormat
+    type: string
+    value: EEE d MMM HH:mm:ss
+    state: present
+  tags:
+    - install
+
+- name: Set languages
+  community.general.osx_defaults:
+    domain: NSGlobalDomain
+    key: AppleLanguages
+    type: array
+    value:
+      - en
+      - nl-BE
+    state: present
+  tags:
+    - install
+
+- name: Autohide menubar
+  community.general.osx_defaults:
+    domain: NSGlobalDomain
+    key: _HIHideMenuBar
+    type: bool
+    value: true
+  tags:
+    - install
+
+- name: Disable natural scrolling for trackpad
+  community.general.osx_defaults:
+    domain: NSGlobalDomain
+    key: com.apple.swipescrolldirection
+    type: bool
+    value: false
+  tags:
+    - install
+
+- name: Set dark mode
+  community.general.osx_defaults:
+    domain: NSGlobalDomain
+    key: AppleInterfaceStyle
+    type: string
+    value: Dark
+  tags:
+    - install
+
+- name: Turn off Automatic Sharing of content in Messages
+  community.general.osx_defaults:
+    domain: com.apple.SocialLayer
+    key: SharedWithYouEnabled
+    type: bool
+    value: false
+  tags:
+    - install

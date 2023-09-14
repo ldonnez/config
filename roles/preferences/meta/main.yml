@@ -1,0 +1,12 @@
+---
+galaxy_info:
+  role_name: preferences
+  author: ldonnez
+  description: Configure OS
+  license: MIT
+  min_ansible_version: "2.10"
+
+  platforms:
+    - name: macOS
+      versions:
+        - all
