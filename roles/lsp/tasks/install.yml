@@ -9,12 +9,6 @@
         global: true
       loop: "{{ npm_lsp }}"
 
-    - name: Install language servers & linters with yarn
-      community.general.yarn:
-        name: "{{ item }}"
-        global: true
-      loop: "{{ yarn_lsp }}"
-
     - name: Install/Update language servers & linters with cargo
       community.general.cargo:
         name: "{{ item }}"
