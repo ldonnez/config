@@ -127,7 +127,6 @@
 
   block:
     - name: Stop homebrew isync services
-      become: true
       ansible.builtin.command: brew services stop isync
 
     - name: Unload homebrew.mxcl.isync.plist
