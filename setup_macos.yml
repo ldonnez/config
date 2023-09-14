@@ -14,6 +14,7 @@
     install_mas_apps: true
     install_dotfiles: true
     install_fonts: true
+    install_synology_drive: true
 
     configure_preferences: true
     configure_git: true
@@ -123,6 +124,13 @@
       when: install_fonts
       tags:
         - fonts
+
+    - name: Install synology drive
+      ansible.builtin.import_role:
+        name: synology_drive
+      when: install_fonts
+      tags:
+        - synology_drive
 
     - name: Configure git
       ansible.builtin.import_role:

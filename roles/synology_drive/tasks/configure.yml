@@ -1,0 +1,17 @@
+- name: Ensures ~/Library/Application Support/SynologyDrive/data/session/1/conf dir exists
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/Library/Application Support/SynologyDrive/data/session/1/conf"
+    state: directory
+    recurse: true
+  tags:
+    - install
+
+- name: Copy blacklist.filter
+  ansible.builtin.copy:
+    src: blacklist.filter
+    dest: "{{ ansible_env.HOME }}/Library/Application Support/SynologyDrive/data/session/1/conf/blacklist.filter"
+    owner: "{{ ansible_user_id }}"
+    mode: "0644"
+    follow: true
+  tags:
+    - install

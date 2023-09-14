@@ -1,0 +1,6 @@
+- name: Install synology-drive via homebrew cask
+  community.general.homebrew_cask:
+    name: synology-drive
+    state: present
+  tags:
+    - install
