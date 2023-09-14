@@ -3,7 +3,7 @@
 cd "$(dirname "$0")"
 
 # install homebrew
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 # update brew
 brew update && brew upgrade
