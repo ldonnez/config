@@ -79,6 +79,7 @@
       - spotify
       - logseq
       - steelseries-gg
+      - tor-browser
 
     mas_apps:
       - name: "Bitwarden"
