@@ -1,0 +1,3 @@
+- name: Include configure
+  ansible.builtin.import_tasks: configure.yml
+  when: ansible_os_family == 'Darwin'

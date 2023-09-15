@@ -17,6 +17,7 @@
     install_synology_drive: true
 
     configure_preferences: true
+    configure_terminal: true
     configure_git: true
     configure_zsh: true
     configure_asdf: true
@@ -125,6 +126,13 @@
       when: install_fonts
       tags:
         - fonts
+
+    - name: Configure terminal
+      ansible.builtin.import_role:
+        name: terminal
+      when: configure_terminal
+      tags:
+        - terminal
 
     - name: Install synology drive
       ansible.builtin.import_role:

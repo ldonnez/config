@@ -1,0 +1,24 @@
+- name: Configure Terminal.app
+  ansible.builtin.command: open files/Nord.terminal
+  args:
+    chdir: "{{ role_path }}"
+  tags:
+    - install
+
+- name: Set Nord as default theme
+  community.general.osx_defaults:
+    domain: com.apple.Terminal
+    key: Default Window Settings
+    type: string
+    value: "Nord"
+  tags:
+    - install
+
+- name: Let Terminal.app start with Nord theme
+  community.general.osx_defaults:
+    domain: com.apple.Terminal
+    key: Startup Window Settings
+    type: string
+    value: "Nord"
+  tags:
+    - install

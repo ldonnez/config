@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  role_name: terminal
+  author: ldonnez
+  description: Configure Terminal.app on MacOS
+  license: MIT
+  min_ansible_version: "2.10"
+
+  platforms:
+    - name: macOS
+      versions:
+        - all
+
+dependencies:
+  - role: fonts
