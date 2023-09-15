@@ -9,7 +9,7 @@
     private_dotfiles_path: "{{ ansible_env.HOME }}/private"
     private_dotfiles_source: "/mnt/c/Users/lenny/SynologyDrive/private"
 
-    install_common_packages: true
+    install_packages: true
     install_dotfiles: true
 
     configure_wsl: true
@@ -36,7 +36,7 @@
     configure_mbsync_with_cron: false
     configure_fonts: false
 
-    common_packages:
+    packages:
       - coreutils
       - build-essential
       - htop
@@ -55,12 +55,12 @@
       - clang
 
   tasks:
-    - name: Install common packages
+    - name: Install packages
       ansible.builtin.import_role:
-        name: common
-      when: install_common_packages
+        name: packages
+      when: install_packages
       tags:
-        - common
+        - packages
 
     - name: Configure wsl
       ansible.builtin.import_role:

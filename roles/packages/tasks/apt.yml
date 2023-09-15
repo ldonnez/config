@@ -1,6 +1,6 @@
-- name: Install common packages with apt
+- name: Install packages with apt
   ansible.builtin.apt:
-    name: "{{ common_packages }}"
+    name: "{{ packages }}"
     state: present
   become: true
   tags:

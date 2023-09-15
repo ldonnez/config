@@ -9,7 +9,7 @@
     private_dotfiles_path: "{{ ansible_env.HOME }}/private"
     private_dotfiles_source: "{{ ansible_env.HOME }}/SynologyDrive/private"
 
-    install_common_packages: true
+    install_packages: true
     install_homebrew_casks: true
     install_mas_apps: true
     install_dotfiles: true
@@ -41,7 +41,7 @@
     configure_kitty: true
     configure_linearmouse: true
 
-    common_packages:
+    packages:
       - coreutils
       - htop
       - btop
@@ -98,12 +98,12 @@
         id: 497799835
 
   tasks:
-    - name: Install common packages
+    - name: Install packages
       ansible.builtin.import_role:
-        name: common
-      when: install_common_packages
+        name: packages
+      when: install_packages
       tags:
-        - common
+        - packages
 
     - name: Configure preferences
       ansible.builtin.import_role:

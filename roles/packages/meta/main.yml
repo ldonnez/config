@@ -1,6 +1,6 @@
 ---
 galaxy_info:
-  role_name: common
+  role_name: packages
   author: ldonnez
   description: Install base packages
   license: MIT
