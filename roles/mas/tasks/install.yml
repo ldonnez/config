@@ -12,6 +12,12 @@
   tags:
     - install
 
+- name: Accept xcodebuild license
+  become: true
+  ansible.builtin.command: xcodebuild -license accept
+  tags:
+    - install
+
 - name: Upgrade all installed Mac App Store apps
   community.general.mas:
     upgrade_all: true
