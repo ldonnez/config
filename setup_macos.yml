@@ -59,6 +59,8 @@
       - rust
       - python
       - virtualenv
+      - mkcert
+      - nss
 
     homebrew_taps:
       - homebrew/cask-versions
