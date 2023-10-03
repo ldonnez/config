@@ -17,6 +17,7 @@
   ansible.builtin.command: xcodebuild -license accept
   tags:
     - install
+    - update
 
 - name: Upgrade all installed Mac App Store apps
   community.general.mas:
