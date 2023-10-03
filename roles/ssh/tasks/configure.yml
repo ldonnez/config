@@ -29,6 +29,7 @@
     - install
 
 - name: Ensure access rights id_rsa
+  become: true
   become_user: root
   ansible.builtin.file:
     path: "{{ ansible_env.HOME }}/.ssh/id_rsa"
@@ -37,6 +38,7 @@
     - install
 
 - name: Ensure access rights .ssh/config
+  become: true
   become_user: root
   ansible.builtin.file:
     path: "{{ ansible_env.HOME }}/.ssh/config"
