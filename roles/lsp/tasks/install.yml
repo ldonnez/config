@@ -7,15 +7,15 @@
       community.general.npm:
         name: "{{ item }}"
         global: true
-      loop: "{{ npm_lsp }}"
+      loop: "{{ lsp_npm }}"
 
     - name: Install/Update language servers & linters with cargo
       community.general.cargo:
         name: "{{ item }}"
-      loop: "{{ cargo_lsp }}"
+      loop: "{{ lsp_cargo }}"
 
     - name: Install/Update language servers & linters with go
       ansible.builtin.command: go install "{{ item }}"
-      loop: "{{ go_lsp }}"
+      loop: "{{ lsp_go }}"
       tags:
         - update

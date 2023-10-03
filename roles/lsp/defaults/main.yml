@@ -1,10 +1,10 @@
 ---
 # defaults file for lsp
 
-efm_config_dir: "{{ ansible_env.HOME }}/.config/efm-langserver"
-efm_dotfiles_path: "{{ dotfiles_directory_path }}/.config/efm-langserver"
+lsp_efm_config_dir: "{{ ansible_env.HOME }}/.config/efm-langserver"
+lsp_efm_dotfiles_path: "{{ dotfiles_directory_path }}/.config/efm-langserver"
 
-npm_lsp:
+lsp_npm:
   [
     "typescript",
     "vscode-langservers-extracted",
@@ -15,6 +15,6 @@ npm_lsp:
     "graphql-language-service-cli",
   ]
 
-cargo_lsp: ["stylua"]
+lsp_cargo: ["stylua"]
 
-go_lsp: ["github.com/mattn/efm-langserver@latest"]
+lsp_go: ["github.com/mattn/efm-langserver@latest"]
