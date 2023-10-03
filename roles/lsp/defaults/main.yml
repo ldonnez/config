@@ -14,12 +14,6 @@ npm_lsp:
     "yaml-language-server"
   ]
 
-cargo_lsp:
-  [
-    "stylua"
-  ]
+cargo_lsp: ["stylua"]
 
-go_lsp:
-  [
-    "github.com/mattn/efm-langserver@latest"
-  ]
+go_lsp: ["github.com/mattn/efm-langserver@latest"]
