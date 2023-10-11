@@ -1,0 +1,36 @@
+- name: Install python3-setuptools, python3-pip with apt
+  ansible.builtin.apt:
+    name: ["python3-setuptools", "python3-pip"]
+    state: present
+  become: true
+  when: ansible_os_family == "Debian"
+  tags:
+    - install
+
+- name: Install python3 with hombrew
+  community.general.homebrew:
+    name: ["python3"]
+    state: present
+  when: ansible_os_family == "Darwin"
+  tags:
+    - install
+
+- name: Install packages with pip
+  when: ansible_os_family == "Debian"
+  ansible.builtin.pip:
+    name: "{{ item }}"
+    executable: pip3
+    extra_args: --user
+  loop: "{{ lsp_pip }}"
+  tags:
+    - install
+
+- name: Upgrade packages with pip
+  when: ansible_os_family == "Debian"
+  ansible.builtin.pip:
+    name: "{{ item }}"
+    executable: pip3
+    extra_args: --user --upgrade
+  loop: "{{ lsp_pip }}"
+  tags:
+    - update

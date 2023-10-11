@@ -17,6 +17,7 @@
     configure_zsh: true
     configure_asdf: true
     configure_npm: true
+    configure_pip: true
     configure_yarn: true
     configure_fzf: true
     configure_vim: true
@@ -103,6 +104,13 @@
       when: configure_npm
       tags:
         - npm
+
+    - name: Configure pip
+      ansible.builtin.import_role:
+        name: pip
+      when: configure_pip
+      tags:
+        - pip
 
     - name: Configure yarn
       ansible.builtin.import_role:
