@@ -13,6 +13,7 @@ lsp_npm:
     "@prisma/language-server",
     "yaml-language-server",
     "graphql-language-service-cli",
+    "@ansible/ansible-language-server",
   ]
 
 lsp_cargo: ["stylua"]
