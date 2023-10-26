@@ -84,6 +84,7 @@
       - logseq
       - steelseries-gg
       - tor-browser
+      - zotero
 
     mas_apps:
       - name: "Bitwarden"
