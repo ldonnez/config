@@ -62,6 +62,7 @@
       - virtualenv
       - mkcert
       - nss
+      - sqlcmd
 
     homebrew_taps:
       - homebrew/cask-versions
