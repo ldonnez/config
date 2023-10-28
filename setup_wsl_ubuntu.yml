@@ -19,6 +19,7 @@
     configure_npm: true
     configure_pip: true
     configure_yarn: true
+    configure_haskell: true
     configure_fzf: true
     configure_vim: true
     configure_lsp: true
@@ -118,6 +119,13 @@
       when: configure_yarn
       tags:
         - yarn
+
+    - name: Configure haskell
+      ansible.builtin.import_role:
+        name: haskell
+      when: configure_haskell
+      tags:
+        - haskell
 
     - name: Configure fzf
       ansible.builtin.import_role:
@@ -232,4 +240,4 @@
         - fonts
 
   environment:
-    PATH: "{{ ansible_env.HOME}}/.asdf/shims:{{ ansible_env.HOME }}/.asdf/bin/:{{ansible_env.HOME}}/.local/bin:{{ ansible_env.HOME }}/.npm/bin:/usr/bin:/usr/sbin:/sbin:/usr/lib/wsl/lib"
+    PATH: "{{ ansible_env.HOME}}/.asdf/shims:{{ ansible_env.HOME }}/.asdf/bin/:{{ansible_env.HOME}}/.local/bin:{{ ansible_env.HOME }}/.npm/bin:{{ ansible_env.HOME}}/.ghcup/bin:/usr/bin:/usr/sbin:/sbin:/usr/lib/wsl/lib"
