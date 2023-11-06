@@ -65,10 +65,14 @@
   tags:
     - install
 
-- name: Install/Update neovim plugins
-  ansible.builtin.command: nvim --headless "+Lazy! sync" +qa
+- name: Install neovim plugins from lazy-lock.json file
+  ansible.builtin.command: nvim --headless "+Lazy! restore" +qa
   tags:
     - install
+
+- name: Update neovim plugins
+  ansible.builtin.command: nvim --headless "+Lazy! sync" +qa
+  tags:
     - update
 
 - name: Upgrade pynvim
