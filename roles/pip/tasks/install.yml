@@ -21,7 +21,7 @@
     name: "{{ item }}"
     executable: pip3
     extra_args: --user
-  loop: "{{ lsp_pip }}"
+  loop: "{{ pip_packages }}"
   tags:
     - install
 
@@ -31,6 +31,6 @@
     name: "{{ item }}"
     executable: pip3
     extra_args: --user --upgrade
-  loop: "{{ lsp_pip }}"
+  loop: "{{ pip_packages }}"
   tags:
     - update
