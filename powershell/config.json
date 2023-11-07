@@ -28,7 +28,8 @@
     "python",
     "sqlite",
     "nerd-fonts-hack",
-    "make"
+    "make",
+    "ninja"
   ],
   "wingetPackages": ["WinRar", "Signal", "calibre"],
   "msStorePackages": [
