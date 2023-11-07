@@ -163,9 +163,6 @@ If ($config.configureWsl) {
 
   Write-Host "***************** INSTALL Ubuntu 22.04.1 LTS WITH WINGET *****************" -ForegroundColor White -BackgroundColor Black
   winget install "Ubuntu 22.04.1 LTS" --silent --source msstore --accept-source-agreements --accept-package-agreements
-
-  Write-Host "***************** INSTALL WIN32YANK *****************" -ForegroundColor White -BackgroundColor Black
-  choco install win32yank -y
 }
 
 Write-Host "***************** INSTALL PACKAGES WITH WINGET *****************" -ForegroundColor White -BackgroundColor Black
