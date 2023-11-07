@@ -34,3 +34,12 @@
   loop: "{{ pip_packages }}"
   tags:
     - update
+
+- name: Upgrade pip
+  when: ansible_os_family == "Debian"
+  ansible.builtin.pip:
+    name: pip
+    executable: pip3
+    extra_args: --user --upgrade
+  tags:
+    - update
