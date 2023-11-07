@@ -15,11 +15,6 @@
         dest: "{{ansible_env.HOME}}/SynologyDrive"
         delete: true
 
-      - name: "org"
-        src: "{{ansible_env.HOME}}/org"
-        dest: "{{ansible_env.HOME}}/SynologyDrive"
-        delete: true
-
       - name: "Logseq"
         src: "{{ansible_env.HOME}}/Library/Mobile Documents/iCloud~com~logseq~logseq/Documents/"
         dest: "{{ansible_env.HOME}}/SynologyDrive/Logseq"
