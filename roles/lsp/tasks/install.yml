@@ -13,6 +13,8 @@
       community.general.cargo:
         name: "{{ item }}"
       loop: "{{ lsp_cargo }}"
+      tags:
+        - update
 
     - name: Install/Update language servers & linters with go
       ansible.builtin.command: go install "{{ item }}"
