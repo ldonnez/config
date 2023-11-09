@@ -12,6 +12,6 @@ black_suffix = ".lnk", ".log", ".pst", ".swp", ".temp", ".tmp", "tags", ".swo"
 max_size = 0
 
 [Directory]
-black_name = ".cache", ".node-gyp", "bower_components", "node_modules", ".git", "vendor", "bin", "pkg", "dist", "build", ".vim", ".tmux", "tmp"
+black_name = ".cache", ".node-gyp", "bower_components", "node_modules", ".git", "vendor", "bin", "pkg", "dist", "build", ".vim", ".tmux", "tmp", ".venv", "venv", "__pycache__"
 
 [EA]
