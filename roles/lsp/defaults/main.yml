@@ -19,3 +19,5 @@ lsp_npm:
 lsp_cargo: ["stylua"]
 
 lsp_go: ["github.com/mattn/efm-langserver@latest"]
+
+lsp_pip: ["shandy-sqlfmt"]

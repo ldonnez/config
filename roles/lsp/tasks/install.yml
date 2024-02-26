@@ -22,11 +22,18 @@
       tags:
         - update
 
+    - name: Getting pipx binary location
+      when: ansible_os_family == "Darwin"
+      ansible.builtin.command: which pipx
+      register: lsp_pipx_binary
+      tags:
+        - update
+
     - name: Install language servers & linters with pipx
       when: ansible_os_family == "Darwin"
       community.general.pipx:
         name: "{{ item }}"
-        executable: "/usr/local/bin/pipx"
+        executable: "{{ lsp_pipx_binary.stdout }}"
       loop: "{{ lsp_pip }}"
 
     - name: Update language servers & linters with pipx
@@ -34,7 +41,7 @@
       community.general.pipx:
         name: "{{ item }}"
         state: upgrade
-        executable: "/usr/local/bin/pipx"
+        executable: "{{ lsp_pipx_binary.stdout }}"
       loop: "{{ lsp_pip }}"
       tags:
         - update
