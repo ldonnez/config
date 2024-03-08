@@ -46,22 +46,10 @@
   tags:
     - install
 
-- name: Install pynvim with pip3
-  ansible.builtin.pip:
-    name: pynvim
-    executable: pip3
-  tags:
-    - install
-
 - name: Install neovim npm package globally
   community.general.npm:
     name: neovim
     global: true
-  tags:
-    - install
-
-- name: Install neovim gem
-  ansible.builtin.command: gem install neovim
   tags:
     - install
 
@@ -72,10 +60,5 @@
 
 - name: Update neovim plugins
   ansible.builtin.command: nvim --headless "+Lazy! sync" +qa
-  tags:
-    - update
-
-- name: Upgrade pynvim
-  ansible.builtin.command: pip3 install pynvim --upgrade
   tags:
     - update
