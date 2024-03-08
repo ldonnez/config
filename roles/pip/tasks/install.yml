@@ -15,6 +15,14 @@
   tags:
     - install
 
+- name: Install pipx with homebrew
+  community.general.homebrew:
+    name: ["pipx"]
+    state: present
+  when: ansible_os_family == "Darwin"
+  tags:
+    - install
+
 - name: Install packages with pip
   when: ansible_os_family == "Debian"
   ansible.builtin.pip:
