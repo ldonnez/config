@@ -9,6 +9,16 @@
         name: "homebrew/cask-fonts"
         state: present
 
+    - name: Install font-symbols-only-nerd-font
+      community.general.homebrew_cask:
+        name: "font-symbols-only-nerd-font"
+        state: present
+
+    - name: Install font-hack
+      community.general.homebrew_cask:
+        name: "font-hack"
+        state: present
+
     - name: Install font-hack-nerd-font
       community.general.homebrew_cask:
         name: "font-hack-nerd-font"
@@ -26,11 +36,23 @@
         state: directory
         recurse: true
 
+    - name: Copy NerdFontsSymbolsOnly to Fonts location
+      ansible.builtin.copy:
+        src: "NerdFontsSymbolsOnly"
+        dest: "{{ ansible_env.HOME }}/.local/share/fonts"
+        mode: "0755"
+
     - name: Copy Hack Nerd Font Complete to Fonts location
       ansible.builtin.copy:
         src: "Hack Nerd Font Complete"
         dest: "{{ ansible_env.HOME }}/.local/share/fonts"
         mode: "0755"
+
+    - name: Install fonts-hack-ttf with apt
+      become: true
+      ansible.builtin.apt:
+        name: fonts-hack-ttf
+        state: present
 
     - name: Update font cache
       ansible.builtin.command: "fc-cache -f -v"
