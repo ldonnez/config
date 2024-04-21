@@ -1,0 +1,15 @@
+- name: Tap homebrew repositories
+  when: ansible_os_family == "Darwin"
+  community.general.homebrew_tap:
+    name: "hashicorp/tap"
+    state: present
+  tags:
+    - install
+
+- name: Install terraform with homebrew
+  when: ansible_os_family == "Darwin"
+  community.general.homebrew:
+    name: "hashicorp/tap/terraform"
+    state: present
+  tags:
+    - install

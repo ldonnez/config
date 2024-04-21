@@ -11,6 +11,7 @@
 
     install_packages: true
     install_homebrew_casks: true
+    install_terraform: true
     install_mas_apps: true
     install_dotfiles: true
     install_fonts: true
@@ -162,6 +163,13 @@
       when: configure_zsh
       tags:
         - zsh
+
+    - name: Install terraform
+      ansible.builtin.import_role:
+        name: terraform
+      when: install_terraform
+      tags:
+        - terraform
 
     - name: Configure asdf
       ansible.builtin.import_role:

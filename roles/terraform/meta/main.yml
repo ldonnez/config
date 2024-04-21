@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  role_name: terraform
+  author: ldonnez
+  description: Terraform is an infrastructure as code tool that lets you build, change, and version infrastructure safely and efficiently.
+  license: MIT
+  min_ansible_version: "2.10"
+
+  platforms:
+    - name: macOS
+      versions:
+        - all
+
+dependencies:
+  - role: packages
