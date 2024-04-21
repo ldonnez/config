@@ -65,6 +65,7 @@
       - nss
       - sqlcmd
       - llvm
+      - awscli
 
     homebrew_taps:
       - homebrew/cask-versions
