@@ -21,3 +21,5 @@ lsp_cargo: ["stylua"]
 lsp_go: ["github.com/mattn/efm-langserver@latest"]
 
 lsp_pip: ["shandy-sqlfmt"]
+
+lsp_homebrew: ["hashicorp/tap/terraform-ls"]

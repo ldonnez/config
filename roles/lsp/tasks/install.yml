@@ -22,6 +22,14 @@
       tags:
         - update
 
+    - name: Install/Update language servers & linters with homebrew
+      when: ansible_os_family == "Darwin"
+      community.general.homebrew:
+        name: "{{ lsp_homebrew }}"
+        state: present
+      tags:
+        - update
+
     - name: Getting pipx binary location
       when: ansible_os_family == "Darwin"
       ansible.builtin.command: which pipx
