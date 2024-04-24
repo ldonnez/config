@@ -1,7 +1,15 @@
-- name: Symlink .fdignore
+- name: "Ensure {{ fd_config_dir }}"
+  ansible.builtin.file:
+    name: "{{ fd_config_dir }}"
+    state: directory
+    recurse: true
+  tags:
+    - install
+
+- name: Symlink .ignore
   ansible.builtin.file:
     src: "{{ dotfiles_directory_path }}/.agignore"
-    dest: "{{ ansible_env.HOME }}/.fdignore"
+    dest: "{{ fd_config_dir }}/ignore"
     state: link
   tags:
     - install

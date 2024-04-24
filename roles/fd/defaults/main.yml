@@ -1,0 +1,4 @@
+---
+# defaults file for fd
+
+fd_config_dir: "{{ ansible_env.HOME }}/.config/fd"
