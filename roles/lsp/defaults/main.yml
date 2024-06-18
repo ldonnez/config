@@ -14,6 +14,7 @@ lsp_npm:
     "yaml-language-server",
     "graphql-language-service-cli",
     "@ansible/ansible-language-server",
+    "@vtsls/language-server",
   ]
 
 lsp_cargo: ["stylua"]
