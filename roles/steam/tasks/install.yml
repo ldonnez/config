@@ -1,0 +1,6 @@
+- name: Install steam .deb package
+  become: true
+  ansible.builtin.apt:
+    deb: https://cdn.akamai.steamstatic.com/client/installer/steam.deb
+  tags:
+    - install

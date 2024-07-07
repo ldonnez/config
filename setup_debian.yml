@@ -12,6 +12,7 @@
     install_packages: true
     install_dotfiles: true
     install_nvidia: true
+    install_steam: true
 
     configure_git: true
     configure_zsh: true
@@ -79,6 +80,14 @@
       when: install_nvidia
       tags:
         - nvidia
+
+    - name: Install steam
+      ansible.builtin.import_role:
+        name: steam
+      when: install_steam
+      tags:
+        - steam
+
     - name: Configure git
       ansible.builtin.import_role:
         name: git
