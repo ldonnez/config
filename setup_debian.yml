@@ -11,6 +11,7 @@
 
     install_packages: true
     install_dotfiles: true
+    install_nvidia: true
 
     configure_git: true
     configure_zsh: true
@@ -72,6 +73,12 @@
       tags:
         - dotfiles
 
+    - name: Install nvidia
+      ansible.builtin.import_role:
+        name: nvidia
+      when: install_nvidia
+      tags:
+        - nvidia
     - name: Configure git
       ansible.builtin.import_role:
         name: git
