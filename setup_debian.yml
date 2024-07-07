@@ -1,0 +1,242 @@
+---
+- name: Setup Debian 12
+  hosts: localhost
+  connection: local
+
+  vars:
+    dotfiles_repo: "https://github.com/ldonnez/dotfiles.git"
+    dotfiles_directory_path: "{{ ansible_env.HOME }}/dotfiles"
+    private_dotfiles_path: "{{ ansible_env.HOME }}/private"
+    private_dotfiles_source: "{{ ansible_env.HOME }}/SynologyDrive/private"
+
+    install_packages: true
+    install_dotfiles: true
+
+    configure_git: true
+    configure_zsh: true
+    configure_asdf: true
+    configure_npm: true
+    configure_pip: true
+    configure_yarn: true
+    configure_haskell: true
+    configure_fzf: true
+    configure_kitty: true
+    configure_vim: true
+    configure_lsp: true
+    configure_neovim: true
+    configure_vifm: true
+    configure_bat: true
+    configure_tmux: true
+    configure_ag: true
+    configure_fd: true
+    configure_rg: true
+    configure_libpq: true
+    configure_secrets: true
+    configure_gnupg: true
+    configure_ssh: true
+    configure_neomutt: true
+    configure_mbsync_with_cron: false
+    configure_fonts: true
+
+    packages:
+      - coreutils
+      - build-essential
+      - htop
+      - btop
+      - imagemagick
+      - jq
+      - watchman
+      - luarocks
+      - tree
+      - golang-go
+      - ninja-build
+      - cargo
+      - python3-venv
+      - clang
+      - rsync
+
+  tasks:
+    - name: Install packages
+      ansible.builtin.import_role:
+        name: packages
+      when: install_packages
+      tags:
+        - packages
+
+    - name: Install dotfiles
+      ansible.builtin.import_role:
+        name: dotfiles
+      when: install_dotfiles
+      tags:
+        - dotfiles
+
+    - name: Configure git
+      ansible.builtin.import_role:
+        name: git
+      when: configure_git
+      tags:
+        - git
+
+    - name: Configure zsh
+      ansible.builtin.import_role:
+        name: zsh
+      when: configure_zsh
+      tags:
+        - zsh
+
+    - name: Configure asdf
+      ansible.builtin.import_role:
+        name: asdf
+      when: configure_asdf
+      tags:
+        - asdf
+
+    - name: Configure npm
+      ansible.builtin.import_role:
+        name: npm
+      when: configure_npm
+      tags:
+        - npm
+
+    - name: Configure pip
+      ansible.builtin.import_role:
+        name: pip
+      when: configure_pip
+      tags:
+        - pip
+
+    - name: Configure yarn
+      ansible.builtin.import_role:
+        name: yarn
+      when: configure_yarn
+      tags:
+        - yarn
+
+    - name: Configure haskell
+      ansible.builtin.import_role:
+        name: haskell
+      when: configure_haskell
+      tags:
+        - haskell
+
+    - name: Configure fzf
+      ansible.builtin.import_role:
+        name: fzf
+      when: configure_fzf
+      tags:
+        - fzf
+
+    - name: Configure kitty
+      ansible.builtin.import_role:
+        name: kitty
+      when: configure_kitty
+      tags:
+        - kitty
+
+    - name: Configure vifm
+      ansible.builtin.import_role:
+        name: vifm
+      when: configure_vifm
+      tags:
+        - vifm
+
+    - name: Configure vim
+      ansible.builtin.import_role:
+        name: vim
+      when: configure_vim
+      tags:
+        - vim
+
+    - name: Configure fd
+      ansible.builtin.import_role:
+        name: fd
+      when: configure_fd
+      tags:
+        - fd
+
+    - name: Configure rg
+      ansible.builtin.import_role:
+        name: rg
+      when: configure_rg
+      tags:
+        - rg
+
+    - name: Configure lsp's
+      ansible.builtin.import_role:
+        name: lsp
+      when: configure_lsp
+      tags:
+        - lsp
+
+    - name: Configure neovim
+      ansible.builtin.import_role:
+        name: neovim
+      when: configure_neovim
+      tags:
+        - neovim
+
+    - name: Configure bat
+      ansible.builtin.import_role:
+        name: bat
+      when: configure_bat
+      tags:
+        - bat
+
+    - name: Configure ag
+      ansible.builtin.import_role:
+        name: ag
+      when: configure_ag
+      tags:
+        - ag
+
+    - name: Configure tmux
+      ansible.builtin.import_role:
+        name: tmux
+      when: configure_tmux
+      tags:
+        - tmux
+
+    - name: Configure libpq
+      ansible.builtin.import_role:
+        name: libpq
+      when: configure_libpq
+      tags:
+        - libpq
+
+    - name: Configure secrets
+      ansible.builtin.import_role:
+        name: secrets
+      when: configure_secrets
+      tags:
+        - secrets
+
+    - name: Configure gnupg
+      ansible.builtin.import_role:
+        name: gnupg
+      when: configure_gnupg
+      tags:
+        - gnupg
+
+    - name: Configure ssh
+      ansible.builtin.import_role:
+        name: ssh
+      when: configure_ssh
+      tags:
+        - ssh
+
+    - name: Configure neomutt
+      ansible.builtin.import_role:
+        name: neomutt
+      when: configure_neomutt
+      tags:
+        - neomutt
+
+    - name: Configure fonts
+      ansible.builtin.import_role:
+        name: fonts
+      when: configure_fonts
+      tags:
+        - fonts
+
+  environment:
+    PATH: "{{ ansible_env.HOME}}/.asdf/shims:{{ ansible_env.HOME }}/.asdf/bin/:{{ansible_env.HOME}}/.local/bin:{{ ansible_env.HOME }}/.npm/bin:{{ ansible_env.HOME}}/.ghcup/bin:/usr/bin:/usr/sbin:/sbin:{{ ansible_env.HOME}}/.local/bin"
