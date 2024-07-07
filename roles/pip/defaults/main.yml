@@ -1,8 +1,4 @@
 ---
 # defaults file for pip
 
-pip_packages:
-  [
-    "ansible-lint",
-    "ansible",
-  ]
+pip_packages: ["ansible-lint"]
