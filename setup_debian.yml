@@ -38,6 +38,7 @@
     configure_mbsync_with_cron: false
     configure_fonts: true
     configure_terraform: true
+    configure_firefox: true
 
     packages:
       - coreutils
@@ -245,5 +246,12 @@
       when: configure_terraform
       tags:
         - terraform
+
+    - name: Configure firefox
+      ansible.builtin.import_role:
+        name: firefox
+      when: configure_firefox
+      tags:
+        - firefox
   environment:
     PATH: "{{ ansible_env.HOME}}/.asdf/shims:{{ ansible_env.HOME }}/.asdf/bin/:{{ansible_env.HOME}}/.local/bin:{{ ansible_env.HOME }}/.npm/bin:{{ ansible_env.HOME}}/.ghcup/bin:/usr/bin:/usr/sbin:/sbin:{{ ansible_env.HOME}}/.local/bin"
