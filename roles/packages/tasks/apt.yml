@@ -1,3 +1,12 @@
+- name: Ensure backports repository is enabled
+  when: ansible_os_family == "Debian"
+  become: true
+  ansible.builtin.blockinfile:
+    path: /etc/apt/sources.list
+    block: |
+      # backports
+      deb http://deb.debian.org/debian {{ ansible_distribution_release }}-backports main contrib non-free-firmware non-free
+
 - name: Install packages with apt
   ansible.builtin.apt:
     name: "{{ packages }}"
