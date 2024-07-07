@@ -5,3 +5,54 @@
     state: present
   tags:
     - install
+
+- name: Install kitty
+  when: ansible_os_family == "Debian"
+  tags:
+    - install
+  block:
+    - name: Run kitty installation script
+      ansible.builtin.shell: |
+        set -o pipefail
+        curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
+      args:
+        executable: /bin/bash
+
+    - name: Create symbolic links to add kitty to PATH
+      ansible.builtin.file:
+        src: "{{ ansible_env.HOME }}/.local/kitty.app/kitty"
+        dest: "{{ ansible_env.HOME }}/.local/bin/kitty"
+        state: link
+        force: true
+
+    - name: Create symbolic links to add kitten to PATH
+      ansible.builtin.file:
+        src: "{{ ansible_env.HOME }}/.local/kitty.app/kitten"
+        dest: "{{ ansible_env.HOME }}/.local/bin/kitten"
+        state: link
+        force: true
+
+    - name: Place the kitty.desktop file somewhere it can be found by the OS
+      ansible.builtin.copy:
+        src: "{{ ansible_env.HOME }}/.local/kitty.app/share/applications/kitty.desktop"
+        dest: "{{ ansible_env.HOME }}/.local/share/applications/"
+        owner: "{{ ansible_user_id }}"
+        mode: "0644"
+
+    - name: Add the kitty-open.desktop file to open files and with file manager
+      ansible.builtin.copy:
+        src: "{{ ansible_env.HOME }}/.local/kitty.app/share/applications/kitty-open.desktop"
+        dest: "{{ ansible_env.HOME }}/.local/share/applications/"
+        owner: "{{ ansible_user_id }}"
+        mode: "0644"
+
+    - name: Update the paths to the kitty and its icon in the kitty desktop file(s)
+      ansible.builtin.shell: |
+        set -o pipefail
+        sed -i "s|Icon=kitty|Icon=$(readlink -f ~)/.local/kitty.app/share/icons/hicolor/256x256/apps/kitty.png|g" ~/.local/share/applications/kitty*.desktop
+        sed -i "s|Exec=kitty|Exec=$(readlink -f ~)/.local/kitty.app/bin/kitty|g" ~/.local/share/applications/kitty*.desktop
+      args:
+        executable: /bin/bash
+
+    - name: Make xdg-terminal-exec
+      ansible.builtin.command: echo 'kitty.desktop' > ~/.config/xdg-terminals.list
