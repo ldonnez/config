@@ -1,3 +1,10 @@
+- name: Ensure contrib, non-free & non-free-firmware repositories are added
+  when: ansible_os_family == "Debian"
+  become: true
+  ansible.builtin.command: apt-add-repository -yn contrib non-free non-free-firmware
+  tags:
+    - install
+
 - name: Ensure backports repository is enabled
   when: ansible_os_family == "Debian"
   become: true
