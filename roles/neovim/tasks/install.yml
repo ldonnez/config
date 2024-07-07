@@ -8,14 +8,46 @@
   tags:
     - install
 
-- name: Install neovim with apt
-  ansible.builtin.apt:
-    name: neovim
-    state: present
-  become: true
+- name: Install neovim
   when: ansible_os_family == "Debian"
+  become: true
   tags:
     - install
+  block:
+    - name: Install build dependencies
+      ansible.builtin.apt:
+        name:
+          [
+            "ninja-build",
+            "gettext",
+            "cmake",
+            "unzip",
+            "curl",
+            "build-essential"
+          ]
+        state: present
+
+    - name: Git clone neovim repository
+      ansible.builtin.git:
+        repo: https://github.com/neovim/neovim
+        depth: 1
+        version: stable
+        dest: /tmp/neovim
+
+    - name: Configure neovim build
+      ansible.builtin.command: make CMAKE_BUILD_TYPE=RelWithDebInfo
+      args:
+        chdir: /tmp/neovim
+
+    - name: Create nvim-linux64.deb package
+      ansible.builtin.command: cpack -G DEB && dpkg -i --force-overwrite nvim-linux64.deb
+      args:
+        chdir: /tmp/neovim/build
+
+    - name: Install nvim-linux64.deb package
+      ansible.builtin.command: dpkg -i --force-overwrite nvim-linux64.deb
+      args:
+        chdir: /tmp/neovim/build
 
 - name: Install neovim & neovim-qt with homebrew
   community.general.homebrew:
