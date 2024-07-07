@@ -1,0 +1,36 @@
+- name: Install latest firefox with apt
+  when: ansible_os_family == "Debian"
+  become: true
+  tags:
+    - install
+  block:
+    - name: Get mozilla signing key
+      ansible.builtin.get_url:
+        url: https://packages.mozilla.org/apt/repo-signing-key.gpg
+        dest: /etc/apt/keyrings/packages.mozilla.org.asc
+        mode: "0644"
+
+    - name: Add mozilla to sources list
+      ansible.builtin.apt_repository:
+        repo: "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main"
+        state: present
+        filename: mozilla
+
+    - name: Configure APT to prioritize packages from the Mozilla repository
+      ansible.builtin.copy:
+        dest: "/etc/apt/preferences.d/mozilla"
+        content: |
+          Package: *
+          Pin: origin packages.mozilla.org
+          Pin-Priority: 1000
+        mode: "0644"
+
+    - name: Install firefox with apt
+      ansible.builtin.apt:
+        name: firefox
+        update_cache: true
+
+    - name: Remove firefox-esr
+      ansible.builtin.apt:
+        name: firefox-esr
+        state: absent

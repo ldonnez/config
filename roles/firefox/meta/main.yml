@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  role_name: firefox
+  author: ldonnez
+  description: Firefox is a free web browser backed by Mozilla, a non-profit dedicated to internet health and privacy.
+  license: MIT
+  min_ansible_version: "2.10"
+
+  platforms:
+    - name: Debian
+      versions:
+        - all
+
+dependencies:
+  - role: packages
