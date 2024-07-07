@@ -37,6 +37,7 @@
     configure_neomutt: true
     configure_mbsync_with_cron: false
     configure_fonts: true
+    configure_terraform: true
 
     packages:
       - coreutils
@@ -238,5 +239,11 @@
       tags:
         - fonts
 
+    - name: Configure terraform
+      ansible.builtin.import_role:
+        name: terraform
+      when: configure_terraform
+      tags:
+        - terraform
   environment:
     PATH: "{{ ansible_env.HOME}}/.asdf/shims:{{ ansible_env.HOME }}/.asdf/bin/:{{ansible_env.HOME}}/.local/bin:{{ ansible_env.HOME }}/.npm/bin:{{ ansible_env.HOME}}/.ghcup/bin:/usr/bin:/usr/sbin:/sbin:{{ ansible_env.HOME}}/.local/bin"
