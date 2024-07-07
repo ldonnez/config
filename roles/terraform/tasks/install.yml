@@ -13,3 +13,31 @@
     state: present
   tags:
     - install
+
+- name: Install terraform with apt
+  when: ansible_os_family == "Debian"
+  become: true
+  tags:
+    - install
+  block:
+    - name: Get hashicorp signing key
+      ansible.builtin.get_url:
+        url: https://apt.releases.hashicorp.com/gpg
+        dest: /etc/apt/keyrings/hashicorp-archive-keyring.asc
+        mode: '0644'
+
+    - name: Add terraform to sources list
+      ansible.builtin.apt_repository:
+        repo: "deb [signed-by=/etc/apt/keyrings/hashicorp-archive-keyring.asc] https://apt.releases.hashicorp.com {{ ansible_distribution_release }} main"
+        state: present
+        filename: hashicorp
+
+    - name: Install terraform with apt
+      ansible.builtin.apt:
+        name: terraform
+        update_cache: true
+
+    - name: Install terraform-ls with apt
+      ansible.builtin.apt:
+        name: terraform-ls
+        update_cache: true
