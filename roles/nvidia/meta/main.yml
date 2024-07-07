@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  role_name: nvidia
+  author: ldonnez
+  description: Install nvidia drivers
+  license: MIT
+  min_ansible_version: "2.10"
+
+  platforms:
+    - name: Debian
+      versions:
+        - all
+
+dependencies:
+  - role: packages
