@@ -15,6 +15,7 @@
     install_steam: true
     install_docker_desktop: true
     install_synology_drive: true
+    install_fonts: true
 
     configure_git: true
     configure_zsh: true
