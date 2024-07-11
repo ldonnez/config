@@ -1,3 +1,11 @@
+- name: Install software-properties-common with apt
+  ansible.builtin.apt:
+    name: software-properties-common
+    state: present
+  become: true
+  tags:
+    - install
+
 - name: Ensure contrib, non-free & non-free-firmware repositories are added
   become: true
   ansible.builtin.command: apt-add-repository -yn contrib non-free non-free-firmware
