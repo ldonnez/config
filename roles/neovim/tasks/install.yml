@@ -49,6 +49,11 @@
       args:
         chdir: /tmp/neovim/build
 
+    - name: Remove /tmp/neovim
+      ansible.builtin.file:
+        path: /tmp/neovim
+        state: absent
+
 - name: Install neovim & neovim-qt with homebrew
   community.general.homebrew:
     name: ["neovim", "neovim-qt"]

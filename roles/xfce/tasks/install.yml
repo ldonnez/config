@@ -1,0 +1,7 @@
+- name: Install whiskermenu plugin with apt
+  become: true
+  ansible.builtin.apt:
+    name: xfce4-whiskermenu-plugin
+    state: present
+  tags:
+    - install
