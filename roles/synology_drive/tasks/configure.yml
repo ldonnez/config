@@ -1,17 +1,37 @@
-- name: Ensures ~/Library/Application Support/SynologyDrive/data/session/1/conf dir exists
-  ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/Library/Application Support/SynologyDrive/data/session/1/conf"
-    state: directory
-    recurse: true
+- name: Configure blacklist.filter
+  when: ansible_os_family == "Darwin"
   tags:
     - install
+  block:
+    - name: Ensures ~/Library/Application Support/SynologyDrive/data/session/1/conf dir exists
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/Library/Application Support/SynologyDrive/data/session/1/conf"
+        state: directory
+        recurse: true
 
-- name: Copy blacklist.filter
-  ansible.builtin.copy:
-    src: blacklist.filter
-    dest: "{{ ansible_env.HOME }}/Library/Application Support/SynologyDrive/data/session/1/conf/blacklist.filter"
-    owner: "{{ ansible_user_id }}"
-    mode: "0644"
-    follow: true
+    - name: Copy blacklist.filter to ~/Library/Application Support/SynologyDrive/data/session/1/conf
+      ansible.builtin.copy:
+        src: blacklist.filter
+        dest: "{{ ansible_env.HOME }}/Library/Application Support/SynologyDrive/data/session/1/conf/blacklist.filter"
+        owner: "{{ ansible_user_id }}"
+        mode: "0644"
+        follow: true
+
+- name: Configure blacklist.filter
+  when: ansible_os_family == "Debian"
   tags:
     - install
+  block:
+    - name: Ensures ~/.SynologyDrive/data/session/1/conf dir exists
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/.SynologyDrive/data/session/1/conf"
+        state: directory
+        recurse: true
+
+    - name: Copy blacklist.filter
+      ansible.builtin.copy:
+        src: blacklist.filter
+        dest: "{{ ansible_env.HOME }}/.SynologyDrive/data/session/1/conf/blacklist.filter"
+        owner: "{{ ansible_user_id }}"
+        mode: "0644"
+        follow: true

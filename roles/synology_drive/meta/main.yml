@@ -10,3 +10,6 @@ galaxy_info:
     - name: macOS
       versions:
         - all
+    - name: Debian
+      versions:
+        - all

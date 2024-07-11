@@ -13,6 +13,7 @@
     install_dotfiles: true
     install_nvidia: true
     install_steam: true
+    install_synology_drive: true
 
     configure_git: true
     configure_zsh: true
@@ -262,6 +263,13 @@
       when: configure_fonts
       tags:
         - fonts
+
+    - name: Install synology drive
+      ansible.builtin.import_role:
+        name: synology_drive
+      when: install_fonts
+      tags:
+        - synology_drive
 
     - name: Configure terraform
       ansible.builtin.import_role:
