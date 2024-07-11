@@ -60,6 +60,7 @@
       - python3-venv
       - clang
       - rsync
+      - xsel
 
   tasks:
     - name: Install packages
