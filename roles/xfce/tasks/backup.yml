@@ -1,0 +1,9 @@
+- name: Backup xfce config files
+  ansible.posix.synchronize:
+    src: "{{ ansible_env.HOME }}/.config/xfce4/"
+    dest: xfce4/
+    recursive: true
+    delete: true
+    checksum: true
+  tags:
+    - backup

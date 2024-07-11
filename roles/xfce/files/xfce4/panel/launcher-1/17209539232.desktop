@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=kitty
+GenericName=Terminal emulator
+Comment=Fast, feature-rich, GPU based terminal
+TryExec=/home/lenny/.local/kitty.app/bin/kitty
+StartupNotify=true
+Exec=/home/lenny/.local/kitty.app/bin/kitty
+Icon=/home/lenny/.local/kitty.app/share/icons/hicolor/256x256/apps/kitty.png
+Categories=System;TerminalEmulator;
+X-XFCE-Source=file:///home/lenny/.local/share/applications/kitty.desktop

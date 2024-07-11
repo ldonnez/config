@@ -45,6 +45,7 @@
     configure_fonts: true
     configure_terraform: true
     configure_firefox: true
+    configure_xfce: true
 
     packages:
       - coreutils
@@ -293,5 +294,13 @@
       when: configure_firefox
       tags:
         - firefox
+
+    - name: Configure xfce
+      ansible.builtin.import_role:
+        name: xfce
+      when: configure_xfce
+      tags:
+        - xfce
+
   environment:
     PATH: "{{ ansible_env.HOME}}/.asdf/shims:{{ ansible_env.HOME }}/.asdf/bin/:{{ansible_env.HOME}}/.local/bin:{{ ansible_env.HOME }}/.npm/bin:{{ ansible_env.HOME}}/.cargo/bin:{{ ansible_env.HOME}}/.ghcup/bin:/usr/bin:/usr/sbin:/sbin:{{ ansible_env.HOME}}/.local/bin"

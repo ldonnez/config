@@ -1,0 +1,49 @@
+- name: Turn off mouse acceleration
+  become: true
+  tags:
+    - install
+  block:
+    - name: Copy 50-mouse-acceleration.conf to /etc/X11/xorg.conf.d
+      ansible.builtin.copy:
+        src: 50-mouse-acceleration.conf
+        dest: "/etc/X11/xorg.conf.d/50-mouse-acceleration.conf"
+        mode: "0644"
+        follow: true
+
+- name: Restore xfce config files
+  ansible.posix.synchronize:
+    dest: "{{ ansible_env.HOME }}/.config/xfce4/"
+    src: xfce4/
+    recursive: true
+    delete: true
+    checksum: true
+  tags:
+    - install
+
+- name: Install catppuccin theme for xfce4-terminal
+  tags:
+    - install
+  block:
+    - name: Git clone catppuccin/xfce4-terminal
+      ansible.builtin.git:
+        repo: https://github.com/catppuccin/xfce4-terminal
+        depth: 1
+        version: main
+        dest: /tmp/catppuccin
+
+    - name: Ensure ~/.local/share/xfce4/terminal/colorschemes
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/.local/share/xfce4/terminal/colorschemes"
+        state: directory
+        recurse: true
+
+    - name: Copy frappe theme to ~/.local/share/xfce4/terminal/colorschemes
+      ansible.builtin.copy:
+        src: /tmp/catppuccin/themes/catppuccin-frappe.theme
+        dest: "{{ ansible_env.HOME }}/.local/share/xfce4/terminal/colorschemes"
+        mode: "0644"
+
+    - name: Remove /tmp/cattppuccin
+      ansible.builtin.file:
+        path: /tmp/catppuccin
+        state: absent
