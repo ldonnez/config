@@ -13,6 +13,7 @@
     install_dotfiles: true
     install_nvidia: true
     install_steam: true
+    install_docker_desktop: true
     install_synology_drive: true
 
     configure_git: true
@@ -88,6 +89,13 @@
       when: install_steam
       tags:
         - steam
+
+    - name: Install docker desktop
+      ansible.builtin.import_role:
+        name: docker_desktop
+      when: install_docker_desktop
+      tags:
+        - docker_desktop
 
     - name: Configure git
       ansible.builtin.import_role:
