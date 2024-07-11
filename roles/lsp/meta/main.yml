@@ -21,3 +21,4 @@ dependencies:
   - role: npm
   - role: yarn
   - role: pip
+  - role: rust

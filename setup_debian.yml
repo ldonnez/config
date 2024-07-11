@@ -20,6 +20,7 @@
     configure_npm: true
     configure_pip: true
     configure_yarn: true
+    configure_rust: true
     configure_haskell: true
     configure_fzf: true
     configure_kitty: true
@@ -54,7 +55,6 @@
       - tree
       - golang-go
       - ninja-build
-      - cargo
       - python3-venv
       - clang
       - rsync
@@ -129,6 +129,13 @@
       when: configure_yarn
       tags:
         - yarn
+
+    - name: Configure rust
+      ansible.builtin.import_role:
+        name: rust
+      when: configure_rust
+      tags:
+        - rust
 
     - name: Configure haskell
       ansible.builtin.import_role:
@@ -270,4 +277,4 @@
       tags:
         - firefox
   environment:
-    PATH: "{{ ansible_env.HOME}}/.asdf/shims:{{ ansible_env.HOME }}/.asdf/bin/:{{ansible_env.HOME}}/.local/bin:{{ ansible_env.HOME }}/.npm/bin:{{ ansible_env.HOME}}/.ghcup/bin:/usr/bin:/usr/sbin:/sbin:{{ ansible_env.HOME}}/.local/bin"
+    PATH: "{{ ansible_env.HOME}}/.asdf/shims:{{ ansible_env.HOME }}/.asdf/bin/:{{ansible_env.HOME}}/.local/bin:{{ ansible_env.HOME }}/.npm/bin:{{ ansible_env.HOME}}/.cargo/bin:{{ ansible_env.HOME}}/.ghcup/bin:/usr/bin:/usr/sbin:/sbin:{{ ansible_env.HOME}}/.local/bin"
