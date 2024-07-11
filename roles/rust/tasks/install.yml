@@ -1,0 +1,16 @@
+- name: Install rustup noninteractive with curl
+  when: ansible_os_family == "Debian"
+  ansible.builtin.shell: |
+    set -o pipefail
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+  args:
+    creates: "{{ ansible_env.HOME }}/.cargo/bin/rustup"
+    executable: /bin/bash
+  tags:
+    - install
+
+- name: Upgrade rust
+  when: ansible_os_family == "Debian"
+  ansible.builtin.command: rustup update
+  tags:
+    - update
