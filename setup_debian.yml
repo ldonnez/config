@@ -14,7 +14,6 @@
     install_nvidia: true
     install_steam: true
     install_docker_desktop: true
-    install_synology_drive: true
     install_fonts: true
 
     configure_git: true
@@ -47,6 +46,7 @@
     configure_firefox: true
     configure_xfce: true
     configure_flatpak: true
+    configure_synology_drive: true
 
     packages:
       - coreutils
@@ -284,13 +284,6 @@
       tags:
         - fonts
 
-    - name: Install synology drive
-      ansible.builtin.import_role:
-        name: synology_drive
-      when: install_fonts
-      tags:
-        - synology_drive
-
     - name: Configure terraform
       ansible.builtin.import_role:
         name: terraform
@@ -305,19 +298,26 @@
       tags:
         - firefox
 
-    - name: Configure xfce
-      ansible.builtin.import_role:
-        name: xfce
-      when: configure_xfce
-      tags:
-        - xfce
-
     - name: Configure flatpak
       ansible.builtin.import_role:
         name: flatpak
       when: configure_flatpak
       tags:
         - flatpak
+
+    - name: Configure synology drive
+      ansible.builtin.import_role:
+        name: synology_drive
+      when: configure_synology_drive
+      tags:
+        - synology_drive
+
+    - name: Configure xfce
+      ansible.builtin.import_role:
+        name: xfce
+      when: configure_xfce
+      tags:
+        - xfce
 
   environment:
     PATH: "{{ ansible_env.HOME}}/.asdf/shims:{{ ansible_env.HOME }}/.asdf/bin/:{{ansible_env.HOME}}/.local/bin:{{ ansible_env.HOME }}/.npm/bin:{{ ansible_env.HOME}}/.cargo/bin:{{ ansible_env.HOME}}/.ghcup/bin:/usr/bin:/usr/sbin:/sbin:{{ ansible_env.HOME}}/.local/bin"
