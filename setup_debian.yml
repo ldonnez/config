@@ -46,6 +46,7 @@
     configure_terraform: true
     configure_firefox: true
     configure_xfce: true
+    configure_flatpak: true
 
     packages:
       - coreutils
@@ -63,6 +64,14 @@
       - clang
       - rsync
       - xsel
+
+    flatpak_apps:
+      - com.github.tchx84.Flatseal
+      - com.bitwarden.desktop
+      - com.synology.SynologyDrive
+      - org.signal.Signal
+      - com.slack.Slack
+      - com.discordapp.Discord
 
   tasks:
     - name: Install packages
@@ -302,6 +311,13 @@
       when: configure_xfce
       tags:
         - xfce
+
+    - name: Configure flatpak
+      ansible.builtin.import_role:
+        name: flatpak
+      when: configure_flatpak
+      tags:
+        - flatpak
 
   environment:
     PATH: "{{ ansible_env.HOME}}/.asdf/shims:{{ ansible_env.HOME }}/.asdf/bin/:{{ansible_env.HOME}}/.local/bin:{{ ansible_env.HOME }}/.npm/bin:{{ ansible_env.HOME}}/.cargo/bin:{{ ansible_env.HOME}}/.ghcup/bin:/usr/bin:/usr/sbin:/sbin:{{ ansible_env.HOME}}/.local/bin"
