@@ -42,6 +42,7 @@
     configure_neomutt: true
     configure_mbsync_with_cron: false
     configure_fonts: true
+    configure_aws: true
     configure_terraform: true
     configure_firefox: true
     configure_xfce: true
@@ -64,6 +65,7 @@
       - clang
       - rsync
       - xsel
+      - groff
 
     flatpak_apps:
       - com.github.tchx84.Flatseal
@@ -283,6 +285,13 @@
       when: configure_fonts
       tags:
         - fonts
+
+    - name: Configure aws
+      ansible.builtin.import_role:
+        name: aws
+      when: configure_aws
+      tags:
+        - aws
 
     - name: Configure terraform
       ansible.builtin.import_role:
