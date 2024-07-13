@@ -15,11 +15,3 @@
     state: upgraded
   tags:
     - update
-
-- name: Install synology-drive .deb package
-  when: ansible_os_family == "Debian"
-  become: true
-  ansible.builtin.apt:
-    deb: https://global.synologydownload.com/download/Utility/SynologyDriveClient/3.5.0-16084/Ubuntu/Installer/synology-drive-client-16084.x86_64.deb?model=DS1019%2B&bays=5&dsm_version=7.2.1&build_number=69057
-  tags:
-    - install
