@@ -1,0 +1,64 @@
+- name: Install aws cli
+  when: ansible_os_family == "Debian"
+  tags:
+    - install
+  block:
+    - name: Download awscliv2.zip
+      ansible.builtin.get_url:
+        url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+        dest: /tmp/awscli-exe-linux-x86_64.zip
+        mode: "0644"
+
+    - name: Extract /tmp/awscli-exe-linux-x86_64.zip
+      ansible.builtin.unarchive:
+        src: /tmp/awscli-exe-linux-x86_64.zip
+        dest: /tmp
+
+    - name: Run aws install
+      become: true
+      ansible.builtin.command: ./aws/install
+      args:
+        chdir: /tmp
+        creates: /usr/local/bin/aws
+
+    - name: Remove /tmp/aws
+      ansible.builtin.file:
+        path: /tmp/aws
+        state: absent
+
+    - name: Remove /tmp/awscli-exe-linux-x86_64.zip
+      ansible.builtin.file:
+        path: /tmp/awscli-exe-linux-x86_64.zip
+        state: absent
+
+- name: Update aws cli
+  when: ansible_os_family == "Debian"
+  tags:
+    - update
+  block:
+    - name: Download awscliv2.zip
+      ansible.builtin.get_url:
+        url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+        dest: /tmp/awscli-exe-linux-x86_64.zip
+        mode: "0644"
+
+    - name: Extract /tmp/awscli-exe-linux-x86_64.zip
+      ansible.builtin.unarchive:
+        src: /tmp/awscli-exe-linux-x86_64.zip
+        dest: /tmp
+
+    - name: Run aws install with --update flag
+      become: true
+      ansible.builtin.command: ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
+      args:
+        chdir: /tmp
+
+    - name: Remove /tmp/aws
+      ansible.builtin.file:
+        path: /tmp/aws
+        state: absent
+
+    - name: Remove /tmp/awscli-exe-linux-x86_64.zip
+      ansible.builtin.file:
+        path: /tmp/awscli-exe-linux-x86_64.zip
+        state: absent
