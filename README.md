@@ -16,6 +16,7 @@ This path should be the location of your `.ssh`, `.gnupg` & `.secrets` directori
 ### Update macOS packages
 
 Run
+
 ```
   ansible-playbook setup_macos.yml --tags=update
 ```
@@ -63,6 +64,25 @@ This path should be the location of your `.ssh`, `.gnupg` & `.secrets` directori
 ### Update WSL2 (Ubuntu 22.04) packages
 
 Run
+
 ```
   ansible-playbook setup_wsl_ubuntu.yml --tags=update
+```
+
+## Setup Debian 12 (Bookworm)
+
+Make sure to check vars in `setup_debian.yml`, configure the location of the `private_dotfiles_path` and `private_dotfiles_source` option.
+This path should be the location of your `.ssh`, `.gnupg` & `.secrets` directories.
+
+- Add current user to sudoers file. (log in as root `su` and run `sudo usermod -aG sudo [username]`)
+- Install git `sudo apt install git`
+- Clone this repo, preferably in your home directory
+- Run `sh run_setup_debian.sh`. This will install all dependencies necessary (python, pipx and ansible) and run the playbook (`ansible-playbook setup_debian.yml -K --tags install`).
+
+### Update Debian 12 (Bookworm) packages
+
+Run
+
+```
+  ansible-playbook setup_debian.yml -K --tags update
 ```
