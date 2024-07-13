@@ -3,6 +3,7 @@
     set -o pipefail
     curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
   args:
+    creates: "{{ ansible_env.HOME }}/.ghcup/bin/ghcup"
     executable: /bin/bash
   environment:
     BOOTSTRAP_HASKELL_NONINTERACTIVE: "1"
