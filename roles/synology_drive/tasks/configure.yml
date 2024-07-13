@@ -38,19 +38,29 @@
 
 - name: Ensure Synology drive starts on login
   when: ansible_os_family == "Debian"
-  ansible.builtin.copy:
-    dest: "{{ ansible_env.HOME }}/.config/autostart/synology_drive.desktop"
-    content: |
-      [Desktop Entry]
-      Encoding=UTF-8
-      Version=0.9.4
-      Type=Application
-      Name=Synology Drive
-      Comment=Synology Drive client
-      Exec=flatpak run com.synology.SynologyDrive
-      OnlyShowIn=XFCE;
-      RunHook=0
-      StartupNotify=false
-      Terminal=false
-      Hidden=false
-    mode: "0644"
+  tags:
+    - install
+  block:
+    - name: Ensures ~/.config/autostart dir exists
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/.config/autostart"
+        state: directory
+        recurse: true
+
+    - name: Copy synology drive desktop entry to autostart
+      ansible.builtin.copy:
+        dest: "{{ ansible_env.HOME }}/.config/autostart/synology_drive.desktop"
+        content: |
+          [Desktop Entry]
+          Encoding=UTF-8
+          Version=0.9.4
+          Type=Application
+          Name=Synology Drive
+          Comment=Synology Drive client
+          Exec=flatpak run com.synology.SynologyDrive
+          OnlyShowIn=XFCE;
+          RunHook=0
+          StartupNotify=false
+          Terminal=false
+          Hidden=false
+        mode: "0644"
