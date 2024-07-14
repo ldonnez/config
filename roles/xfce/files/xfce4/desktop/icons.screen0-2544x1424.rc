@@ -1,15 +1,15 @@
 [xfdesktop-version-4.10.3+-rcfile_format]
 4.10.3+=true
 
+[/home/lenny/Desktop/steam.desktop]
+row=2
+col=0
+
 [Trash]
 row=0
 col=0
 
 [/]
 row=1
-col=0
-
-[/home/lenny]
-row=2
 col=0
 
