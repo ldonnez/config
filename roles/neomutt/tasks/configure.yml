@@ -96,6 +96,12 @@
     - install
 
   block:
+    - name: Ensure ~/.config/systemd/user
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/.config/systemd/user"
+        state: directory
+        recurse: true
+
     - name: Copy mbsync.service file
       ansible.builtin.copy:
         src: mbsync.service
