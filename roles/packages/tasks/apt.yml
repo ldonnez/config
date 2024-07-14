@@ -34,5 +34,7 @@
   ansible.builtin.apt:
     update_cache: true
     upgrade: true
+    autoremove: true
+    autoclean: true
   tags:
     - update
