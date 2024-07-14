@@ -66,7 +66,7 @@ This path should be the location of your `.ssh`, `.gnupg` & `.secrets` directori
 Run
 
 ```
-  ansible-playbook setup_wsl_ubuntu.yml --tags=update
+  ansible-playbook setup_wsl_ubuntu.yml -K --tags update
 ```
 
 ## Setup Debian 12 (Bookworm)
