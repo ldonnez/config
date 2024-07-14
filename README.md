@@ -59,7 +59,7 @@ This path should be the location of your `.ssh`, `.gnupg` & `.secrets` directori
 - Clone this repo, preferably in your home directory
 - Run `sh run_setup_wsl_ubuntu.sh`. This will install python, pip, ansible and makes sure the wsl.conf file is set to enable systemd.
 - Close The WSL session and run wsl.exe --shutdown in powershell shell to rerstart WSL
-- Open Ubuntu 22.04 again and run `ansible-galaxy install -r requirements.yml && ansible-playbook setup_wsl_ubuntu.yml -K`
+- Open Ubuntu 22.04 again and run `ansible-galaxy install -r requirements.yml && ansible-playbook setup_wsl_ubuntu.yml -K --tags install`
 
 ### Update WSL2 (Ubuntu 22.04) packages
 
