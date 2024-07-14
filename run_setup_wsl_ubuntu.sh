@@ -23,4 +23,4 @@ sudo cp -u ./roles/wsl/files/wsl.conf /etc
 printf "\n\n\nEverything prepared!\nClose your session and run \`wsl.exe --shutdown\` and restart WSL\nAfterwards run \`ansible-galaxy install -r requirements.yml && ansible-playbook setup_wsl_ubuntu.yml -K\` in this directory "
 
 sleep 4
-# ansible-playbook setup_wsl_ubuntu.yml -K
+# ansible-playbook setup_wsl_ubuntu.yml -K --tags install
