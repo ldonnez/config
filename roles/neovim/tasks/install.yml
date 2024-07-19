@@ -40,7 +40,7 @@
         chdir: /tmp/neovim
 
     - name: Create nvim-linux64.deb package
-      ansible.builtin.command: cpack -G DEB && dpkg -i --force-overwrite nvim-linux64.deb
+      ansible.builtin.command: cpack -G DEB
       args:
         chdir: /tmp/neovim/build
 
