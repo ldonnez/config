@@ -6,10 +6,26 @@
   tags:
     - install
 
+- name: "Ensure kitty themes dir"
+  ansible.builtin.file:
+    path: "{{ kitty_config_dir }}/themes"
+    state: directory
+    recurse: true
+  tags:
+    - install
+
 - name: Symlink kitty.conf
   ansible.builtin.file:
     src: "{{ kitty_dotfiles_path }}/kitty.conf"
     dest: "{{ kitty_config_dir }}/kitty.conf"
+    state: link
+  tags:
+    - install
+
+- name: Symlink themes/Catppuccin-Frappe.conf
+  ansible.builtin.file:
+    src: "{{ kitty_dotfiles_path }}/themes/Catppuccin-Frappe.conf"
+    dest: "{{ kitty_config_dir }}/themes/Catppuccin-Frappe.conf"
     state: link
   tags:
     - install
