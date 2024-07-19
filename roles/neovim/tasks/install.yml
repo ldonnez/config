@@ -1,13 +1,3 @@
-- name: Add neovim-ppa/unstable
-  become: true
-  ansible.builtin.apt_repository:
-    validate_certs: false
-    repo: "ppa:neovim-ppa/unstable"
-    state: present
-  when: ansible_distribution == 'Ubuntu'
-  tags:
-    - install
-
 - name: Install neovim
   when: ansible_os_family == "Debian"
   become: true
