@@ -6,11 +6,13 @@ For more information see:
 * https://github.com/ryanoasis/nerd-fonts/
 * https://github.com/ryanoasis/nerd-fonts/releases/latest/
 
-# Symbols Only
+# Hack
 
-This font contains (in the patched-fonts folder) all symbols and is intended to be used
-as fallback or together with fontconfig - so that you do not need to individually
-patch all the fonts. YMMV.
+A typeface designed for source code.
+
+For more information have a look at the upstream website: https://github.com/source-foundry/Hack
+
+Version: 3.003
 
 ## Which font?
 

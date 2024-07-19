@@ -37,9 +37,9 @@
         dest: "{{ ansible_env.HOME }}/.local/share/fonts"
         mode: "0755"
 
-    - name: Copy Hack Nerd Font Complete to Fonts location
+    - name: Copy Hack to Fonts location
       ansible.builtin.copy:
-        src: "Hack Nerd Font Complete"
+        src: "Hack"
         dest: "{{ ansible_env.HOME }}/.local/share/fonts"
         mode: "0755"
 
