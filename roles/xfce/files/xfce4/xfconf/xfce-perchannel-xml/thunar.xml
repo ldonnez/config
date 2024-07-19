@@ -9,4 +9,6 @@
   <property name="last-window-maximized" type="bool" value="false"/>
   <property name="misc-single-click" type="bool" value="false"/>
   <property name="misc-recursive-search" type="string" value="THUNAR_RECURSIVE_SEARCH_NEVER"/>
+  <property name="last-sort-column" type="string" value="THUNAR_COLUMN_NAME"/>
+  <property name="last-sort-order" type="string" value="GTK_SORT_DESCENDING"/>
 </channel>
