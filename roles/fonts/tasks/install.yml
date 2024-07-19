@@ -31,13 +31,13 @@
         state: directory
         recurse: true
 
-    - name: Copy NerdFontsSymbolsOnly to Fonts location
+    - name: Copy NerdFontsSymbolsOnly to ~/.local/share/fonts
       ansible.builtin.copy:
         src: "NerdFontsSymbolsOnly"
         dest: "{{ ansible_env.HOME }}/.local/share/fonts"
         mode: "0755"
 
-    - name: Copy Hack to Fonts location
+    - name: Copy Hack to ~/.local/share/fonts
       ansible.builtin.copy:
         src: "Hack"
         dest: "{{ ansible_env.HOME }}/.local/share/fonts"
