@@ -74,6 +74,10 @@
       - com.slack.Slack
       - com.discordapp.Discord
 
+    cargo_packages:
+      - yazi-fm
+      - yazi-cli
+
   tasks:
     - name: Install packages
       ansible.builtin.import_role:
