@@ -14,3 +14,13 @@
   ansible.builtin.command: rustup update
   tags:
     - update
+
+- name: Install/Update packages with cargo
+  community.general.cargo:
+    name: "{{ item }}"
+    state: latest
+    locked: true
+  loop: "{{ cargo_packages }}"
+  tags:
+    - update
+    - install
