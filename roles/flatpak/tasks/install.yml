@@ -22,6 +22,8 @@
     - install
 
 - name: Update flatpak apps
-  ansible.builtin.command: flatpak update
+  community.general.flatpak:
+    name: "{{ flatpak_apps }}"
+    state: latest
   tags:
     - update
