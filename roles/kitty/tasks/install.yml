@@ -17,6 +17,8 @@
         curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
       args:
         executable: /bin/bash
+      tags:
+        - update
 
     - name: Create symbolic links to add kitty to PATH
       ansible.builtin.file:
