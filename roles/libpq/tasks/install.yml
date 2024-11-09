@@ -1,12 +1,3 @@
-- name: Install libpq with apt
-  ansible.builtin.apt:
-    name: postgresql-client
-    state: present
-  become: true
-  when: ansible_os_family == "Debian"
-  tags:
-    - install
-
 - name: Install libpq with homebrew
   community.general.homebrew:
     name: libpq
@@ -14,3 +5,26 @@
   when: ansible_os_family == "Darwin"
   tags:
     - install
+
+- name: Install libpq with apt
+  when: ansible_os_family == "Debian"
+  become: true
+  tags:
+    - install
+  block:
+    - name: Install dependencies
+      ansible.builtin.apt:
+        name: postgresql-common
+        state: present
+
+    - name: Configure repository
+      ansible.builtin.command: /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
+
+    - name: Update apt
+      ansible.builtin.apt:
+        update_cache: true
+
+    - name: Install postgresql-client with apt
+      ansible.builtin.apt:
+        name: postgresql-client
+        state: present
