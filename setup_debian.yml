@@ -73,6 +73,7 @@
       - org.signal.Signal
       - com.slack.Slack
       - com.discordapp.Discord
+      - com.github.Matoking.protontricks
 
     cargo_packages:
       - yazi-fm
