@@ -18,4 +18,4 @@ galaxy_info:
         - all
 
 dependencies:
-  - role: asdf
+  - role: mise

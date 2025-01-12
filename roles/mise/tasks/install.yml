@@ -1,0 +1,29 @@
+- name: Install mise
+  ansible.builtin.shell: |
+    set -o pipefail
+    curl https://mise.run | sh
+  args:
+    creates: "{{ ansible_env.HOME }}/.local/bin/mise"
+    executable: /bin/bash
+  tags:
+    - install
+
+- name: Install usage
+  ansible.builtin.command: mise use -g usage
+  tags:
+    - install
+
+- name: Install zsh completions
+  ansible.builtin.shell: |
+    set -o pipefail
+    mise completion zsh  > /usr/local/share/zsh/site-functions/_mise
+  args:
+    creates: "/usr/local/share/zsh/site-functions/_mise"
+    executable: /bin/zsh
+  tags:
+    - install
+
+- name: Update mise
+  ansible.builtin.command: mise self-update
+  tags:
+    - update
