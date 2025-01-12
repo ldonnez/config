@@ -18,7 +18,8 @@
 
     configure_git: true
     configure_zsh: true
-    configure_asdf: true
+    configure_asdf: false
+    configure_mise: true
     configure_npm: true
     configure_pip: true
     configure_yarn: true
@@ -135,6 +136,13 @@
       when: configure_asdf
       tags:
         - asdf
+
+    - name: Configure mise
+      ansible.builtin.import_role:
+        name: mise
+      when: configure_mise
+      tags:
+        - mise
 
     - name: Configure npm
       ansible.builtin.import_role:
@@ -333,4 +341,4 @@
         - xfce
 
   environment:
-    PATH: "{{ ansible_env.HOME}}/.asdf/shims:{{ ansible_env.HOME }}/.asdf/bin/:{{ansible_env.HOME}}/.local/bin:{{ ansible_env.HOME }}/.npm/bin:{{ ansible_env.HOME}}/.cargo/bin:{{ ansible_env.HOME}}/.ghcup/bin:/usr/bin:/usr/sbin:/sbin:{{ ansible_env.HOME}}/.local/bin"
+    PATH: "{{ ansible_env.HOME}}/.local/share/mise/shims:{{ansible_env.HOME}}/.local/bin:{{ ansible_env.HOME }}/.npm/bin:{{ ansible_env.HOME}}/.cargo/bin:{{ ansible_env.HOME}}/.ghcup/bin:/usr/bin:/usr/sbin:/sbin:{{ ansible_env.HOME}}/.local/bin"
