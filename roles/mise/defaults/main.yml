@@ -1,0 +1,18 @@
+---
+# defaults file for mise
+
+
+mise_tools:
+  - name: "nodejs"
+    apt_dependencies: []
+    homebrew_dependencies: []
+    versions:
+      - latest
+    global_version: latest
+
+  - name: "ruby"
+    apt_dependencies: ["libssl-dev", "libyaml-dev"]
+    homebrew_dependencies: []
+    versions:
+      - latest
+    global_version: latest

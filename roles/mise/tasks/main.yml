@@ -1,0 +1,7 @@
+- name: Include install
+  ansible.builtin.import_tasks: install.yml
+  when: ansible_os_family == "Darwin" or ansible_os_family == "Debian"
+
+- name: Include tools
+  ansible.builtin.import_tasks: tools.yml
+  when: ansible_os_family == "Darwin" or ansible_os_family == "Debian"
