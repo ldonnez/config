@@ -29,13 +29,13 @@
       args:
         chdir: /tmp/neovim
 
-    - name: Create nvim-linux64.deb package
+    - name: Create nvim-linux-x86_64.deb package
       ansible.builtin.command: cpack -G DEB
       args:
         chdir: /tmp/neovim/build
 
-    - name: Install nvim-linux64.deb package
-      ansible.builtin.command: dpkg -i --force-overwrite nvim-linux64.deb
+    - name: Install nvim-linux-x86_64.deb package
+      ansible.builtin.command: dpkg -i --force-overwrite nvim-linux-x86_64.deb
       args:
         chdir: /tmp/neovim/build
 
