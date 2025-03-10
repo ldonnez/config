@@ -12,6 +12,7 @@
     - name: Install/Update language servers & linters with cargo
       community.general.cargo:
         name: "{{ item }}"
+        state: latest
       loop: "{{ lsp_cargo }}"
       tags:
         - update
