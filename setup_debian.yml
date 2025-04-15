@@ -66,6 +66,7 @@
       - clang
       - rsync
       - groff
+      - vlc
 
     flatpak_apps:
       - com.github.tchx84.Flatseal
