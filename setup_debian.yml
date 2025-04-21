@@ -67,6 +67,7 @@
       - rsync
       - groff
       - vlc
+      - thunderbird
 
     flatpak_apps:
       - com.github.tchx84.Flatseal
