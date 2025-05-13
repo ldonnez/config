@@ -77,6 +77,7 @@
       - com.slack.Slack
       - com.discordapp.Discord
       - com.github.Matoking.protontricks
+      - org.telegram.desktop
 
     cargo_packages:
       - yazi-fm

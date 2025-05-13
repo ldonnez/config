@@ -92,6 +92,7 @@
       - steelseries-gg
       - tor-browser
       - zotero
+      - telegram
 
     mas_apps:
       - name: "Bitwarden"
