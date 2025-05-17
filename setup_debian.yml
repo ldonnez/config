@@ -68,6 +68,7 @@
       - groff
       - vlc
       - thunderbird
+      - galculator
 
     flatpak_apps:
       - com.github.tchx84.Flatseal
