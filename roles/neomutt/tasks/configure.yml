@@ -79,8 +79,6 @@
     state: directory
   loop:
     - gmail
-    - work
-    - hotmail
   tags:
     - install
 
