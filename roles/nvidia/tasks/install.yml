@@ -6,3 +6,11 @@
       - firmware-misc-nonfree
   tags:
     - install
+
+# Prevents Nvidia Optimus from working. More info -> https://wiki.debian.org/NVIDIA%20Optimus
+- name: Remove the outdated xserver-xorg-video-intel package if present
+  ansible.builtin.apt:
+    name: xserver-xorg-video-intel
+    state: absent
+  tags:
+    - install
