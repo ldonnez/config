@@ -1,0 +1,31 @@
+- name: Install dependencies
+  become: true
+  ansible.builtin.apt:
+    name: ["libxcb-cursor0"]
+    state: present
+  when: ansible_os_family == "Debian"
+  tags:
+    - install
+
+- name: Install/Update Calibre
+  become: true
+  when: ansible_os_family == "Debian"
+  ansible.builtin.shell: |
+    set -o pipefail
+    sudo -v && wget -nv -O- https://download.calibre-ebook.com/linux-installer.sh | sudo sh /dev/stdin
+  args:
+    creates: "/usr/bin/calibre"
+    executable: /bin/bash
+  tags:
+    - install
+
+- name: Force update Calibre
+  become: true
+  when: ansible_os_family == "Debian"
+  ansible.builtin.shell: |
+    set -o pipefail
+    sudo -v && wget -nv -O- https://download.calibre-ebook.com/linux-installer.sh | sudo sh /dev/stdin
+  args:
+    executable: /bin/bash
+  tags:
+    - update

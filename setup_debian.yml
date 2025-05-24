@@ -41,6 +41,7 @@
     configure_gnupg: true
     configure_ssh: true
     configure_neomutt: true
+    configure_calibre: true
     configure_mbsync_with_cron: false
     configure_fonts: true
     configure_aws: true
@@ -294,6 +295,13 @@
       when: configure_neomutt
       tags:
         - neomutt
+
+    - name: Configure calibre
+      ansible.builtin.import_role:
+        name: calibre
+      when: configure_calibre
+      tags:
+        - calibre
 
     - name: Configure fonts
       ansible.builtin.import_role:
