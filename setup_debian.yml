@@ -70,6 +70,7 @@
       - vlc
       - thunderbird
       - galculator
+      - gnome-disk-utility
 
     flatpak_apps:
       - com.github.tchx84.Flatseal
