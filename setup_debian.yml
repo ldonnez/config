@@ -71,6 +71,7 @@
       - thunderbird
       - galculator
       - gnome-disk-utility
+      - piper # GTK application to configure mouses
 
     flatpak_apps:
       - com.github.tchx84.Flatseal
