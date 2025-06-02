@@ -74,13 +74,13 @@
       - piper # GTK application to configure mouses
 
     flatpak_apps:
-      - com.github.tchx84.Flatseal
+      - com.github.tchx84.Flatseal # Flatseal is a graphical utility to review and modify permissions from your Flatpak applications.
       - com.bitwarden.desktop
       - com.synology.SynologyDrive
       - org.signal.Signal
       - com.slack.Slack
       - com.discordapp.Discord
-      - com.github.Matoking.protontricks
+      - com.github.Matoking.protontricks # Run Winetricks commands for Steam Play/Proton games among other common Wine features, such as launching external Windows executables.
       - org.telegram.desktop
 
     cargo_packages:
