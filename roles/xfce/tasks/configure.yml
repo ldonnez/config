@@ -10,6 +10,18 @@
         mode: "0644"
         follow: true
 
+- name: Ensure suspend doesn't require password
+  become: true
+  tags:
+    - install
+  block:
+    - name: Copy 85-suspend.rules to /etc/polkit-1/rules.d/
+      ansible.builtin.copy:
+        src: 85-suspend.rules
+        dest: "/etc/polkit-1/rules.d/85-suspend.rules"
+        mode: "0644"
+        follow: true
+
 - name: Restore xfce config files
   ansible.posix.synchronize:
     dest: "{{ ansible_env.HOME }}/.config/xfce4/"
