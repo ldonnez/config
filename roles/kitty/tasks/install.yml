@@ -22,14 +22,14 @@
 
     - name: Create symbolic links to add kitty to PATH
       ansible.builtin.file:
-        src: "{{ ansible_env.HOME }}/.local/kitty.app/kitty"
+        src: "{{ ansible_env.HOME }}/.local/kitty.app/bin/kitty"
         dest: "{{ ansible_env.HOME }}/.local/bin/kitty"
         state: link
         force: true
 
     - name: Create symbolic links to add kitten to PATH
       ansible.builtin.file:
-        src: "{{ ansible_env.HOME }}/.local/kitty.app/kitten"
+        src: "{{ ansible_env.HOME }}/.local/kitty.app/bin/kitten"
         dest: "{{ ansible_env.HOME }}/.local/bin/kitten"
         state: link
         force: true
