@@ -1,0 +1,141 @@
+- name: Install i3, i3status & i3blocks with apt
+  become: true
+  ansible.builtin.apt:
+    name: ["i3", "i3status", "i3blocks"]
+    state: present
+  when: ansible_os_family == "Debian"
+  tags:
+    - install
+
+- name: Install lightdm with apt
+  become: true
+  ansible.builtin.apt:
+    name: lightdm # simple display manager (login screen)
+    state: present
+  when: ansible_os_family == "Debian"
+  tags:
+    - install
+
+- name: Install xss-lock with apt
+  become: true
+  ansible.builtin.apt:
+    name: xss-lock # Utility to listen for XScreenSaver (XSS) and login manager events and call out to an external screen locker in order to lock the screen. (~/.config/i3/config)
+    state: present
+  when: ansible_os_family == "Debian"
+  tags:
+    - install
+
+- name: Install network-manager with apt
+  become: true
+  ansible.builtin.apt:
+    name: network-manager # network manger with included system tray icon
+    state: present
+  when: ansible_os_family == "Debian"
+  tags:
+    - install
+
+- name: Install thunar, thunar-volman & thunar-archive-plugin with apt
+  become: true
+  ansible.builtin.apt:
+    name: [
+      "thunar", # file manager
+      "thunar-volman", # extension for volumes management
+      "thunar-archive-plugin", # extension for extracting & archiving
+    ]
+    state: present
+  when: ansible_os_family == "Debian"
+  tags:
+    - install
+
+- name: Install dunst & libnotify-bin with apt
+  become: true
+  ansible.builtin.apt:
+    name: [
+      "dunst", # simple and lightweight notification daemon
+      "libnotify-bin", # make notify-send work
+    ]
+    state: present
+  when: ansible_os_family == "Debian"
+  tags:
+    - install
+
+- name: Install feh with apt
+  become: true
+  ansible.builtin.apt:
+    name: feh # feh is a lightweight image viewer aimed mainly at users of command line interfaces. This is necessary to configure a desktop wallpaper in ~/.config/i3/scripts/autostart.sh.
+    state: present
+  when: ansible_os_family == "Debian"
+  tags:
+    - install
+
+- name: Install materia gtk theme & papirus icon theme with apt
+  become: true
+  ansible.builtin.apt:
+    name: ["materia-gtk-theme", "papirus-icon-theme"]
+    state: present
+  when: ansible_os_family == "Debian"
+  tags:
+    - install
+
+- name: Install xprintidle & playerctl with apt
+  become: true
+  ansible.builtin.apt:
+    name: ["xprintidle", "playerctl"] # necessary to check if system is idle in ~/.config/i3/scripts/idle-check.sh
+    state: present
+  when: ansible_os_family == "Debian"
+  tags:
+    - install
+
+- name: Install i3lock-color # A modern version of i3lock used in ~/.config/i3/scripts/lock.sh
+  when: ansible_os_family == "Debian"
+  tags:
+    - install
+
+  block:
+    - name: Install build dependencies
+      become: true
+      ansible.builtin.apt:
+        name:
+          [
+            "autoconf",
+            "gcc",
+            "make",
+            "pkg-config",
+            "libpam0g-dev",
+            "libcairo2-dev",
+            "libfontconfig1-dev",
+            "libxcb-composite0-dev",
+            "libev-dev",
+            "libx11-xcb-dev",
+            "libxcb-xkb-dev",
+            "libxcb-xinerama0-dev",
+            "libxcb-randr0-dev",
+            "libxcb-image0-dev",
+            "libxcb-util0-dev",
+            "libxcb-xrm-dev",
+            "libxkbcommon-dev",
+            "libxkbcommon-x11-dev",
+            "libjpeg-dev",
+            "libgif-dev",
+          ]
+        state: present
+      when: ansible_os_family == "Debian"
+      tags:
+        - install
+
+    - name: Git clone i3lock-color repository
+      ansible.builtin.git:
+        repo: https://github.com/Raymo111/i3lock-color.git
+        depth: 1
+        version: "2.13.c.5"
+        dest: /tmp/i3lock-color
+
+    - name: Build and install i3lock-color
+      ansible.builtin.command: ./install-i3lock-color.sh
+      args:
+        chdir: /tmp/i3lock-color
+
+    - name: Remove /tmp/i3lock-color
+      ansible.builtin.file:
+        path: /tmp/i3lock-color
+        state: absent

@@ -1,0 +1,93 @@
+- name: Ensure wallpaper image
+  become: true
+  when: ansible_os_family == "Debian"
+  tags:
+    - install
+  block:
+    - name: Ensure /usr/local/share/wallpapers
+      ansible.builtin.file:
+        path: "/usr/local/share/wallpapers"
+        state: directory
+        mode: "0755"
+        recurse: true
+
+    - name: Copy el-capitan-night.jpg to /usr/local/share/wallpapers
+      ansible.builtin.copy:
+        src: "el-capitan-night.jpg"
+        dest: "/usr/local/share/wallpapers"
+        mode: "0755"
+
+- name: Copy lightdm-gtk-greeter.conf to /etc/lightdm
+  become: true
+  ansible.builtin.copy:
+    src: "lightdm-gtk-greeter.conf"
+    dest: "/etc/lightdm"
+    mode: "0644"
+    force: true
+  tags:
+    - install
+
+- name: Symlink ~/.config/i3
+  ansible.builtin.file:
+    src: "{{ i3_dotfiles_path }}"
+    dest: "{{ i3_config_dir }}"
+    state: link
+  tags:
+    - install
+
+- name: Symlink ~/.config/i3status
+  ansible.builtin.file:
+    src: "{{ i3_i3status_dotfiles_path }}"
+    dest: "{{ i3_i3status_config_dir }}"
+    state: link
+  tags:
+    - install
+
+- name: Symlink ~/.config/i3blocks
+  ansible.builtin.file:
+    src: "{{ i3_i3blocks_dotfiles_path }}"
+    dest: "{{ i3_i3blocks_config_dir }}"
+    state: link
+  tags:
+    - install
+
+- name: Symlink ~/.config/dunst
+  ansible.builtin.file:
+    src: "{{ i3_dunst_dotfiles_path }}"
+    dest: "{{ i3_dunst_config_dir }}"
+    state: link
+  tags:
+    - install
+
+- name: Symlink ~/.config/gtk-3.0
+  ansible.builtin.file:
+    src: "{{ i3_gtk_dotfiles_path }}"
+    dest: "{{ i3_gtk_config_dir }}"
+    state: link
+  tags:
+    - install
+
+- name: Add systemd service file to run system idle check script # ~/.config/i3/scripts/idle-check.sh
+  when: ansible_os_family == "Debian"
+  tags:
+    - install
+
+  block:
+    - name: Ensure ~/.config/systemd/user
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/.config/systemd/user"
+        state: directory
+        recurse: true
+
+    - name: Copy idle-check.service file
+      ansible.builtin.copy:
+        src: idle-check.service
+        dest: "{{ ansible_env.HOME }}/.config/systemd/user"
+        mode: "0700"
+
+    - name: Start idle-check
+      ansible.builtin.systemd:
+        name: idle-check
+        state: started
+        daemon_reload: true
+        scope: user
