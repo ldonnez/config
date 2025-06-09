@@ -47,7 +47,8 @@
     configure_aws: true
     configure_terraform: true
     configure_firefox: true
-    configure_xfce: true
+    configure_xfce: false
+    configure_i3: true
     configure_flatpak: true
     configure_synology_drive: true
 
@@ -353,6 +354,13 @@
       when: configure_xfce
       tags:
         - xfce
+
+    - name: Configure i3
+      ansible.builtin.import_role:
+        name: i3
+      when: configure_i3
+      tags:
+        - i3
 
   environment:
     PATH: "{{ ansible_env.HOME}}/.local/share/mise/shims:{{ansible_env.HOME}}/.local/bin:{{ ansible_env.HOME }}/.npm/bin:{{ ansible_env.HOME}}/.cargo/bin:{{ ansible_env.HOME}}/.ghcup/bin:/usr/bin:/usr/sbin:/sbin:{{ ansible_env.HOME}}/.local/bin"
