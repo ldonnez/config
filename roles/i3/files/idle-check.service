@@ -1,0 +1,7 @@
+[Unit]
+Description=Idle monitor script for locking and suspending
+
+[Service]
+ExecStart=%h/.config/i3/scripts/idle-check.sh
+Restart=always
+RestartSec=5
