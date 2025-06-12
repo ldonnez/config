@@ -48,6 +48,7 @@
     configure_terraform: true
     configure_firefox: true
     configure_xfce: false
+    configure_rofi: true
     configure_i3: true
     configure_flatpak: true
     configure_synology_drive: true
@@ -354,6 +355,13 @@
       when: configure_xfce
       tags:
         - xfce
+
+    - name: Configure rofi
+      ansible.builtin.import_role:
+        name: rofi
+      when: configure_rofi
+      tags:
+        - rofi
 
     - name: Configure i3
       ansible.builtin.import_role:
