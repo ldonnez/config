@@ -72,7 +72,7 @@
       - vlc
       - thunderbird
       - galculator
-      - gnome-disk-utility
+      - gparted # Simple program for configuring disk partitioning. Run with root priveleges - sudo gparted.
       - piper # GTK application to configure mouses
       - flameshot # Powerful yet simple-to-use screenshot software
 
