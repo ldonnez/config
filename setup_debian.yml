@@ -74,6 +74,7 @@
       - galculator
       - gnome-disk-utility
       - piper # GTK application to configure mouses
+      - flameshot # Powerful yet simple-to-use screenshot software
 
     flatpak_apps:
       - com.github.tchx84.Flatseal # Flatseal is a graphical utility to review and modify permissions from your Flatpak applications.
