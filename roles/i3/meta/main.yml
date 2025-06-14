@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  role_name: i3
+  author: ldonnez
+  description: Improved tiling X11 window manager
+  license: MIT
+  min_ansible_version: "2.10"
+
+  platforms:
+    - name: Debian
+      versions:
+        - all
+
+dependencies:
+  - role: dotfiles

@@ -47,7 +47,10 @@
     configure_aws: true
     configure_terraform: true
     configure_firefox: true
-    configure_xfce: true
+    configure_discord: true
+    configure_xfce: false
+    configure_rofi: true
+    configure_i3: true
     configure_flatpak: true
     configure_synology_drive: true
 
@@ -70,8 +73,12 @@
       - vlc
       - thunderbird
       - galculator
-      - gnome-disk-utility
+      - gparted # Simple program for configuring disk partitioning. Run with root priveleges - sudo gparted.
       - piper # GTK application to configure mouses
+      - flameshot # Powerful yet simple-to-use screenshot software
+      - zathura # Minimalistic pdf viewer with vim keybindings
+      - libreoffice # Full-featured office suite (word, excel, etc...)
+      - telegram-desktop # Telegram secure messaging app
 
     flatpak_apps:
       - com.github.tchx84.Flatseal # Flatseal is a graphical utility to review and modify permissions from your Flatpak applications.
@@ -79,9 +86,7 @@
       - com.synology.SynologyDrive
       - org.signal.Signal
       - com.slack.Slack
-      - com.discordapp.Discord
       - com.github.Matoking.protontricks # Run Winetricks commands for Steam Play/Proton games among other common Wine features, such as launching external Windows executables.
-      - org.telegram.desktop
 
     cargo_packages:
       - yazi-fm
@@ -333,6 +338,13 @@
       tags:
         - firefox
 
+    - name: Configure discord
+      ansible.builtin.import_role:
+        name: discord
+      when: configure_discord
+      tags:
+        - discord
+
     - name: Configure flatpak
       ansible.builtin.import_role:
         name: flatpak
@@ -353,6 +365,20 @@
       when: configure_xfce
       tags:
         - xfce
+
+    - name: Configure rofi
+      ansible.builtin.import_role:
+        name: rofi
+      when: configure_rofi
+      tags:
+        - rofi
+
+    - name: Configure i3
+      ansible.builtin.import_role:
+        name: i3
+      when: configure_i3
+      tags:
+        - i3
 
   environment:
     PATH: "{{ ansible_env.HOME}}/.local/share/mise/shims:{{ansible_env.HOME}}/.local/bin:{{ ansible_env.HOME }}/.npm/bin:{{ ansible_env.HOME}}/.cargo/bin:{{ ansible_env.HOME}}/.ghcup/bin:/usr/bin:/usr/sbin:/sbin:{{ ansible_env.HOME}}/.local/bin"

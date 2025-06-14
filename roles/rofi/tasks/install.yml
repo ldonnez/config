@@ -1,0 +1,8 @@
+- name: Install rofi with apt
+  become: true
+  ansible.builtin.apt:
+    name: rofi
+    state: present
+  when: ansible_os_family == "Debian"
+  tags:
+    - install

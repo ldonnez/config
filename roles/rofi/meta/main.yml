@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  role_name: rofi
+  author: ldonnez
+  description: A window switcher, Application launcher and dmenu replacement.
+  license: MIT
+  min_ansible_version: "2.10"
+
+  platforms:
+    - name: Debian
+      versions:
+        - all
+
+dependencies:
+  - role: dotfiles

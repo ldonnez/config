@@ -1,0 +1,7 @@
+- name: Symlink ~/.config/rofi
+  ansible.builtin.file:
+    src: "{{ rofi_dotfiles_path }}"
+    dest: "{{ rofi_config_dir }}"
+    state: link
+  tags:
+    - install

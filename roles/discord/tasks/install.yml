@@ -1,0 +1,9 @@
+- name: Install discord with apt
+  when: ansible_os_family == "Debian"
+  become: true
+  tags:
+    - install
+  block:
+    - name: Download & install discord .deb package
+      ansible.builtin.apt:
+        deb: https://discord.com/api/download?platform=linux&format=deb
