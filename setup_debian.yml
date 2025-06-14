@@ -47,6 +47,7 @@
     configure_aws: true
     configure_terraform: true
     configure_firefox: true
+    configure_discord: true
     configure_xfce: false
     configure_rofi: true
     configure_i3: true
@@ -84,7 +85,6 @@
       - com.synology.SynologyDrive
       - org.signal.Signal
       - com.slack.Slack
-      - com.discordapp.Discord
       - com.github.Matoking.protontricks # Run Winetricks commands for Steam Play/Proton games among other common Wine features, such as launching external Windows executables.
       - org.telegram.desktop
 
@@ -337,6 +337,13 @@
       when: configure_firefox
       tags:
         - firefox
+
+    - name: Configure discord
+      ansible.builtin.import_role:
+        name: discord
+      when: configure_discord
+      tags:
+        - discord
 
     - name: Configure flatpak
       ansible.builtin.import_role:

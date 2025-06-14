@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  role_name: discord
+  author: ldonnez
+  description: Discord is a platform for voice, video, and text chat with friends, gamers, and communities.
+  license: MIT
+  min_ansible_version: "2.10"
+
+  platforms:
+    - name: Debian
+      versions:
+        - all
+
+dependencies:
+  - role: packages
