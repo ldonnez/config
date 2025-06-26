@@ -70,9 +70,6 @@
       - awscli
       - yazi
 
-    homebrew_taps:
-      - homebrew/cask-versions
-
     homebrew_casks:
       - firefox-developer-edition
       - docker
