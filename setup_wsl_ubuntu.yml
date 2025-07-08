@@ -20,6 +20,7 @@
     configure_npm: true
     configure_pip: true
     configure_yarn: true
+    configure_rust: true
     configure_haskell: true
     configure_fzf: true
     configure_vim: true
@@ -52,8 +53,6 @@
       - golang-go
       - ninja-build
       - mplayer
-      - rustc
-      - cargo
       - python3-venv
       - clang
 
@@ -127,6 +126,13 @@
       when: configure_yarn
       tags:
         - yarn
+
+    - name: Configure rust
+      ansible.builtin.import_role:
+        name: rust
+      when: configure_rust
+      tags:
+        - rust
 
     - name: Configure haskell
       ansible.builtin.import_role:
