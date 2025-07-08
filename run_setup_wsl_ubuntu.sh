@@ -17,10 +17,8 @@ pip3 install --user --upgrade pip
 # install ansible
 pip3 install ansible ansible-lint
 
-# enable systemd
-sudo cp -u ./roles/wsl/files/wsl.conf /etc
+# Install requirements
+ansible-galaxy install -r requirements.yml
 
-printf "\n\n\nEverything prepared!\nClose your session and run \`wsl.exe --shutdown\` and restart WSL\nAfterwards run \`ansible-galaxy install -r requirements.yml && ansible-playbook setup_wsl_ubuntu.yml -K\` in this directory "
-
-sleep 4
-# ansible-playbook setup_wsl_ubuntu.yml -K --tags install
+# Run playbook
+ansible-playbook setup_wsl_ubuntu.yml -K --tags install

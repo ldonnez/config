@@ -6,8 +6,6 @@
   vars:
     dotfiles_repo: "https://github.com/ldonnez/dotfiles.git"
     dotfiles_directory_path: "{{ ansible_env.HOME }}/dotfiles"
-    private_dotfiles_path: "{{ ansible_env.HOME }}/private"
-    private_dotfiles_source: "/mnt/c/Users/lenny/SynologyDrive/private"
 
     install_packages: true
     install_dotfiles: true
@@ -32,13 +30,6 @@
     configure_ag: true
     configure_fd: true
     configure_rg: true
-    configure_libpq: true
-    configure_secrets: true
-    configure_gnupg: true
-    configure_ssh: true
-    configure_neomutt: true
-    configure_mbsync_with_cron: false
-    configure_fonts: false
 
     packages:
       - coreutils
@@ -52,7 +43,6 @@
       - tree
       - golang-go
       - ninja-build
-      - mplayer
       - python3-venv
       - clang
 
@@ -210,48 +200,6 @@
       when: configure_tmux
       tags:
         - tmux
-
-    - name: Configure libpq
-      ansible.builtin.import_role:
-        name: libpq
-      when: configure_libpq
-      tags:
-        - libpq
-
-    - name: Configure secrets
-      ansible.builtin.import_role:
-        name: secrets
-      when: configure_secrets
-      tags:
-        - secrets
-
-    - name: Configure gnupg
-      ansible.builtin.import_role:
-        name: gnupg
-      when: configure_gnupg
-      tags:
-        - gnupg
-
-    - name: Configure ssh
-      ansible.builtin.import_role:
-        name: ssh
-      when: configure_ssh
-      tags:
-        - ssh
-
-    - name: Configure neomutt
-      ansible.builtin.import_role:
-        name: neomutt
-      when: configure_neomutt
-      tags:
-        - neomutt
-
-    - name: Configure fonts
-      ansible.builtin.import_role:
-        name: fonts
-      when: configure_fonts
-      tags:
-        - fonts
 
   environment:
     PATH: "{{ ansible_env.HOME}}/.local/share/mise/shims:{{ansible_env.HOME}}/.local/bin:{{ ansible_env.HOME }}/.npm/bin:{{ ansible_env.HOME}}/.cargo/bin:{{ ansible_env.HOME}}/.ghcup/bin:/usr/bin:/usr/sbin:/sbin:/usr/lib/wsl/lib"
