@@ -23,6 +23,7 @@
     configure_fzf: true
     configure_vim: true
     configure_lsp: true
+    configure_terraform: true
     configure_neovim: true
     configure_vifm: true
     configure_bat: true
@@ -172,6 +173,13 @@
       when: configure_lsp
       tags:
         - lsp
+
+    - name: Configure terraform
+      ansible.builtin.import_role:
+        name: terraform
+      when: configure_terraform
+      tags:
+        - terraform
 
     - name: Configure neovim
       ansible.builtin.import_role:
