@@ -20,5 +20,6 @@
     src: wsl.conf
     dest: /etc
     mode: "0600"
+  notify: Restart WSL for changes to take effect (wsl ---shutdown)
   tags:
     - install
