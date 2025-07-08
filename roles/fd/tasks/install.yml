@@ -7,7 +7,6 @@
   tags:
     - install
 
-
 - name: Install fd with homebrew
   community.general.homebrew:
     name: fd

@@ -13,7 +13,7 @@
             "cmake",
             "unzip",
             "curl",
-            "build-essential"
+            "build-essential",
           ]
         state: present
 

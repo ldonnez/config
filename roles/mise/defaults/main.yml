@@ -1,7 +1,6 @@
 ---
 # defaults file for mise
 
-
 mise_tools:
   - name: "nodejs"
     apt_dependencies: []
