@@ -8,12 +8,14 @@
 
 - name: Ensure contrib, non-free & non-free-firmware repositories are added
   become: true
+  when: ansible_distribution == 'Debian'
   ansible.builtin.command: apt-add-repository -yn contrib non-free non-free-firmware
   tags:
     - install
 
 - name: Ensure backports repository is enabled
   become: true
+  when: ansible_distribution == 'Debian'
   ansible.builtin.blockinfile:
     path: /etc/apt/sources.list
     block: |
