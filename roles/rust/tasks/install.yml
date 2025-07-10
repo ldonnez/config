@@ -21,6 +21,7 @@
     state: latest
     locked: true
   loop: "{{ cargo_packages }}"
+  when: cargo_packages is defined
   tags:
     - update
     - install
