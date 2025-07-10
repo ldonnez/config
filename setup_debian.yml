@@ -79,7 +79,6 @@
       - zathura # Minimalistic pdf viewer with vim keybindings
       - libreoffice # Full-featured office suite (word, excel, etc...)
       - telegram-desktop # Telegram secure messaging app
-      - plexamp
 
     flatpak_apps:
       - com.github.tchx84.Flatseal # Flatseal is a graphical utility to review and modify permissions from your Flatpak applications.
