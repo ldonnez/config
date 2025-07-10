@@ -47,6 +47,9 @@
       - python3-venv
       - clang
 
+    pip_packages:
+      - ansible-lint
+
   tasks:
     - name: Install packages
       ansible.builtin.import_role:
