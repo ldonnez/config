@@ -12,13 +12,14 @@ PATH=$PATH:~/.local/bin
 # update apt
 sudo apt update && sudo apt upgrade
 
-sudo apt install git python3-setuptools python3-pip
+sudo apt install git python3-setuptools python3-pip python3-apt
 
-# upgrade pip
-pip3 install --user --upgrade pip
+# Install pipx
+pip3 install pipx
 
-# install ansible
-pip3 install ansible ansible-lint
+# Install ansible & ansible-lint
+pipx install ansible
+pipx install ansible-lint
 
 # Install requirements
 ansible-galaxy install -r requirements.yml
