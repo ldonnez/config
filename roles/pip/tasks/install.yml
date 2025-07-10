@@ -32,10 +32,7 @@
     - install
 
 - name: Upgrade packages with pipx
-  when: ansible_os_family == "Debian"
   community.general.pipx:
-    name: "{{ item }}"
-    state: upgrade
-  loop: "{{ pip_packages }}"
+    state: upgrade_all
   tags:
     - update
