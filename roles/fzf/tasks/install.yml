@@ -7,12 +7,6 @@
   tags:
     - install
 
-- name: Install fzf
-  ansible.builtin.command: "{{ ansible_env.HOME }}/.fzf/install"
-  tags:
-    - update
-    - install
-
 - name: Update fzf
   ansible.builtin.git:
     repo: https://github.com/junegunn/fzf.git
@@ -21,3 +15,9 @@
     update: true
   tags:
     - update
+
+- name: Install fzf
+  ansible.builtin.command: "{{ ansible_env.HOME }}/.fzf/install"
+  tags:
+    - update
+    - install
