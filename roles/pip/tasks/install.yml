@@ -57,6 +57,7 @@
     name: "{{ item }}"
     executable: "{{ pip_pipx_binary.stdout }}"
   loop: "{{ pip_packages }}"
+  when: pip_packages is defined
   tags:
     - install
 
