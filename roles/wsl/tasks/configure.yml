@@ -14,6 +14,14 @@
   tags:
     - install
 
+- name: Remove existing /etc/wsl.conf if present
+  become: true
+  ansible.builtin.file:
+    path: /etc/wsl.conf
+    state: absent
+  tags:
+    - install
+
 - name: Copy wsl.conf to /etc
   become: true
   ansible.builtin.copy:
