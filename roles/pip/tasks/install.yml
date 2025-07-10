@@ -45,9 +45,17 @@
   tags:
     - update
 
+- name: Getting pipx binary location
+  ansible.builtin.command: which pipx
+  register: pip_pipx_binary
+  tags:
+    - update
+    - install
+
 - name: Install packages with pipx
   community.general.pipx:
     name: "{{ item }}"
+    executable: "{{ pip_pipx_binary.stdout }}"
   loop: "{{ pip_packages }}"
   tags:
     - install
@@ -55,5 +63,6 @@
 - name: Upgrade packages with pipx
   community.general.pipx:
     state: upgrade_all
+    executable: "{{ pip_pipx_binary.stdout }}"
   tags:
     - update
