@@ -6,6 +6,9 @@ cd "$(dirname "$0")"
 # Create .local/bin to symlink alternative paths locally
 mkdir -p ~/.local/bin
 
+# Ensure ~/.local/bin is in PATH
+PATH=$PATH:~/.local/bin
+
 # update apt
 sudo apt update && sudo apt upgrade
 
