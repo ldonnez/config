@@ -23,6 +23,15 @@
   tags:
     - install
 
+- name: Upgrade pipx with pip3
+  when: ansible_os_family == "Debian"
+  ansible.builtin.pip:
+    name: pipx
+    state: latest # noqa package-latest
+    executable: pip3
+  tags:
+    - update
+
 - name: Install packages with pipx
   community.general.pipx:
     name: "{{ item }}"
