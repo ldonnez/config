@@ -24,7 +24,6 @@
     - install
 
 - name: Install packages with pipx
-  when: ansible_os_family == "Debian"
   community.general.pipx:
     name: "{{ item }}"
   loop: "{{ pip_packages }}"
