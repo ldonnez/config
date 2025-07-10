@@ -28,7 +28,6 @@
     src: wsl.conf
     dest: /etc
     mode: "0600"
-  notify: Restart WSL for changes to take effect (wsl ---shutdown)
   tags:
     - install
 
@@ -89,5 +88,9 @@
           LANG="en_US.UTF-8"
           LC_ALL="en_US.UTF-8"
         mode: "0644"
+
+- name: Notify to restart WSL for changes to take effect
+  ansible.builtin.debug:
+    msg: "Restart WSL for changes to take effect (wsl --shutdown)"
   tags:
     - install
