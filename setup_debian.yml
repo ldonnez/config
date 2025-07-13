@@ -51,6 +51,7 @@
     configure_xfce: false
     configure_rofi: true
     configure_i3: true
+    configure_virt_manager: true
     configure_flatpak: true
     configure_synology_drive: true
 
@@ -383,6 +384,13 @@
       when: configure_i3
       tags:
         - i3
+
+    - name: Configure virt manager
+      ansible.builtin.import_role:
+        name: virt_manager
+      when: configure_virt_manager
+      tags:
+        - virt_manager
 
   environment:
     PATH: "{{ ansible_env.HOME}}/.local/share/mise/shims:{{ansible_env.HOME}}/.local/bin:{{ ansible_env.HOME }}/.npm/bin:{{ ansible_env.HOME}}/.cargo/bin:{{ ansible_env.HOME}}/.ghcup/bin:/usr/bin:/usr/sbin:/sbin:{{ ansible_env.HOME}}/.local/bin"
