@@ -225,3 +225,20 @@
     value: false
   tags:
     - install
+
+- name: Install Cloudflare DNS over HTTPS profile
+  tags:
+    - install
+
+  block:
+    - name: Copy profile to /tmp
+      ansible.builtin.copy:
+        src: cloudflare-https.mobileconfig
+        dest: /tmp/cloudflare-https.mobileconfig
+        mode: "0644"
+        owner: "{{ ansible_user_id }}"
+
+    - name: Prompt user to install profile via GUI # Check System Preferences to review and install the profile
+      ansible.builtin.command: open /tmp/cloudflare-https.mobileconfig
+      args:
+        creates: "/Library/Managed Preferences/{{ ansible_env.USER }}/com.apple.dnsSettings.managed.plist"
