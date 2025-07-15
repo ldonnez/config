@@ -1,0 +1,18 @@
+---
+galaxy_info:
+  role_name: systemd_resolved
+  author: ldonnez
+  description: systemd-resolved is a systemd service that provides network name resolution to local applications via a D-Bus interface.
+  license: MIT
+  min_ansible_version: "2.10"
+
+  platforms:
+    - name: Ubuntu
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
+
+dependencies:
+  - role: dotfiles

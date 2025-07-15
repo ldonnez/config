@@ -52,6 +52,7 @@
     configure_rofi: true
     configure_i3: true
     configure_virt_manager: true
+    configure_systemd_resolved: true
     configure_flatpak: true
     configure_synology_drive: true
 
@@ -391,6 +392,13 @@
       when: configure_virt_manager
       tags:
         - virt_manager
+
+    - name: Configure systemd_resolved
+      ansible.builtin.import_role:
+        name: systemd_resolved
+      when: configure_systemd_resolved
+      tags:
+        - systemd_resolved
 
   environment:
     PATH: "{{ ansible_env.HOME}}/.local/share/mise/shims:{{ansible_env.HOME}}/.local/bin:{{ ansible_env.HOME }}/.npm/bin:{{ ansible_env.HOME}}/.cargo/bin:{{ ansible_env.HOME}}/.ghcup/bin:/usr/bin:/usr/sbin:/sbin:{{ ansible_env.HOME}}/.local/bin"

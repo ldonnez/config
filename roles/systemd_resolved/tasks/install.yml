@@ -1,0 +1,10 @@
+- name: Install systemd-resolved with apt
+  become: true
+  ansible.builtin.apt:
+    name: systemd-resolved
+    state: present
+  when:
+    - (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
+    - ansible_distribution_version is version('24.04', '>=')
+  tags:
+    - install
