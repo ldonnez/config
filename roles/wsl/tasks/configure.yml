@@ -31,36 +31,6 @@
   tags:
     - install
 
-- name: Check if /etc/resolv.conf has immutable attribute
-  become: true
-  ansible.builtin.command: lsattr /etc/resolv.conf
-  register: resolv_attr
-  changed_when: false
-  failed_when: false
-  tags:
-    - install
-
-- name: Configure DNS
-  become: true
-  when: resolv_attr.stdout is not search('i')
-  tags:
-    - install
-
-  block:
-    - name: Remove existing /etc/resolv.conf if present
-      become: true
-      ansible.builtin.file:
-        path: /etc/resolv.conf
-        state: absent
-
-    - name: Copy resolv.conf to /etc
-      become: true
-      ansible.builtin.copy:
-        src: resolv.conf
-        dest: /etc
-        mode: "0644"
-        attr: +i
-
 - name: Configure locales (en_US.UTF-8)
   become: true
   tags:
