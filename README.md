@@ -53,13 +53,18 @@ You can configure the following options in `powershell/config.json`
 
 ## Setup WSL2 (Ubuntu-22.04)
 
-Make sure to check vars in `setup_wsl_ubuntu.yml`, configure the location of the `private_dotfiles_path` and `private_dotfiles_source` option
-This path should be the location of your `.ssh`, `.gnupg` & `.secrets` directories.
+Make sure to check vars in `setup_wsl_ubuntu.yml`.
+
+- To ensure network compatibility (especially for services that require bridged/mirrored networking like corporate VPN's), create or edit the `.wslconfig` file in your Windows user home directory (C:\Users\\\<YourUsername>\\\.wslconfig) and add the following:
+
+```
+[wsl2]
+networkingMode=mirrored
+```
 
 - Clone this repo, preferably in your home directory
-- Run `sh run_setup_wsl_ubuntu.sh`. This will install python, pip, ansible and makes sure the wsl.conf file is set to enable systemd.
-- Close The WSL session and run wsl.exe --shutdown in powershell shell to rerstart WSL
-- Open Ubuntu 22.04 again and run `ansible-galaxy install -r requirements.yml && ansible-playbook setup_wsl_ubuntu.yml -K --tags install`
+- Run `sh run_setup_wsl_ubuntu.sh`. This will install python and pipx and installs latest ansible and ansible-lint with pipx.
+- Close The WSL session and run `wsl.exe --shutdown` in a powershell shell to rerstart WSL.
 
 ### Update WSL2 (Ubuntu 22.04) packages
 
