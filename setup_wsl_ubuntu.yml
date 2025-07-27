@@ -11,7 +11,6 @@
     install_dotfiles: true
 
     configure_wsl: true
-    configure_systemd_resolved: true
     configure_git: true
     configure_zsh: true
     configure_asdf: false
@@ -65,13 +64,6 @@
       when: configure_wsl
       tags:
         - wsl
-
-    - name: Configure systemd_resolved
-      ansible.builtin.import_role:
-        name: systemd_resolved
-      when: configure_systemd_resolved
-      tags:
-        - systemd_resolved
 
     - name: Install dotfiles
       ansible.builtin.import_role:
