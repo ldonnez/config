@@ -42,7 +42,6 @@
       ansible.builtin.apt:
         name: locales
         state: present
-        update_cache: true
 
     - name: Generate en_US.UTF-8 locale
       become: true
