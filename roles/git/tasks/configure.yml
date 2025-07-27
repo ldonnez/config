@@ -5,6 +5,20 @@
     mode: "0755"
   tags:
     - install
+
+- name: Check if git-crential-manager.exe exists
+  ansible.builtin.stat:
+    path: "/mnt/c/Program\ Files/Git/mingw64/bin/git-credential-manager.exe"
+  register: register_git_credential_manager_exe
+  tags:
+    - install
+
+- name: Configure Git Credential Manager for WSL # Ensures MFA and SSO works in Github Enterprise environments.
+  community.general.git_config:
+    name: credential.helper
+    scope: global
+    value: /mnt/c/Program\ Files/Git/mingw64/bin/git-credential-manager.exe
+  when: register_git_credential_manager_exe.stat.exists
   tags:
     - install
 
