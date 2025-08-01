@@ -17,7 +17,7 @@ This path should be the location of your `.ssh`, `.gnupg` & `.secrets` directori
 
 Run
 
-```
+```zsh
   ansible-playbook setup_macos.yml --tags=update
 ```
 
@@ -57,7 +57,7 @@ Make sure to check vars in `setup_wsl_ubuntu.yml`.
 
 - To ensure network compatibility (especially for services that require bridged/mirrored networking like corporate VPN's), create or edit the `.wslconfig` file in your Windows user home directory (C:\Users\\\<YourUsername>\\\.wslconfig) and add the following:
 
-```
+```shell
 [wsl2]
 networkingMode=mirrored
 ```
@@ -70,7 +70,7 @@ networkingMode=mirrored
 
 Run
 
-```
+```zsh
   ansible-playbook setup_wsl_ubuntu.yml -K --tags update
 ```
 
@@ -88,6 +88,6 @@ This path should be the location of your `.ssh`, `.gnupg` & `.secrets` directori
 
 Run
 
-```
+```zsh
   ansible-playbook setup_debian.yml -K --tags update
 ```
