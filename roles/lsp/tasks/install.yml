@@ -31,6 +31,15 @@
       tags:
         - update
 
+    - name: Install/Update language servers & linters with apt
+      when: ansible_os_family == "Debian"
+      ansible.builtin.apt:
+        name: "{{ lsp_apt }}"
+        state: present
+      become: true
+      tags:
+        - update
+
     - name: Getting pipx binary location
       ansible.builtin.command: which pipx
       register: lsp_pipx_binary
