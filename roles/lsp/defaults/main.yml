@@ -15,12 +15,16 @@ lsp_npm:
     "graphql-language-service-cli",
     "@ansible/ansible-language-server",
     "@vtsls/language-server",
+    "bash-language-server",
   ]
 
 lsp_cargo: ["stylua"]
 
-lsp_go: ["github.com/mattn/efm-langserver@latest"]
+lsp_go:
+  ["github.com/mattn/efm-langserver@latest", "mvdan.cc/sh/v3/cmd/shfmt@latest"]
 
 lsp_pip: ["shandy-sqlfmt"]
 
-lsp_homebrew: ["hashicorp/tap/terraform-ls"]
+lsp_homebrew: ["hashicorp/tap/terraform-ls", "shellcheck"]
+
+lsp_apt: ["shellcheck"]
