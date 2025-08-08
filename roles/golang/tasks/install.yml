@@ -1,0 +1,49 @@
+- name: Install or update Go if needed
+  tags:
+    - install
+    - update
+  when: ansible_os_family == "Debian"
+
+  block:
+    - name: Get latest Go version
+      ansible.builtin.uri:
+        url: https://go.dev/VERSION?m=text
+        return_content: true
+      register: golang_latest_version
+
+    - name: Get installed Go version
+      ansible.builtin.command: go version
+      register: golang_installed_version
+      failed_when: false
+      changed_when: false
+
+    - name: Install or update Go if needed
+      when: (golang_installed_version.stdout.split(' ')[2] | default('none')) != (golang_latest_version.content.splitlines()[0] | trim)
+      block:
+        - name: Ensure older golang-go is removed with apt
+          ansible.builtin.apt:
+            name: golang-go
+            state: absent
+
+        - name: Download latest Go
+          ansible.builtin.get_url:
+            url: "https://go.dev/dl/{{ golang_latest_version.content.splitlines()[0] | trim }}.linux-amd64.tar.gz"
+            dest: "/tmp/go.tar.gz"
+            mode: "0700"
+
+        - name: Remove old Go
+          become: true
+          ansible.builtin.file:
+            path: /usr/local/go
+            state: absent
+
+        - name: Extract new Go
+          become: true
+          ansible.builtin.unarchive:
+            src: "/tmp/go.tar.gz"
+            dest: /usr/local
+
+        - name: Remove /tmp/go.tar.gz
+          ansible.builtin.file:
+            path: /tmp/go.tar.gz
+            state: absent

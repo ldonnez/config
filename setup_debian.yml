@@ -20,6 +20,7 @@
     configure_zsh: true
     configure_asdf: false
     configure_mise: true
+    configure_golang: true
     configure_npm: true
     configure_pip: true
     configure_yarn: true
@@ -66,7 +67,6 @@
       - watchman
       - luarocks
       - tree
-      - golang-go
       - ninja-build
       - python3-venv
       - clang
@@ -161,6 +161,13 @@
       when: configure_mise
       tags:
         - mise
+
+    - name: Configure golang
+      ansible.builtin.import_role:
+        name: golang
+      when: configure_golang
+      tags:
+        - golang
 
     - name: Configure npm
       ansible.builtin.import_role:
@@ -401,4 +408,4 @@
         - systemd_resolved
 
   environment:
-    PATH: "{{ ansible_env.HOME}}/.local/share/mise/shims:{{ansible_env.HOME}}/.local/bin:{{ ansible_env.HOME }}/.npm/bin:{{ ansible_env.HOME}}/.cargo/bin:{{ ansible_env.HOME}}/.ghcup/bin:/usr/bin:/usr/sbin:/sbin:{{ ansible_env.HOME}}/.local/bin"
+    PATH: "{{ ansible_env.HOME}}/.local/share/mise/shims:{{ansible_env.HOME}}/.local/bin:{{ ansible_env.HOME }}/.npm/bin:{{ ansible_env.HOME}}/.cargo/bin:{{ ansible_env.HOME}}/.ghcup/bin:/usr/local/go/bin:/usr/bin:/usr/sbin:/sbin:{{ ansible_env.HOME}}/.local/bin"

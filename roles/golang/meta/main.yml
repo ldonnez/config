@@ -1,0 +1,18 @@
+---
+galaxy_info:
+  role_name: golang
+  author: ldonnez
+  description: Go is an open source programming language that makes it simple to build secure, scalable systems.
+  license: MIT
+  min_ansible_version: "2.10"
+
+  platforms:
+    - name: Ubuntu
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
+
+dependencies:
+  - role: zsh
