@@ -25,9 +25,9 @@
     - name: Download & install docker-desktop .deb package
       ansible.builtin.apt:
         deb: https://desktop.docker.com/linux/main/amd64/docker-desktop-amd64.deb?utm_source=docker&utm_medium=webreferral&utm_campaign=docs-driven-download-linux-amd64
-      register: result
+      register: docker_desktop_result
       failed_when: >
-        result.failed and
-        ('A later version is already installed' not in result.msg)
+        docker_desktop_result.failed and
+        ('A later version is already installed' not in docker_desktop_result.msg)
       tags:
         - update
