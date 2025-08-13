@@ -21,7 +21,11 @@ lsp_npm:
 lsp_cargo: ["stylua"]
 
 lsp_go:
-  ["github.com/mattn/efm-langserver@latest", "mvdan.cc/sh/v3/cmd/shfmt@latest"]
+  [
+    "github.com/mattn/efm-langserver@latest",
+    "mvdan.cc/sh/v3/cmd/shfmt@latest",
+    "golang.org/x/tools/gopls@latest",
+  ]
 
 lsp_pip: ["shandy-sqlfmt"]
 
