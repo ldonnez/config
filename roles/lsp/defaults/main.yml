@@ -29,6 +29,8 @@ lsp_go:
 
 lsp_pip: ["shandy-sqlfmt"]
 
-lsp_homebrew: ["hashicorp/tap/terraform-ls", "shellcheck"]
+# libxml2 for xmllint an xml formatter
+lsp_homebrew: ["hashicorp/tap/terraform-ls", "shellcheck", "libxml2"]
 
-lsp_apt: ["shellcheck"]
+# libxml2-utils for xmllint an xml formatter
+lsp_apt: ["shellcheck", "libxml2-utils"]
