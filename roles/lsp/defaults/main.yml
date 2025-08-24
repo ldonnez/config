@@ -27,6 +27,8 @@ lsp_go:
     "github.com/mattn/efm-langserver@latest",
     "mvdan.cc/sh/v3/cmd/shfmt@latest",
     "golang.org/x/tools/gopls@latest",
+    "github.com/golangci/golangci-lint/cmd/golangci-lint@latest",
+    "github.com/nametake/golangci-lint-langserver@latest",
   ]
 
 lsp_pip: ["shandy-sqlfmt"]
