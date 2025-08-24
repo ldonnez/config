@@ -16,6 +16,8 @@ lsp_npm:
     "@ansible/ansible-language-server",
     "@vtsls/language-server",
     "bash-language-server",
+    "@mistweaverco/kulala-fmt",
+    "@mistweaverco/kulala-ls",
   ]
 
 lsp_cargo: ["stylua"]
