@@ -21,6 +21,7 @@
       when: (golang_installed_version.stdout.split(' ')[2] | default('none')) != (golang_latest_version.content.splitlines()[0] | trim)
       block:
         - name: Ensure older golang-go is removed with apt
+          become: true
           ansible.builtin.apt:
             name: golang-go
             state: absent
