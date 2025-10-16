@@ -68,6 +68,7 @@
       - sqlcmd
       - llvm
       - awscli
+      - azure-cli
       - yazi
 
     homebrew_casks:
