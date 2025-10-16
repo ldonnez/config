@@ -1,0 +1,48 @@
+- name: Install Azure CLI with apt
+  when: ansible_os_family == "Debian"
+  become: true
+  tags:
+    - install
+  block:
+    - name: Get microsoft signing key
+      ansible.builtin.get_url:
+        url: https://packages.microsoft.com/keys/microsoft.asc
+        dest: /tmp/microsoft.asc
+        mode: "0644"
+
+    - name: Convert key to GPG format
+      ansible.builtin.shell: gpg --dearmor -o /etc/apt/keyrings/microsoft.gpg /tmp/microsoft.asc
+      args:
+        executable: /bin/bash
+      register: azure_cli_gpg_output
+
+    - name: Get system architecture (e.g. amd64)
+      ansible.builtin.command: dpkg --print-architecture
+      register: azure_cli_system_arch
+      changed_when: false
+
+    - name: Create Azure CLI sources file
+      ansible.builtin.copy:
+        mode: "0644"
+        content: |
+          Types: deb
+          URIs: https://packages.microsoft.com/repos/azure-cli/
+          Suites: {{ ansible_lsb.codename }}
+          Components: main
+          Architectures: {{ azure_cli_system_arch.stdout }}
+          Signed-by: /etc/apt/keyrings/microsoft.gpg
+        dest: /etc/apt/sources.list.d/azure-cli.sources
+
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: true
+
+    - name: Install Azure CLI package
+      ansible.builtin.apt:
+        name: "azure-cli"
+        state: present
+
+    - name: Cleanup /tmp/microsoft.asc
+      ansible.builtin.file:
+        path: /tmp/microsoft.asc
+        state: absent

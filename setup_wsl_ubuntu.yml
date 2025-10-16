@@ -32,6 +32,7 @@
     configure_ag: true
     configure_fd: true
     configure_rg: true
+    configure_azure_cli: true
 
     packages:
       - coreutils
@@ -176,6 +177,13 @@
       when: configure_rg
       tags:
         - rg
+
+    - name: Configure azure cli
+      ansible.builtin.import_role:
+        name: azure_cli
+      when: configure_azure_cli
+      tags:
+        - azure_cli
 
     - name: Configure lsp's
       ansible.builtin.import_role:
