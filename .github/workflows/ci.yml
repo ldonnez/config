@@ -15,6 +15,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Run ansible-lint
-        uses: ansible-actions/ansible-lint-action@v1.0.3
+        uses: ansible/ansible-lint@main
         with:
-          target: "./"
+          requirements_file: "requirements.yml"
