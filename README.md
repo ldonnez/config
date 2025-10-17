@@ -74,7 +74,7 @@ Run
   ansible-playbook setup_wsl_ubuntu.yml -K --tags update
 ```
 
-## Setup Debian 12 (Bookworm)
+## Setup Debian 13 (Trixie)
 
 Make sure to check vars in `setup_debian.yml`, configure the location of the `private_dotfiles_path` and `private_dotfiles_source` option.
 This path should be the location of your `.ssh`, `.gnupg` & `.secrets` directories.
@@ -84,7 +84,7 @@ This path should be the location of your `.ssh`, `.gnupg` & `.secrets` directori
 - Clone this repo, preferably in your home directory
 - Run `sh run_setup_debian.sh`. This will install all dependencies necessary (python, pipx and ansible) and run the playbook (`ansible-playbook setup_debian.yml -K --tags install`).
 
-### Update Debian 12 (Bookworm) packages
+### Update Debian 13 (Trixie) packages
 
 Run
 

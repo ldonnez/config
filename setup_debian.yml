@@ -1,5 +1,5 @@
 ---
-- name: Setup Debian 12
+- name: Setup Debian 13
   hosts: localhost
   connection: local
 
