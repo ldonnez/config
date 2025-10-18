@@ -125,8 +125,6 @@
           ]
         state: present
       when: ansible_os_family == "Debian"
-      tags:
-        - install
 
     - name: Git clone i3lock-color repository
       ansible.builtin.git:
