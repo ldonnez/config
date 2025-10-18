@@ -88,12 +88,12 @@
 
 - name: Install i3lock-color # A modern version of i3lock used in ~/.config/i3/scripts/lock.sh
   when: ansible_os_family == "Debian"
+  become: true
   tags:
     - install
 
   block:
     - name: Install build dependencies
-      become: true
       ansible.builtin.apt:
         name:
           [
