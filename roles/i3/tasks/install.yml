@@ -93,6 +93,11 @@
     - install
 
   block:
+    - name: Ensure default i3lock is removed
+      ansible.builtin.apt:
+        name: i3lock
+        state: absent
+
     - name: Install build dependencies
       ansible.builtin.apt:
         name:
