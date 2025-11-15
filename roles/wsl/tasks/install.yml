@@ -9,7 +9,6 @@
 - name: Install win32yank.exe
   tags:
     - install
-    - temp
 
   block:
     - name: Ensure /tmp/win32yank
