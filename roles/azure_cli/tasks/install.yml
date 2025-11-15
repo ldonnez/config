@@ -14,6 +14,7 @@
       ansible.builtin.shell: gpg --dearmor -o /etc/apt/keyrings/microsoft.gpg /tmp/microsoft.asc
       args:
         executable: /bin/bash
+        creates: /etc/apt/keyrings/microsoft.gpg
       register: azure_cli_gpg_output
 
     - name: Get system architecture (e.g. amd64)
