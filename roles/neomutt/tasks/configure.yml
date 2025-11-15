@@ -1,16 +1,6 @@
 - name: Symlink .mbsyncrc
-  when: ansible_os_family != "Debian"
   ansible.builtin.file:
     src: "{{ dotfiles_directory_path }}/.mbsyncrc"
-    dest: "{{ ansible_env.HOME }}/.mbsyncrc"
-    state: link
-  tags:
-    - install
-
-- name: Symlink .mbsyncrc
-  when: ansible_os_family == "Debian"
-  ansible.builtin.file:
-    src: "{{ dotfiles_directory_path }}/.mbsyncrc.old"
     dest: "{{ ansible_env.HOME }}/.mbsyncrc"
     state: link
   tags:
