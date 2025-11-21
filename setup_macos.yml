@@ -90,11 +90,9 @@
       - tor-browser
       - zotero
       - telegram
+      - bitwarden
 
     mas_apps:
-      - name: "Bitwarden"
-        id: 1352778147
-
       - name: "Slack for Desktop"
         id: 803453959
 
