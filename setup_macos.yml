@@ -37,6 +37,7 @@
     configure_ag: true
     configure_fd: true
     configure_rg: true
+    configure_memo: true
     configure_libpq: true
     configure_secrets: true
     configure_gnupg: true
@@ -280,6 +281,13 @@
       when: configure_rg
       tags:
         - rg
+
+    - name: Configure memo
+      ansible.builtin.import_role:
+        name: memo
+      when: configure_memo
+      tags:
+        - memo
 
     - name: Configure libpq
       ansible.builtin.import_role:

@@ -1,0 +1,16 @@
+---
+galaxy_info:
+  role_name: memo
+  author: ldonnez
+  description: Memo is a secure, CLI-based note-taking system with transparent GPG encryption.
+  license: MIT
+  min_ansible_version: "2.10"
+
+  platforms:
+    - name: Debian
+      versions:
+        - all
+
+    - name: macOS
+      versions:
+        - all

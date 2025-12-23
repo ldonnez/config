@@ -1,0 +1,15 @@
+- name: "Ensure memo config dir"
+  ansible.builtin.file:
+    path: "{{ memo_config_dir }}"
+    state: directory
+    recurse: true
+  tags:
+    - install
+
+- name: "Symlink memo config"
+  ansible.builtin.file:
+    src: "{{ memo_dotfiles_path }}/config"
+    dest: "{{ memo_config_dir }}/config"
+    state: link
+  tags:
+    - install

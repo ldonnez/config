@@ -32,6 +32,7 @@
     configure_ag: true
     configure_fd: true
     configure_rg: true
+    configure_memo: true
     configure_azure_cli: true
 
     packages:
@@ -177,6 +178,13 @@
       when: configure_rg
       tags:
         - rg
+
+    - name: Configure memo
+      ansible.builtin.import_role:
+        name: memo
+      when: configure_memo
+      tags:
+        - memo
 
     - name: Configure azure cli
       ansible.builtin.import_role:
