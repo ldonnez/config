@@ -20,7 +20,7 @@ lsp_npm:
     "@mistweaverco/kulala-ls",
   ]
 
-lsp_cargo: ["stylua"]
+lsp_cargo: ["stylua", "emmylua_ls", "tree-sitter-cli"]
 
 lsp_go:
   [
