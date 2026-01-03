@@ -51,6 +51,7 @@
     configure_terraform: true
     configure_firefox: true
     configure_discord: true
+    configure_spotify: true
     configure_xfce: false
     configure_rofi: true
     configure_i3: true
@@ -373,6 +374,13 @@
       when: configure_discord
       tags:
         - discord
+
+    - name: Configure spotify
+      ansible.builtin.import_role:
+        name: spotify
+      when: configure_spotify
+      tags:
+        - spotify
 
     - name: Configure flatpak
       ansible.builtin.import_role:
