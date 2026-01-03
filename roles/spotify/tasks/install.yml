@@ -1,0 +1,35 @@
+- name: Install Spotify client with apt
+  when: ansible_facts.os_family == "Debian"
+  become: true
+  tags:
+    - install
+  block:
+    - name: Get microsoft signing key
+      ansible.builtin.get_url:
+        url: https://download.spotify.com/debian/pubkey_C85668DF69375001.gpg
+        dest: /tmp/spotify.gpg
+        mode: "0644"
+
+    - name: Convert key to GPG format
+      ansible.builtin.shell: gpg --dearmor -o /etc/apt/keyrings/spotify.gpg /tmp/spotify.gpg
+      args:
+        executable: /bin/bash
+        creates: /etc/apt/keyrings/spotify.gpg
+      register: spotify_gpg_output
+
+    - name: Add spotify to sources list
+      ansible.builtin.apt_repository:
+        repo: "deb [signed-by=/etc/apt/keyrings/spotify.gpg] https://repository.spotify.com stable non-free"
+        state: present
+        filename: spotify
+        update_cache: true
+
+    - name: Install Spotify client package
+      ansible.builtin.apt:
+        name: "spotify-client"
+        state: present
+
+    - name: Cleanup /tmp/spotify.gpg
+      ansible.builtin.file:
+        path: /tmp/spotify.gpg
+        state: absent
