@@ -15,7 +15,7 @@
     - install
 
 - name: Link fdfind -> fd
-  when: ansible_os_family == "Debian"
+  when: ansible_facts.os_family == "Debian"
   tags:
     - install
 
@@ -27,9 +27,9 @@
     - name: Link with fdfind binary location
       ansible.builtin.file:
         src: "{{ fd_fdfind_binary.stdout }}"
-        dest: "{{ ansible_env.HOME }}/.local/bin/fd"
+        dest: "{{ ansible_facts.user_dir }}/.local/bin/fd"
         state: link
         force: true
-      when: ansible_os_family == "Debian"
+      when: ansible_facts.os_family == "Debian"
       tags:
         - install

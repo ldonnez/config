@@ -1,17 +1,17 @@
 ---
 # defaults file for i3
 
-i3_config_dir: "{{ ansible_env.HOME }}/.config/i3"
+i3_config_dir: "{{ ansible_facts.user_dir }}/.config/i3"
 i3_dotfiles_path: "{{ dotfiles_directory_path }}/.config/i3"
 
-i3_i3status_config_dir: "{{ ansible_env.HOME }}/.config/i3status"
+i3_i3status_config_dir: "{{ ansible_facts.user_dir }}/.config/i3status"
 i3_i3status_dotfiles_path: "{{ dotfiles_directory_path }}/.config/i3status"
 
-i3_i3blocks_config_dir: "{{ ansible_env.HOME }}/.config/i3blocks"
+i3_i3blocks_config_dir: "{{ ansible_facts.user_dir }}/.config/i3blocks"
 i3_i3blocks_dotfiles_path: "{{ dotfiles_directory_path }}/.config/i3blocks"
 
-i3_dunst_config_dir: "{{ ansible_env.HOME }}/.config/dunst"
+i3_dunst_config_dir: "{{ ansible_facts.user_dir }}/.config/dunst"
 i3_dunst_dotfiles_path: "{{ dotfiles_directory_path }}/.config/dunst"
 
-i3_gtk_config_dir: "{{ ansible_env.HOME }}/.config/gtk-3.0"
+i3_gtk_config_dir: "{{ ansible_facts.user_dir }}/.config/gtk-3.0"
 i3_gtk_dotfiles_path: "{{ dotfiles_directory_path }}/.config/gtk-3.0"

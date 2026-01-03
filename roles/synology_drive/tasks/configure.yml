@@ -1,55 +1,55 @@
 - name: Configure blacklist.filter
-  when: ansible_os_family == "Darwin"
+  when: ansible_facts.os_family == "Darwin"
   tags:
     - install
   block:
     - name: Ensures ~/Library/Application Support/SynologyDrive/data/session/1/conf dir exists
       ansible.builtin.file:
-        path: "{{ ansible_env.HOME }}/Library/Application Support/SynologyDrive/data/session/1/conf"
+        path: "{{ ansible_facts.user_dir }}/Library/Application Support/SynologyDrive/data/session/1/conf"
         state: directory
         recurse: true
 
     - name: Copy blacklist.filter to ~/Library/Application Support/SynologyDrive/data/session/1/conf
       ansible.builtin.copy:
         src: blacklist.filter
-        dest: "{{ ansible_env.HOME }}/Library/Application Support/SynologyDrive/data/session/1/conf/blacklist.filter"
-        owner: "{{ ansible_user_id }}"
+        dest: "{{ ansible_facts.user_dir }}/Library/Application Support/SynologyDrive/data/session/1/conf/blacklist.filter"
+        owner: "{{ ansible_facts.user_id }}"
         mode: "0644"
         follow: true
 
 - name: Configure blacklist.filter
-  when: ansible_os_family == "Debian"
+  when: ansible_facts.os_family == "Debian"
   tags:
     - install
   block:
     - name: Ensures ~/.SynologyDrive/data/session/1/conf dir exists
       ansible.builtin.file:
-        path: "{{ ansible_env.HOME }}/.SynologyDrive/data/session/1/conf"
+        path: "{{ ansible_facts.user_dir }}/.SynologyDrive/data/session/1/conf"
         state: directory
         recurse: true
 
     - name: Copy blacklist.filter
       ansible.builtin.copy:
         src: blacklist.filter
-        dest: "{{ ansible_env.HOME }}/.SynologyDrive/data/session/1/conf/blacklist.filter"
-        owner: "{{ ansible_user_id }}"
+        dest: "{{ ansible_facts.user_dir }}/.SynologyDrive/data/session/1/conf/blacklist.filter"
+        owner: "{{ ansible_facts.user_id }}"
         mode: "0644"
         follow: true
 
 - name: Ensure Synology drive starts on login
-  when: ansible_os_family == "Debian"
+  when: ansible_facts.os_family == "Debian"
   tags:
     - install
   block:
     - name: Ensures ~/.config/autostart dir exists
       ansible.builtin.file:
-        path: "{{ ansible_env.HOME }}/.config/autostart"
+        path: "{{ ansible_facts.user_dir }}/.config/autostart"
         state: directory
         recurse: true
 
     - name: Copy synology drive desktop entry to autostart
       ansible.builtin.copy:
-        dest: "{{ ansible_env.HOME }}/.config/autostart/synology_drive.desktop"
+        dest: "{{ ansible_facts.user_dir }}/.config/autostart/synology_drive.desktop"
         content: |
           [Desktop Entry]
           Encoding=UTF-8

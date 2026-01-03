@@ -6,23 +6,23 @@
   vars:
     directories_to_synchronize:
       - name: "dotfiles"
-        src: "{{ansible_env.HOME}}/dotfiles"
-        dest: "{{ansible_env.HOME}}/SynologyDrive"
+        src: "{{ansible_facts.user_dir}}/dotfiles"
+        dest: "{{ansible_facts.user_dir}}/SynologyDrive"
         delete: true
 
       - name: "config"
-        src: "{{ansible_env.HOME}}/config"
-        dest: "{{ansible_env.HOME}}/SynologyDrive"
+        src: "{{ansible_facts.user_dir}}/config"
+        dest: "{{ansible_facts.user_dir}}/SynologyDrive"
         delete: true
 
       - name: "Logseq"
-        src: "{{ansible_env.HOME}}/Library/Mobile Documents/iCloud~com~logseq~logseq/Documents/"
-        dest: "{{ansible_env.HOME}}/SynologyDrive/Logseq"
+        src: "{{ansible_facts.user_dir}}/Library/Mobile Documents/iCloud~com~logseq~logseq/Documents/"
+        dest: "{{ansible_facts.user_dir}}/SynologyDrive/Logseq"
         delete: true
 
       - name: "projects"
-        src: "{{ansible_env.HOME}}/projects/"
-        dest: "{{ansible_env.HOME}}/SynologyDrive/projects"
+        src: "{{ansible_facts.user_dir}}/projects/"
+        dest: "{{ansible_facts.user_dir}}/SynologyDrive/projects"
         delete: false
 
   tasks:

@@ -24,7 +24,7 @@
 
 - name: Restore xfce config files
   ansible.posix.synchronize:
-    dest: "{{ ansible_env.HOME }}/.config/xfce4/"
+    dest: "{{ ansible_facts.user_dir }}/.config/xfce4/"
     src: xfce4/
     recursive: true
     delete: true
@@ -45,14 +45,14 @@
 
     - name: Ensure ~/.local/share/xfce4/terminal/colorschemes
       ansible.builtin.file:
-        path: "{{ ansible_env.HOME }}/.local/share/xfce4/terminal/colorschemes"
+        path: "{{ ansible_facts.user_dir }}/.local/share/xfce4/terminal/colorschemes"
         state: directory
         recurse: true
 
     - name: Copy frappe theme to ~/.local/share/xfce4/terminal/colorschemes
       ansible.builtin.copy:
         src: /tmp/catppuccin/themes/catppuccin-frappe.theme
-        dest: "{{ ansible_env.HOME }}/.local/share/xfce4/terminal/colorschemes"
+        dest: "{{ ansible_facts.user_dir }}/.local/share/xfce4/terminal/colorschemes"
         mode: "0644"
 
     - name: Remove /tmp/cattppuccin

@@ -1,5 +1,5 @@
 - name: Tap homebrew repositories
-  when: ansible_os_family == "Darwin"
+  when: ansible_facts.os_family == "Darwin"
   community.general.homebrew_tap:
     name: "hashicorp/tap"
     state: present
@@ -7,7 +7,7 @@
     - install
 
 - name: Install terraform with homebrew
-  when: ansible_os_family == "Darwin"
+  when: ansible_facts.os_family == "Darwin"
   community.general.homebrew:
     name: "hashicorp/tap/terraform"
     state: present
@@ -15,7 +15,7 @@
     - install
 
 - name: Install terraform with apt
-  when: ansible_os_family == "Debian"
+  when: ansible_facts.os_family == "Debian"
   become: true
   tags:
     - install
@@ -28,7 +28,7 @@
 
     - name: Add terraform to sources list
       ansible.builtin.apt_repository:
-        repo: "deb [signed-by=/etc/apt/keyrings/hashicorp-archive-keyring.asc] https://apt.releases.hashicorp.com {{ ansible_distribution_release }} main"
+        repo: "deb [signed-by=/etc/apt/keyrings/hashicorp-archive-keyring.asc] https://apt.releases.hashicorp.com {{ ansible_facts.distribution_release }} main"
         state: present
         filename: hashicorp
 

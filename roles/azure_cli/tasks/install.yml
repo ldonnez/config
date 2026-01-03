@@ -1,5 +1,5 @@
 - name: Install Azure CLI with apt
-  when: ansible_os_family == "Debian"
+  when: ansible_facts.os_family == "Debian"
   become: true
   tags:
     - install
@@ -28,7 +28,7 @@
         content: |
           Types: deb
           URIs: https://packages.microsoft.com/repos/azure-cli/
-          Suites: {{ ansible_lsb.codename }}
+          Suites: {{ ansible_facts.lsb.codename }}
           Components: main
           Architectures: {{ azure_cli_system_arch.stdout }}
           Signed-by: /etc/apt/keyrings/microsoft.gpg

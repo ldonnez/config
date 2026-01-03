@@ -1,5 +1,5 @@
 - name: Install synology-drive via homebrew cask
-  when: ansible_os_family == "Darwin"
+  when: ansible_facts.os_family == "Darwin"
   community.general.homebrew_cask:
     name: synology-drive
     state: present
@@ -7,7 +7,7 @@
     - install
 
 - name: Update synology-drive via homebrew cask
-  when: ansible_os_family == "Darwin"
+  when: ansible_facts.os_family == "Darwin"
   community.general.homebrew_cask:
     update_homebrew: true
     name: synology-drive

@@ -1,5 +1,5 @@
 - name: Install discord with apt
-  when: ansible_os_family == "Debian"
+  when: ansible_facts.os_family == "Debian"
   become: true
   tags:
     - install

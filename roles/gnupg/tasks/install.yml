@@ -3,7 +3,7 @@
     name: gnupg
     state: present
   become: true
-  when: ansible_os_family == "Debian"
+  when: ansible_facts.os_family == "Debian"
   tags:
     - install
 
@@ -11,6 +11,6 @@
   community.general.homebrew:
     name: gnupg
     state: present
-  when: ansible_os_family == "Darwin"
+  when: ansible_facts.os_family == "Darwin"
   tags:
     - install

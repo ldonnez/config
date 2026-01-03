@@ -10,7 +10,7 @@
   ansible.builtin.copy:
     src: linearmouse.json
     dest: "{{ linearmouse_config_dir }}/linearmouse.json"
-    owner: "{{ ansible_user_id }}"
+    owner: "{{ ansible_facts.user_id }}"
     mode: "0644"
     follow: true
   tags:

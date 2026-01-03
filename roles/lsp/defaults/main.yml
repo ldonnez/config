@@ -1,7 +1,7 @@
 ---
 # defaults file for lsp
 
-lsp_efm_config_dir: "{{ ansible_env.HOME }}/.config/efm-langserver"
+lsp_efm_config_dir: "{{ ansible_facts.user_dir }}/.config/efm-langserver"
 lsp_efm_dotfiles_path: "{{ dotfiles_directory_path }}/.config/efm-langserver"
 
 lsp_npm:
