@@ -4,7 +4,7 @@
     name: systemd-resolved
     state: present
   when:
-    - (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
-    - ansible_distribution_version is version('24.04', '>=')
+    - (ansible_facts.distribution == 'Debian' or ansible_facts.distribution == 'Ubuntu')
+    - ansible_facts.distribution_version is version('24.04', '>=')
   tags:
     - install

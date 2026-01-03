@@ -1,5 +1,5 @@
 - name: Install neovim
-  when: ansible_os_family == "Debian"
+  when: ansible_facts.os_family == "Debian"
   become: true
   tags:
     - install
@@ -53,6 +53,6 @@
   community.general.homebrew:
     name: ["neovim", "neovim-qt"]
     state: present
-  when: ansible_os_family == "Darwin"
+  when: ansible_facts.os_family == "Darwin"
   tags:
     - install

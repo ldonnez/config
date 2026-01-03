@@ -8,7 +8,7 @@
       ansible.builtin.apt:
         name: "{{ item.apt_dependencies }}"
         state: present
-      when: ansible_os_family == 'Debian'
+      when: ansible_facts.os_family == 'Debian'
       become: true
       loop: "{{ mise_tools }}"
 
@@ -16,7 +16,7 @@
       community.general.homebrew:
         name: "{{ item.homebrew_dependencies }}"
         state: present
-      when: ansible_os_family == 'Darwin'
+      when: ansible_facts.os_family == 'Darwin'
       loop: "{{ mise_tools }}"
 
     - name: Install global mise tools
@@ -24,8 +24,12 @@
       register: mise_plugin_add_output
       failed_when: mise_plugin_add_output.rc == 1
       loop: "{{ mise_tools }}"
+      environment:
+        PATH: "{{ ansible_facts.user_dir }}/.local/bin:{{ ansible_facts.env.PATH }}"
 
 - name: Update mise plugins
   ansible.builtin.command: mise upgrade
   tags:
     - update
+  environment:
+    PATH: "{{ ansible_facts.user_dir }}/.local/bin:{{ ansible_facts.env.PATH }}"

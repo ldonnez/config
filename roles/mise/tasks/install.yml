@@ -3,7 +3,7 @@
     set -o pipefail
     curl https://mise.run | sh
   args:
-    creates: "{{ ansible_env.HOME }}/.local/bin/mise"
+    creates: "{{ ansible_facts.user_dir }}/.local/bin/mise"
     executable: /bin/bash
   tags:
     - install
@@ -12,23 +12,27 @@
   ansible.builtin.command: mise use -g usage
   tags:
     - install
+  environment:
+    PATH: "{{ ansible_facts.user_dir }}/.local/bin:{{ ansible_facts.env.PATH }}"
 
 - name: "Ensure /usr/local/share/zsh/site-functions exists"
   ansible.builtin.file:
     path: /usr/local/share/zsh/site-functions
     state: directory
-    owner: "{{ ansible_user_id }}"
+    owner: "{{ ansible_facts.user_id }}"
     recurse: true
   become: true
   tags:
     - install
 
 - name: "Ensure /usr/local/share/zsh/site-functions to be writable"
-  ansible.builtin.command: chown -R {{ ansible_user_id }} /usr/local/share/zsh/site-functions
+  ansible.builtin.command: chown -R {{ ansible_facts.user_id }} /usr/local/share/zsh/site-functions
   become: true
-  when: ansible_os_family == 'Debian'
+  when: ansible_facts.os_family == 'Debian'
   tags:
     - install
+  environment:
+    PATH: "{{ ansible_facts.user_dir }}/.local/bin:{{ ansible_facts.env.PATH }}"
 
 - name: Install zsh completions
   ansible.builtin.shell: |
@@ -39,8 +43,12 @@
     executable: /bin/zsh
   tags:
     - install
+  environment:
+    PATH: "{{ ansible_facts.user_dir }}/.local/bin:{{ ansible_facts.env.PATH }}"
 
 - name: Update mise
   ansible.builtin.command: mise self-update
   tags:
     - update
+  environment:
+    PATH: "{{ ansible_facts.user_dir }}/.local/bin:{{ ansible_facts.env.PATH }}"

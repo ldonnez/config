@@ -22,9 +22,11 @@
       loop: "{{ lsp_go }}"
       tags:
         - update
+      environment:
+        PATH: "/usr/local/go/bin:{{ ansible_facts.env.PATH }}"
 
     - name: Install/Update language servers & linters with homebrew
-      when: ansible_os_family == "Darwin"
+      when: ansible_facts.os_family == "Darwin"
       community.general.homebrew:
         name: "{{ lsp_homebrew }}"
         state: present
@@ -32,7 +34,7 @@
         - update
 
     - name: Install/Update language servers & linters with apt
-      when: ansible_os_family == "Debian"
+      when: ansible_facts.os_family == "Debian"
       ansible.builtin.apt:
         name: "{{ lsp_apt }}"
         state: present

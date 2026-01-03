@@ -8,7 +8,7 @@
       ansible.builtin.apt:
         name: "{{ item.apt_dependencies }}"
         state: present
-      when: ansible_os_family == 'Debian'
+      when: ansible_facts.os_family == 'Debian'
       become: true
       loop: "{{ asdf_plugins }}"
 
@@ -16,7 +16,7 @@
       community.general.homebrew:
         name: "{{ item.homebrew_dependencies }}"
         state: present
-      when: ansible_os_family == 'Darwin'
+      when: ansible_facts.os_family == 'Darwin'
       loop: "{{ asdf_plugins }}"
 
     - name: Install asdf plugins

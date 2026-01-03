@@ -2,7 +2,7 @@
 # defaults file for asdf
 
 asdf_version: "v0.10.2"
-asdf_home: "{{ ansible_env.HOME }}/.asdf"
+asdf_home: "{{ ansible_facts.user_dir }}/.asdf"
 
 asdf_plugins:
   - name: "nodejs"

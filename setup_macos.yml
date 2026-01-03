@@ -5,9 +5,9 @@
 
   vars:
     dotfiles_repo: "https://github.com/ldonnez/dotfiles.git"
-    dotfiles_directory_path: "{{ ansible_env.HOME }}/dotfiles"
-    private_dotfiles_path: "{{ ansible_env.HOME }}/private"
-    private_dotfiles_source: "{{ ansible_env.HOME }}/SynologyDrive/private"
+    dotfiles_directory_path: "{{ ansible_facts.env.HOME }}/dotfiles"
+    private_dotfiles_path: "{{ ansible_facts.env.HOME }}/private"
+    private_dotfiles_source: "{{ ansible_facts.env.HOME }}/SynologyDrive/private"
 
     install_packages: true
     install_homebrew_casks: true
@@ -351,6 +351,3 @@
       when: install_mas_apps
       tags:
         - mas
-
-  environment:
-    PATH: "{{ ansible_env.HOME}}/.local/share/mise/shims:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.HOME }}/.npm/bin:{{ ansible_env.HOME}}/.ghcup/bin:{{ ansible_env.PATH }}"

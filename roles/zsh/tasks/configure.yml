@@ -1,8 +1,8 @@
 - name: Change user shell to zsh
   become: true
-  when: ansible_os_family == 'Debian'
+  when: ansible_facts.os_family == 'Debian'
   ansible.builtin.user:
-    name: "{{ ansible_user_id }}"
+    name: "{{ ansible_facts.user_id }}"
     shell: /bin/zsh
   tags:
     - install
@@ -10,7 +10,7 @@
 - name: Symlink .zshrc
   ansible.builtin.file:
     src: "{{ dotfiles_directory_path }}/.zshrc"
-    dest: "{{ ansible_env.HOME }}/.zshrc"
+    dest: "{{ ansible_facts.user_dir }}/.zshrc"
     state: link
     force: true
   tags:
@@ -18,14 +18,14 @@
 
 - name: Remove existing .zsh
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/.zsh"
+    path: "{{ ansible_facts.user_dir }}/.zsh"
     state: absent
   tags:
     - install
 
 - name: Don't show last login message when opening a terminal
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/.hushlogin"
+    path: "{{ ansible_facts.user_dir }}/.hushlogin"
     mode: "0700"
     state: touch
   tags:

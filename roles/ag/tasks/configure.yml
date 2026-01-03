@@ -1,7 +1,7 @@
 - name: Symlink .agignore
   ansible.builtin.file:
     src: "{{ dotfiles_directory_path }}/.agignore"
-    dest: "{{ ansible_env.HOME }}/.agignore"
+    dest: "{{ ansible_facts.user_dir }}/.agignore"
     state: link
   tags:
     - install

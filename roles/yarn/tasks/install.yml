@@ -4,6 +4,6 @@
     - install
 
 - name: Update global yarn packages
-  ansible.builtin.command: "{{ ansible_env.HOME }}/.npm/bin/yarn global upgrade"
+  ansible.builtin.command: "{{ ansible_facts.user_dir }}/.npm/bin/yarn global upgrade"
   tags:
     - update

@@ -1,5 +1,5 @@
 - name: Install kitty via homebrew cask
-  when: ansible_os_family == "Darwin"
+  when: ansible_facts.os_family == "Darwin"
   community.general.homebrew_cask:
     name: kitty
     state: present
@@ -7,7 +7,7 @@
     - install
 
 - name: Install kitty
-  when: ansible_os_family == "Debian"
+  when: ansible_facts.os_family == "Debian"
   tags:
     - install
   block:
@@ -22,30 +22,30 @@
 
     - name: Create symbolic links to add kitty to PATH
       ansible.builtin.file:
-        src: "{{ ansible_env.HOME }}/.local/kitty.app/bin/kitty"
-        dest: "{{ ansible_env.HOME }}/.local/bin/kitty"
+        src: "{{ ansible_facts.user_dir }}/.local/kitty.app/bin/kitty"
+        dest: "{{ ansible_facts.user_dir }}/.local/bin/kitty"
         state: link
         force: true
 
     - name: Create symbolic links to add kitten to PATH
       ansible.builtin.file:
-        src: "{{ ansible_env.HOME }}/.local/kitty.app/bin/kitten"
-        dest: "{{ ansible_env.HOME }}/.local/bin/kitten"
+        src: "{{ ansible_facts.user_dir }}/.local/kitty.app/bin/kitten"
+        dest: "{{ ansible_facts.user_dir }}/.local/bin/kitten"
         state: link
         force: true
 
     - name: Place the kitty.desktop file somewhere it can be found by the OS
       ansible.builtin.copy:
-        src: "{{ ansible_env.HOME }}/.local/kitty.app/share/applications/kitty.desktop"
-        dest: "{{ ansible_env.HOME }}/.local/share/applications/"
-        owner: "{{ ansible_user_id }}"
+        src: "{{ ansible_facts.user_dir }}/.local/kitty.app/share/applications/kitty.desktop"
+        dest: "{{ ansible_facts.user_dir }}/.local/share/applications/"
+        owner: "{{ ansible_facts._user_id }}"
         mode: "0644"
 
     - name: Add the kitty-open.desktop file to open files and with file manager
       ansible.builtin.copy:
-        src: "{{ ansible_env.HOME }}/.local/kitty.app/share/applications/kitty-open.desktop"
-        dest: "{{ ansible_env.HOME }}/.local/share/applications/"
-        owner: "{{ ansible_user_id }}"
+        src: "{{ ansible_facts.user_dir }}/.local/kitty.app/share/applications/kitty-open.desktop"
+        dest: "{{ ansible_facts.user_dir }}/.local/share/applications/"
+        owner: "{{ ansible_facts.user_id }}"
         mode: "0644"
 
     - name: Update the paths to the kitty and its icon in the kitty desktop file(s)

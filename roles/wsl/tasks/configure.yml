@@ -1,7 +1,7 @@
 - name: Symlink wslview with xdg-open
   ansible.builtin.file:
     src: /usr/bin/wslview
-    dest: "{{ ansible_env.HOME }}/.local/bin/xdg-open"
+    dest: "{{ ansible_facts.user_dir }}/.local/bin/xdg-open"
     state: link
   tags:
     - install
@@ -9,7 +9,7 @@
 - name: Symlink wslview with open
   ansible.builtin.file:
     src: /usr/bin/wslview
-    dest: "{{ ansible_env.HOME }}/.local/bin/open"
+    dest: "{{ ansible_facts.user_dir }}/.local/bin/open"
     state: link
   tags:
     - install

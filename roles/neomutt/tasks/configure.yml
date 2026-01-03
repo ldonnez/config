@@ -1,7 +1,7 @@
 - name: Symlink .mbsyncrc
   ansible.builtin.file:
     src: "{{ dotfiles_directory_path }}/.mbsyncrc"
-    dest: "{{ ansible_env.HOME }}/.mbsyncrc"
+    dest: "{{ ansible_facts.user_dir }}/.mbsyncrc"
     state: link
   tags:
     - install
@@ -9,7 +9,7 @@
 - name: Symlink .muttrc
   ansible.builtin.file:
     src: "{{ dotfiles_directory_path }}/.muttrc"
-    dest: "{{ ansible_env.HOME }}/.muttrc"
+    dest: "{{ ansible_facts.user_dir }}/.muttrc"
     state: link
   tags:
     - install
@@ -17,7 +17,7 @@
 - name: Symlink .mutt
   ansible.builtin.file:
     src: "{{ dotfiles_directory_path }}/.mutt"
-    dest: "{{ ansible_env.HOME }}/.mutt"
+    dest: "{{ ansible_facts.user_dir }}/.mutt"
     state: link
   tags:
     - install
@@ -25,7 +25,7 @@
 - name: Symlink .mutt-alias
   ansible.builtin.file:
     src: "{{ private_dotfiles_path }}/.mutt-alias"
-    dest: "{{ ansible_env.HOME }}/.mutt-alias"
+    dest: "{{ ansible_facts.user_dir }}/.mutt-alias"
     state: link
   tags:
     - install
@@ -33,7 +33,7 @@
 - name: Symlink .msmtprc
   ansible.builtin.file:
     src: "{{ dotfiles_directory_path }}/.msmtprc"
-    dest: "{{ ansible_env.HOME }}/.msmtprc"
+    dest: "{{ ansible_facts.user_dir }}/.msmtprc"
     state: link
   tags:
     - install
@@ -41,7 +41,7 @@
 - name: Symlink .urlview
   ansible.builtin.file:
     src: "{{ dotfiles_directory_path }}/.urlview"
-    dest: "{{ ansible_env.HOME }}/.urlview"
+    dest: "{{ ansible_facts.user_dir }}/.urlview"
     state: link
   tags:
     - install
@@ -49,7 +49,7 @@
 - name: Symlink.mailcap
   ansible.builtin.file:
     src: "{{ dotfiles_directory_path }}/.mailcap"
-    dest: "{{ ansible_env.HOME }}/.mailcap"
+    dest: "{{ ansible_facts.user_dir }}/.mailcap"
     state: link
   tags:
     - install
@@ -57,14 +57,14 @@
 - name: Symlink .notmuch-config
   ansible.builtin.file:
     src: "{{ dotfiles_directory_path }}/.notmuch-config"
-    dest: "{{ ansible_env.HOME }}/.notmuch-config"
+    dest: "{{ ansible_facts.user_dir }}/.notmuch-config"
     state: link
   tags:
     - install
 
 - name: Ensure mail directories
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/.mail/{{ item }}"
+    path: "{{ ansible_facts.user_dir }}/.mail/{{ item }}"
     recurse: true
     state: directory
   loop:
@@ -89,27 +89,27 @@
         job: "{{ neomutt_flock_binary.stdout }} -w 0 /var/lock/mbsync.lock bash -c $HOME/.mutt/sync-mail.sh"
 
 - name: Check mail every 2 minutes with systemd
-  when: ansible_os_family == "Debian" and not configure_mbsync_with_cron
+  when: ansible_facts.os_family == "Debian" and not configure_mbsync_with_cron
   tags:
     - install
 
   block:
     - name: Ensure ~/.config/systemd/user
       ansible.builtin.file:
-        path: "{{ ansible_env.HOME }}/.config/systemd/user"
+        path: "{{ ansible_facts.user_dir }}/.config/systemd/user"
         state: directory
         recurse: true
 
     - name: Copy mbsync.service file
       ansible.builtin.copy:
         src: mbsync.service
-        dest: "{{ ansible_env.HOME }}/.config/systemd/user"
+        dest: "{{ ansible_facts.user_dir }}/.config/systemd/user"
         mode: "0700"
 
     - name: Copy mbsync.timer file
       ansible.builtin.copy:
         src: mbsync.timer
-        dest: "{{ ansible_env.HOME }}/.config/systemd/user"
+        dest: "{{ ansible_facts.user_dir }}/.config/systemd/user"
         mode: "0700"
 
     - name: Reload systemd
@@ -125,7 +125,7 @@
         enabled: true
 
 - name: Check mail every 2 minutes with launchctl
-  when: ansible_os_family == "Darwin" and not configure_mbsync_with_cron
+  when: ansible_facts.os_family == "Darwin" and not configure_mbsync_with_cron
   tags:
     - install
 
@@ -138,18 +138,18 @@
 
     - name: Delete existing homebrew.mxcl.isync.plist
       ansible.builtin.file:
-        path: "{{ ansible_env.HOME }}/Library/LaunchAgents/homebrew.mxcl.isync.plist"
+        path: "{{ ansible_facts.user_dir }}/Library/LaunchAgents/homebrew.mxcl.isync.plist"
         state: absent
 
     - name: Install local.isync.plist
       ansible.builtin.copy:
         src: local.isync.plist
-        dest: "{{ ansible_env.HOME }}/Library/LaunchAgents/"
+        dest: "{{ ansible_facts.user_dir }}/Library/LaunchAgents/"
         mode: "0600"
 
     - name: Load local.isync.plist
-      ansible.builtin.command: "launchctl load {{ ansible_env.HOME }}/Library/LaunchAgents/local.isync.plist"
+      ansible.builtin.command: "launchctl load {{ ansible_facts.user_dir }}/Library/LaunchAgents/local.isync.plist"
 
     - name: Starting isync
       ansible.builtin.command: launchctl start local.isync
-      when: ansible_os_family == "Darwin"
+      when: ansible_facts.os_family == "Darwin"

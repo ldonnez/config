@@ -5,9 +5,9 @@
 
   vars:
     dotfiles_repo: "https://github.com/ldonnez/dotfiles.git"
-    dotfiles_directory_path: "{{ ansible_env.HOME }}/dotfiles"
-    private_dotfiles_path: "{{ ansible_env.HOME }}/private"
-    private_dotfiles_source: "{{ ansible_env.HOME }}/SynologyDrive/private"
+    dotfiles_directory_path: "{{ ansible_facts.user_dir }}/dotfiles"
+    private_dotfiles_path: "{{ ansible_facts.user_dir }}/private"
+    private_dotfiles_source: "{{ ansible_facts.user_dir }}/SynologyDrive/private"
 
     install_packages: true
     install_dotfiles: true
@@ -430,6 +430,3 @@
       when: configure_systemd_resolved
       tags:
         - systemd_resolved
-
-  environment:
-    PATH: "{{ ansible_env.HOME}}/.local/share/mise/shims:{{ansible_env.HOME}}/.local/bin:{{ ansible_env.HOME }}/.npm/bin:{{ ansible_env.HOME}}/.cargo/bin:{{ ansible_env.HOME}}/.ghcup/bin:/usr/local/go/bin:/usr/bin:/usr/sbin:/sbin:{{ ansible_env.HOME}}/.local/bin"

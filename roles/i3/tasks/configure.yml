@@ -1,6 +1,6 @@
 - name: Ensure wallpaper image
   become: true
-  when: ansible_os_family == "Debian"
+  when: ansible_facts.os_family == "Debian"
   tags:
     - install
   block:
@@ -68,21 +68,21 @@
     - install
 
 - name: Add systemd service file to run system idle check script # ~/.config/i3/scripts/idle-check.sh
-  when: ansible_os_family == "Debian"
+  when: ansible_facts.os_family == "Debian"
   tags:
     - install
 
   block:
     - name: Ensure ~/.config/systemd/user
       ansible.builtin.file:
-        path: "{{ ansible_env.HOME }}/.config/systemd/user"
+        path: "{{ ansible_facts.user_dir }}/.config/systemd/user"
         state: directory
         recurse: true
 
     - name: Copy idle-check.service file
       ansible.builtin.copy:
         src: idle-check.service
-        dest: "{{ ansible_env.HOME }}/.config/systemd/user"
+        dest: "{{ ansible_facts.user_dir }}/.config/systemd/user"
         mode: "0700"
 
     - name: Start idle-check
