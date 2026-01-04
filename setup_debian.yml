@@ -51,7 +51,6 @@
     configure_firefox: true
     configure_discord: true
     configure_spotify: true
-    configure_xfce: false
     configure_rofi: true
     configure_i3: true
     configure_virt_manager: true
@@ -387,13 +386,6 @@
       when: configure_synology_drive
       tags:
         - synology_drive
-
-    - name: Configure xfce
-      ansible.builtin.import_role:
-        name: xfce
-      when: configure_xfce
-      tags:
-        - xfce
 
     - name: Configure rofi
       ansible.builtin.import_role:
