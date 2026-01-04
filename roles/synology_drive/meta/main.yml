@@ -2,7 +2,8 @@
 galaxy_info:
   role_name: synology_drive
   author: ldonnez
-  description: Synology Drive Client is the desktop utility that provides file syncing and personal computer backup services on multiple client computers to a centralized server, Synology Drive Server.
+  description: Synology Drive Client is the desktop utility that provides file syncing and personal computer backup services on multiple client computers to a
+    centralized server, Synology Drive Server.
   license: MIT
   min_ansible_version: "2.10"
 

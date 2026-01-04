@@ -1,2 +1,3 @@
+---
 - name: Include sync
   ansible.builtin.import_tasks: sync.yml

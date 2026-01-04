@@ -2,7 +2,8 @@
 galaxy_info:
   role_name: azure_cli
   author: ldonnez
-  description: The Azure Command-Line Interface (CLI) is a cross-platform command-line tool to connect to Azure and execute administrative commands on Azure resources. It allows the execution of commands through a terminal using interactive command-line prompts or a script.
+  description: The Azure Command-Line Interface (CLI) is a cross-platform command-line tool to connect to Azure and execute administrative commands on Azure
+    resources. It allows the execution of commands through a terminal using interactive command-line prompts or a script.
   license: MIT
   min_ansible_version: "2.10"
 

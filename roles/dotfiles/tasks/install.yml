@@ -1,3 +1,4 @@
+---
 - name: Check if dotfiles already exists
   ansible.builtin.stat:
     path: "{{ dotfiles_directory_path }}"

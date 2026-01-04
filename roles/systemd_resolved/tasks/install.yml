@@ -1,3 +1,4 @@
+---
 - name: Install systemd-resolved with apt
   become: true
   ansible.builtin.apt:

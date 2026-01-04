@@ -1,3 +1,4 @@
+---
 - name: Install gnupg with apt
   ansible.builtin.apt:
     name: gnupg

@@ -1,3 +1,4 @@
+---
 - name: "Ensure ~/.npm"
   ansible.builtin.file:
     path: "{{ ansible_facts.user_dir }}/.npm"
@@ -11,11 +12,12 @@
   tags:
     - install
   environment:
-    PATH: "{{ ansible_facts.user_dir}}/.local/share/mise/shims:{{ ansible_facts.user_dir }}/.local/bin:{{ ansible_facts.env.PATH }}"
+    PATH: "{{ ansible_facts.user_dir }}/.local/share/mise/shims:{{ ansible_facts.user_dir }}/.local/bin:{{ ansible_facts.env.PATH }}"
 
 - name: Update global npm packages
   ansible.builtin.command: npm update -g
   tags:
     - update
   environment:
-    PATH: "{{ ansible_facts.user_dir}}/.local/share/mise/shims:{{ ansible_facts.user_dir }}/.local/bin:{{ ansible_facts.user_dir }}/.npm/bin:{{ ansible_facts.env.PATH }}"
+    PATH: "{{ ansible_facts.user_dir }}/.local/share/mise/shims:{{ ansible_facts.user_dir }}/.local/bin:{{ ansible_facts.user_dir }}/.npm/bin:{{ ansible_facts.env.PATH
+      }}"

@@ -1,3 +1,4 @@
+---
 - name: Install i3, i3status & i3blocks with apt
   become: true
   ansible.builtin.apt:
@@ -37,11 +38,7 @@
 - name: Install thunar, thunar-volman & thunar-archive-plugin with apt
   become: true
   ansible.builtin.apt:
-    name: [
-      "thunar", # file manager
-      "thunar-volman", # extension for volumes management
-      "thunar-archive-plugin", # extension for extracting & archiving
-    ]
+    name: ["thunar", "thunar-volman", "thunar-archive-plugin"]
     state: present
   when: ansible_facts.os_family == "Debian"
   tags:
@@ -50,10 +47,7 @@
 - name: Install dunst & libnotify-bin with apt
   become: true
   ansible.builtin.apt:
-    name: [
-      "dunst", # simple and lightweight notification daemon
-      "libnotify-bin", # make notify-send work
-    ]
+    name: ["dunst", "libnotify-bin"]
     state: present
   when: ansible_facts.os_family == "Debian"
   tags:
@@ -101,28 +95,26 @@
     - name: Install build dependencies
       ansible.builtin.apt:
         name:
-          [
-            "autoconf",
-            "gcc",
-            "make",
-            "pkg-config",
-            "libpam0g-dev",
-            "libcairo2-dev",
-            "libfontconfig1-dev",
-            "libxcb-composite0-dev",
-            "libev-dev",
-            "libx11-xcb-dev",
-            "libxcb-xkb-dev",
-            "libxcb-xinerama0-dev",
-            "libxcb-randr0-dev",
-            "libxcb-image0-dev",
-            "libxcb-util0-dev",
-            "libxcb-xrm-dev",
-            "libxkbcommon-dev",
-            "libxkbcommon-x11-dev",
-            "libjpeg-dev",
-            "libgif-dev",
-          ]
+          - "autoconf"
+          - "gcc"
+          - "make"
+          - "pkg-config"
+          - "libpam0g-dev"
+          - "libcairo2-dev"
+          - "libfontconfig1-dev"
+          - "libxcb-composite0-dev"
+          - "libev-dev"
+          - "libx11-xcb-dev"
+          - "libxcb-xkb-dev"
+          - "libxcb-xinerama0-dev"
+          - "libxcb-randr0-dev"
+          - "libxcb-image0-dev"
+          - "libxcb-util0-dev"
+          - "libxcb-xrm-dev"
+          - "libxkbcommon-dev"
+          - "libxkbcommon-x11-dev"
+          - "libjpeg-dev"
+          - "libgif-dev"
         state: present
       when: ansible_facts.os_family == "Debian"
 

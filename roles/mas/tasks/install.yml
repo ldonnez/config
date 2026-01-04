@@ -1,3 +1,4 @@
+---
 - name: Install mas with homebrew
   community.general.homebrew:
     name: mas

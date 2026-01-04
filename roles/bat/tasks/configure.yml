@@ -1,3 +1,4 @@
+---
 - name: "Ensure bat config dir"
   ansible.builtin.file:
     path: "{{ bat_config_dir }}"

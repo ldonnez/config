@@ -1,3 +1,4 @@
+---
 - name: Install & Configure miseatools
   when: mise_tools|length > 0
   tags:

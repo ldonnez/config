@@ -1,3 +1,4 @@
+---
 - name: "Ensure memo config dir"
   ansible.builtin.file:
     path: "{{ memo_config_dir }}"

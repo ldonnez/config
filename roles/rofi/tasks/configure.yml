@@ -1,3 +1,4 @@
+---
 - name: Symlink ~/.config/rofi
   ansible.builtin.file:
     src: "{{ rofi_dotfiles_path }}"

@@ -1,3 +1,4 @@
+---
 - name: Symlink wslview with xdg-open
   ansible.builtin.file:
     src: /usr/bin/wslview
@@ -45,7 +46,7 @@
 
     - name: Generate en_US.UTF-8 locale
       become: true
-      ansible.builtin.locale_gen:
+      community.general.locale_gen:
         name: "{{ item }}"
         state: present
       loop:

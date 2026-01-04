@@ -1,3 +1,4 @@
+---
 - name: Install Tmux Plugin Manager with git
   ansible.builtin.git:
     repo: https://github.com/tmux-plugins/tpm

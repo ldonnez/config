@@ -1,3 +1,4 @@
+---
 - name: Install steam .deb package
   become: true
   ansible.builtin.apt:

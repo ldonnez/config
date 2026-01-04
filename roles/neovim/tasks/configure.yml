@@ -1,3 +1,4 @@
+---
 - name: "Ensure {{ neovim_config_dir }}"
   ansible.builtin.file:
     name: "{{ neovim_config_dir }}"

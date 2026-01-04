@@ -1,3 +1,4 @@
+---
 - name: Tap homebrew repositories
   when: ansible_facts.os_family == "Darwin"
   community.general.homebrew_tap:

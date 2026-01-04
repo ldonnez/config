@@ -1,3 +1,4 @@
+---
 - name: Install ghcup noninteractive with curl
   ansible.builtin.shell: |
     set -o pipefail
