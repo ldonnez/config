@@ -21,3 +21,4 @@ dependencies:
   - role: npm
   - role: pip
   - role: rust
+  - role: golang
