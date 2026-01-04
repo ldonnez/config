@@ -18,7 +18,6 @@
     configure_golang: true
     configure_npm: true
     configure_pip: true
-    configure_yarn: true
     configure_rust: true
     configure_haskell: true
     configure_fzf: true
@@ -122,13 +121,6 @@
       when: configure_pip
       tags:
         - pip
-
-    - name: Configure yarn
-      ansible.builtin.import_role:
-        name: yarn
-      when: configure_yarn
-      tags:
-        - yarn
 
     - name: Configure rust
       ansible.builtin.import_role:
