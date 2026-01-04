@@ -13,7 +13,6 @@
     configure_wsl: true
     configure_git: true
     configure_zsh: true
-    configure_asdf: false
     configure_mise: true
     configure_golang: true
     configure_npm: true
@@ -86,13 +85,6 @@
       when: configure_zsh
       tags:
         - zsh
-
-    - name: Configure asdf
-      ansible.builtin.import_role:
-        name: asdf
-      when: configure_asdf
-      tags:
-        - asdf
 
     - name: Configure mise
       ansible.builtin.import_role:
