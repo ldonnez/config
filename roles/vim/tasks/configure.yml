@@ -1,3 +1,4 @@
+---
 - name: Ensure .vim
   ansible.builtin.file:
     name: "{{ ansible_facts.user_dir }}/.vim"

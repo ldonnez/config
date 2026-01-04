@@ -1,3 +1,4 @@
+---
 - name: Install kitty via homebrew cask
   when: ansible_facts.os_family == "Darwin"
   community.general.homebrew_cask:

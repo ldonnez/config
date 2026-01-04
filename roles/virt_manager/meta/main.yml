@@ -2,7 +2,8 @@
 galaxy_info:
   role_name: virt_manager
   author: ldonnez
-  description: The virt-manager application is a desktop user interface for managing virtual machines through libvirt. It primarily targets KVM VMs, but also manages Xen and LXC (Linux containers).
+  description: The virt-manager application is a desktop user interface for managing virtual machines through libvirt. It primarily targets KVM VMs, but also
+    manages Xen and LXC (Linux containers).
   license: MIT
   min_ansible_version: "2.10"
 

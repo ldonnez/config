@@ -1,3 +1,4 @@
+---
 - name: Install libpq with homebrew
   community.general.homebrew:
     name: libpq

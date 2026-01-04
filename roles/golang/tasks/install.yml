@@ -1,3 +1,4 @@
+---
 - name: Install or update Go if needed
   tags:
     - install

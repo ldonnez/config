@@ -1,3 +1,4 @@
+---
 - name: Install fd with apt
   ansible.builtin.apt:
     name: fd-find

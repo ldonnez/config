@@ -1,3 +1,4 @@
+---
 - name: Install nvidia-driver & firmware-misc-nonfree with apt
   become: true
   ansible.builtin.apt:

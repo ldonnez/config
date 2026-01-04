@@ -1,3 +1,4 @@
+---
 - name: Remove existing .gnupg directory
   ansible.builtin.file:
     path: "{{ ansible_facts.user_dir }}/.gnupg"

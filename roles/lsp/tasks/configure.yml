@@ -1,3 +1,4 @@
+---
 - name: "Ensure ~/.config/efm-langserver"
   ansible.builtin.file:
     name: "{{ lsp_efm_config_dir }}"

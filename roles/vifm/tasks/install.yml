@@ -1,3 +1,4 @@
+---
 - name: Install vifm with apt
   become: true
   ansible.builtin.apt:

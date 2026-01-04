@@ -5,36 +5,27 @@ lsp_efm_config_dir: "{{ ansible_facts.user_dir }}/.config/efm-langserver"
 lsp_efm_dotfiles_path: "{{ dotfiles_directory_path }}/.config/efm-langserver"
 
 lsp_npm:
-  [
-    "typescript",
-    "vscode-langservers-extracted",
-    "@fsouza/prettierd",
-    "@tailwindcss/language-server",
-    "@prisma/language-server",
-    "yaml-language-server",
-    "graphql-language-service-cli",
-    "@ansible/ansible-language-server",
-    "@vtsls/language-server",
-    "bash-language-server",
-    "@mistweaverco/kulala-fmt",
-    "@mistweaverco/kulala-ls",
-  ]
-
+  - "typescript"
+  - "vscode-langservers-extracted"
+  - "@fsouza/prettierd"
+  - "@tailwindcss/language-server"
+  - "@prisma/language-server"
+  - "yaml-language-server"
+  - "graphql-language-service-cli"
+  - "@ansible/ansible-language-server"
+  - "@vtsls/language-server"
+  - "bash-language-server"
+  - "@mistweaverco/kulala-fmt"
+  - "@mistweaverco/kulala-ls"
 lsp_cargo: ["stylua", "emmylua_ls", "tree-sitter-cli"]
-
 lsp_go:
-  [
-    "github.com/mattn/efm-langserver@latest",
-    "mvdan.cc/sh/v3/cmd/shfmt@latest",
-    "golang.org/x/tools/gopls@latest",
-    "github.com/golangci/golangci-lint/cmd/golangci-lint@latest",
-    "github.com/nametake/golangci-lint-langserver@latest",
-  ]
-
+  - "github.com/mattn/efm-langserver@latest"
+  - "mvdan.cc/sh/v3/cmd/shfmt@latest"
+  - "golang.org/x/tools/gopls@latest"
+  - "github.com/golangci/golangci-lint/cmd/golangci-lint@latest"
+  - "github.com/nametake/golangci-lint-langserver@latest"
 lsp_pip: ["shandy-sqlfmt"]
-
 # libxml2 for xmllint an xml formatter
 lsp_homebrew: ["hashicorp/tap/terraform-ls", "shellcheck", "libxml2"]
-
 # libxml2-utils for xmllint an xml formatter
 lsp_apt: ["shellcheck", "libxml2-utils"]

@@ -1,3 +1,4 @@
+---
 - name: Install rofi with apt
   become: true
   ansible.builtin.apt:

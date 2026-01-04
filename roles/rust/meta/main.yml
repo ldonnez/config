@@ -2,7 +2,8 @@
 galaxy_info:
   role_name: rust
   author: ldonnez
-  description: Rust is a fast, memory-safe, and productive programming language that can run on embedded devices, web services, and more. Learn how to get started, why Rust is different, and what companies are using it in production.
+  description: Rust is a fast, memory-safe, and productive programming language that can run on embedded devices, web services, and more. Learn how to get
+    started, why Rust is different, and what companies are using it in production.
   license: MIT
   min_ansible_version: "2.10"
 

@@ -1,3 +1,4 @@
+---
 - name: "Ensure linearmouse config dir"
   ansible.builtin.file:
     path: "{{ linearmouse_config_dir }}"

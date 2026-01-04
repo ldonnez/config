@@ -1,3 +1,4 @@
+---
 - name: Install flatpak with apt
   become: true
   ansible.builtin.apt:

@@ -1,3 +1,4 @@
+---
 - name: Install rg with apt
   ansible.builtin.apt:
     name: ripgrep

@@ -1,14 +1,8 @@
+---
 - name: Install qemu-kvm libvirt-daemon-system, libvirt-clients bridg-utils virt-manager
   become: true
   ansible.builtin.apt:
-    name:
-      [
-        "qemu-kvm",
-        "libvirt-daemon-system",
-        "libvirt-clients",
-        "bridge-utils",
-        "virt-manager",
-      ]
+    name: ["qemu-kvm", "libvirt-daemon-system", "libvirt-clients", "bridge-utils", "virt-manager"]
     state: present
   tags:
     - install

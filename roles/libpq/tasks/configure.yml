@@ -1,3 +1,4 @@
+---
 - name: Symlink .psqlrc
   ansible.builtin.file:
     src: "{{ dotfiles_directory_path }}/.psqlrc"

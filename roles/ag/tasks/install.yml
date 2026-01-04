@@ -1,3 +1,4 @@
+---
 - name: Install ag with apt
   ansible.builtin.apt:
     name: silversearcher-ag

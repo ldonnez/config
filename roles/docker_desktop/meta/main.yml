@@ -2,7 +2,8 @@
 galaxy_info:
   role_name: docker_desktop
   author: ldonnez
-  description: Docker Desktop is secure, out-of-the-box containerization software offering developers and teams a robust, hybrid toolkit to build, share, and run applications anywhere.
+  description: Docker Desktop is secure, out-of-the-box containerization software offering developers and teams a robust, hybrid toolkit to build, share, and
+    run applications anywhere.
   license: MIT
   min_ansible_version: "2.10"
 

@@ -1,3 +1,4 @@
+---
 - name: Symlink .mbsyncrc
   ansible.builtin.file:
     src: "{{ dotfiles_directory_path }}/.mbsyncrc"

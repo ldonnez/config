@@ -1,3 +1,4 @@
+---
 - name: "Ensure kitty config dir"
   ansible.builtin.file:
     path: "{{ kitty_config_dir }}"

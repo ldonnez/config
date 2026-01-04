@@ -1,3 +1,4 @@
+---
 - name: Include macos
   ansible.builtin.import_tasks: macos.yml
   when: ansible_facts.os_family == 'Darwin'

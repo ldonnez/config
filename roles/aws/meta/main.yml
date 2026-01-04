@@ -2,7 +2,8 @@
 galaxy_info:
   role_name: aws
   author: ldonnez
-  description: The AWS Command Line Interface (AWS CLI) is an open source tool that enables you to interact with AWS services using commands in your command-line shell.
+  description: The AWS Command Line Interface (AWS CLI) is an open source tool that enables you to interact with AWS services using commands in your
+    command-line shell.
   license: MIT
   min_ansible_version: "2.10"
 
