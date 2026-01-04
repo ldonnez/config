@@ -48,6 +48,8 @@
 - name: Getting pipx binary location
   ansible.builtin.command: which pipx
   register: pip_pipx_binary
+  environment:
+    PATH: "{{ ansible_facts.user_dir }}/.local/bin:{{ ansible_facts.env.PATH }}"
   tags:
     - update
     - install
