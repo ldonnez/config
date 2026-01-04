@@ -19,6 +19,5 @@ galaxy_info:
 
 dependencies:
   - role: npm
-  - role: yarn
   - role: pip
   - role: rust
