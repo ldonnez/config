@@ -1,3 +1,11 @@
+- name: "Ensure ~/.npm"
+  ansible.builtin.file:
+    path: "{{ ansible_facts.user_dir }}/.npm"
+    state: directory
+    recurse: true
+  tags:
+    - install
+
 - name: Set npm bin
   ansible.builtin.command: "npm config set prefix {{ ansible_facts.user_dir }}/.npm"
   tags:
