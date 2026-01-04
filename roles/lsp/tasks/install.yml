@@ -8,6 +8,8 @@
         name: "{{ item }}"
         global: true
       loop: "{{ lsp_npm }}"
+      environment:
+        PATH: "{{ ansible_facts.user_dir }}/.local/share/mise/shims:{{ ansible_facts.user_dir }}/.local/bin:{{ ansible_facts.env.PATH }}"
 
     - name: Install/Update language servers & linters with cargo
       community.general.cargo:
@@ -16,6 +18,8 @@
       loop: "{{ lsp_cargo }}"
       tags:
         - update
+      environment:
+        PATH: "{{ ansible_facts.user_dir }}/.cargo/bin:{{ ansible_facts.env.PATH }}"
 
     - name: Install/Update language servers & linters with go
       ansible.builtin.command: go install "{{ item }}"
@@ -45,6 +49,8 @@
     - name: Getting pipx binary location
       ansible.builtin.command: which pipx
       register: lsp_pipx_binary
+      environment:
+        PATH: "{{ ansible_facts.user_dir }}/.local/bin:{{ ansible_facts.env.PATH }}"
       tags:
         - update
 

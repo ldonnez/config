@@ -12,6 +12,8 @@
 - name: Upgrade rust
   when: ansible_facts.os_family == "Debian"
   ansible.builtin.command: rustup update
+  environment:
+    PATH: "{{ ansible_facts.user_dir }}/.cargo/bin:{{ ansible_facts.env.PATH }}"
   tags:
     - update
 
@@ -22,6 +24,8 @@
     locked: true
   loop: "{{ cargo_packages }}"
   when: cargo_packages is defined
+  environment:
+    PATH: "{{ ansible_facts.user_dir }}/.cargo/bin:{{ ansible_facts.env.PATH }}"
   tags:
     - update
     - install
