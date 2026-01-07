@@ -15,9 +15,9 @@
         dest: "{{ansible_facts.user_dir}}/SynologyDrive"
         delete: true
 
-      - name: "Logseq"
-        src: "{{ansible_facts.user_dir}}/Library/Mobile Documents/iCloud~com~logseq~logseq/Documents/"
-        dest: "{{ansible_facts.user_dir}}/SynologyDrive/Logseq"
+      - name: "notes"
+        src: "{{ansible_facts.user_dir}}/notes"
+        dest: "{{ansible_facts.user_dir}}/SynologyDrive"
         delete: true
 
       - name: "projects"
