@@ -26,6 +26,5 @@
   ansible.builtin.command: ghcup install hls
   tags:
     - update
-    - tmp
   environment:
     PATH: "{{ ansible_facts.user_dir }}/.ghcup/bin:{{ ansible_facts.env.PATH }}"
