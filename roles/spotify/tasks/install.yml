@@ -7,12 +7,12 @@
   block:
     - name: Get spotify signing key
       ansible.builtin.get_url:
-        url: https://download.spotify.com/debian/pubkey_C85668DF69375001.gpg
-        dest: /tmp/spotify.gpg
+        url: https://download.spotify.com/debian/pubkey_5384CE82BA52C83A.asc
+        dest: /tmp/spotify.asc
         mode: "0644"
 
     - name: Convert key to GPG format
-      ansible.builtin.shell: gpg --dearmor -o /etc/apt/keyrings/spotify.gpg /tmp/spotify.gpg
+      ansible.builtin.shell: gpg --dearmor -o /etc/apt/keyrings/spotify.gpg /tmp/spotify.asc
       args:
         executable: /bin/bash
         creates: /etc/apt/keyrings/spotify.gpg
