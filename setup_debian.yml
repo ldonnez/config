@@ -91,10 +91,6 @@
       - com.plexamp.Plexamp
       - org.telegram.desktop
 
-    cargo_packages:
-      - yazi-fm
-      - yazi-cli
-
     pip_packages:
       - ansible-lint
 
