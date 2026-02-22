@@ -51,7 +51,7 @@ You can configure the following options in `powershell/config.json`
 }
 ```
 
-## Setup WSL2 (Ubuntu-22.04)
+## Setup WSL2 (Ubuntu >= 22.04)
 
 Make sure to check vars in `setup_wsl_ubuntu.yml`.
 
@@ -66,7 +66,7 @@ networkingMode=mirrored
 - Run `sh run_setup_wsl_ubuntu.sh`. This will install python and pipx and installs latest ansible and ansible-lint with pipx.
 - Close The WSL session and run `wsl.exe --shutdown` in a powershell shell to rerstart WSL.
 
-### Update WSL2 (Ubuntu 22.04) packages
+### Update WSL2 (Ubuntu) packages
 
 Run
 

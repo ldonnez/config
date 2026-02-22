@@ -1,6 +1,8 @@
 ---
 - name: Install python3-setuptools, pipx with apt
-  when: ansible_facts.distribution == 'Debian'
+  when:
+    - ansible_facts.distribution == 'Debian'
+    - ansible_facts.distribution == 'Ubuntu' and ansible_facts.distribution_version is version('24.04', '>=')
   ansible.builtin.apt:
     name: ["python3-setuptools", "pipx"]
     state: present

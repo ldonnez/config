@@ -1,5 +1,5 @@
 ---
-- name: Setup WSL Ubuntu 22.04
+- name: Setup WSL Ubuntu
   hosts: localhost
   connection: local
 
