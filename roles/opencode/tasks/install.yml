@@ -1,0 +1,16 @@
+- name: Install opencode noninteractive with curl
+  ansible.builtin.shell: |
+    set -o pipefail
+    curl -fsSL https://opencode.ai/install | bash
+  args:
+    creates: "{{ ansible_facts.user_dir }}/.opencode/bin/opencode"
+    executable: /bin/bash
+  tags:
+    - install
+
+- name: Upgrade opencode
+  ansible.builtin.command: opencode upgrade
+  environment:
+    PATH: "{{ ansible_facts.user_dir }}/.opencode/bin:{{ ansible_facts.env.PATH }}"
+  tags:
+    - update

@@ -29,6 +29,7 @@
     configure_vim: true
     configure_lsp: true
     configure_neovim: true
+    configure_opencode: true
     configure_vifm: true
     configure_bat: true
     configure_tmux: true
@@ -248,6 +249,13 @@
       when: configure_neovim
       tags:
         - neovim
+
+    - name: Configure opencode
+      ansible.builtin.import_role:
+        name: opencode
+      when: configure_opencode
+      tags:
+        - opencode
 
     - name: Configure bat
       ansible.builtin.import_role:
