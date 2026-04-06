@@ -1,48 +1,7 @@
----
-- name: "Ensure {{ neovim_config_dir }}"
+- name: Symlink nvim config
   ansible.builtin.file:
-    name: "{{ neovim_config_dir }}"
-    state: directory
-    recurse: true
-  tags:
-    - install
-
-- name: Symlink init.lua
-  ansible.builtin.file:
-    src: "{{ neovim_dotfiles_path }}/init.lua"
-    dest: "{{ neovim_config_dir }}/init.lua"
-    state: link
-  tags:
-    - install
-
-- name: Symlink ginit.vim
-  ansible.builtin.file:
-    src: "{{ neovim_dotfiles_path }}/ginit.vim"
-    dest: "{{ neovim_config_dir }}/ginit.vim"
-    state: link
-  tags:
-    - install
-
-- name: Symlink lua from source
-  ansible.builtin.file:
-    src: "{{ neovim_dotfiles_path }}/lua"
-    dest: "{{ neovim_config_dir }}/lua"
-    state: link
-  tags:
-    - install
-
-- name: Symlink lazy-lock.json (lockfile)
-  ansible.builtin.file:
-    src: "{{ neovim_dotfiles_path }}/lazy-lock.json"
-    dest: "{{ neovim_config_dir }}/lazy-lock.json"
-    state: link
-  tags:
-    - install
-
-- name: Symlink snippets from source
-  ansible.builtin.file:
-    src: "{{ neovim_dotfiles_path }}/snippets"
-    dest: "{{ neovim_config_dir }}/snippets"
+    src: "{{ neovim_dotfiles_path }}"
+    dest: "{{ neovim_config_dir }}"
     state: link
   tags:
     - install
@@ -56,12 +15,12 @@
   tags:
     - install
 
-- name: Install neovim plugins from lazy-lock.json file
-  ansible.builtin.command: nvim --headless "+Lazy! restore" +qa
+- name: Install neovim plugins from nvim-pack-lock.json file
+  ansible.builtin.command: nvim --headless "+lua vim.pack.update(nil, { target = "lockfile" })" +qa
   tags:
     - install
 
 - name: Update neovim plugins
-  ansible.builtin.command: nvim --headless "+Lazy! sync" +qa
+  ansible.builtin.command: nvim --headless "+lua vim.pack.update(nil, { force = true })" +qa
   tags:
     - update
