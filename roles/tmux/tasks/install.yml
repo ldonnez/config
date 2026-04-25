@@ -8,6 +8,15 @@
   tags:
     - install
 
+- name: Install xsel with apt # Dependency for copy pasting
+  ansible.builtin.apt:
+    name: xsel
+    state: present
+  become: true
+  when: ansible_facts.os_family == "Debian"
+  tags:
+    - install
+
 - name: Install tmux with homebrew
   community.general.homebrew:
     name: tmux
