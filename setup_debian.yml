@@ -46,6 +46,7 @@
     configure_mbsync_with_cron: false
     configure_fonts: true
     configure_aws: true
+    configure_github_cli: true
     configure_azure_cli: true
     configure_terraform: true
     configure_firefox: true
@@ -333,6 +334,13 @@
       when: configure_aws
       tags:
         - aws
+
+    - name: Configure github cli
+      ansible.builtin.import_role:
+        name: github_cli
+      when: configure_github_cli
+      tags:
+        - github_cli
 
     - name: Configure azure cli
       ansible.builtin.import_role:
