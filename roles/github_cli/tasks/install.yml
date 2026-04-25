@@ -1,0 +1,51 @@
+- name: Install GitHub CLI with apt
+  when: ansible_facts.os_family == "Debian"
+  become: true
+  tags:
+    - install
+  block:
+    - name: Install wget if not present
+      ansible.builtin.apt:
+        name: wget
+        state: present
+
+    - name: Ensure /etc/apt/keyrings exists
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: "0755"
+
+    - name: Get GitHub CLI signing key
+      ansible.builtin.get_url:
+        url: https://cli.github.com/packages/githubcli-archive-keyring.gpg
+        dest: /etc/apt/keyrings/githubcli-archive-keyring.gpg
+        mode: "0644"
+
+    - name: Get system architecture (e.g. amd64)
+      ansible.builtin.command: dpkg --print-architecture
+      register: github_cli_system_arch
+      changed_when: false
+
+    - name: Create GitHub CLI sources file
+      ansible.builtin.copy:
+        mode: "0644"
+        content: |
+          deb [arch={{ github_cli_system_arch.stdout }} signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main
+        dest: /etc/apt/sources.list.d/github-cli.list
+
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: true
+
+    - name: Install GitHub CLI package
+      ansible.builtin.apt:
+        name: gh
+        state: present
+
+- name: Install gh with homebrew
+  when: ansible_facts.os_family == "Darwin"
+  community.general.homebrew:
+    name: gh
+    state: present
+  tags:
+    - install
