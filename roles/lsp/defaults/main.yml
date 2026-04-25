@@ -17,6 +17,8 @@ lsp_npm:
   - "bash-language-server"
   - "@mistweaverco/kulala-fmt"
   - "@mistweaverco/kulala-ls"
+  - "@github/copilot-language-server"
+
 lsp_cargo: ["stylua", "emmylua_ls", "tree-sitter-cli"]
 lsp_go:
   - "github.com/mattn/efm-langserver@latest"
