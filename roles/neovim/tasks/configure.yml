@@ -20,6 +20,25 @@
   tags:
     - install
 
+- name: Ensure ~/.local/share/nvim/site/spell
+  ansible.builtin.file:
+    path: "{{ ansible_facts.user_dir }}/.local/share/nvim/site/spell"
+    state: directory
+    recurse: true
+  tags:
+    - install
+
+- name: Download Dutch spell files
+  ansible.builtin.get_url:
+    url: "https://ftp.nluug.nl/pub/vim/runtime/spell/{{ item }}"
+    dest: "{{ ansible_facts.user_dir }}/.local/share/nvim/site/spell/{{ item }}"
+    mode: "0644"
+  loop:
+    - nl.utf-8.spl
+    - nl.utf-8.sug
+  tags:
+    - install
+
 - name: Update neovim plugins
   ansible.builtin.command: nvim --headless "+lua vim.pack.update(nil, { force = true })" +qa
   tags:
