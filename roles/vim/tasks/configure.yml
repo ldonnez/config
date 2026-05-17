@@ -36,11 +36,15 @@
 
 - name: Upgrade vim-plug
   ansible.builtin.command: vim +PlugUpgrade +qall
+  environment:
+    PATH: "{{ ansible_facts.user_dir }}/.local/share/mise/shims:{{ ansible_facts.user_dir }}/.local/bin:{{ ansible_facts.env.PATH }}"
   tags:
     - update
 
 - name: Install/Update vim plugins
   ansible.builtin.command: vim +PlugUpdate +qall
+  environment:
+    PATH: "{{ ansible_facts.user_dir }}/.local/share/mise/shims:{{ ansible_facts.user_dir }}/.local/bin:{{ ansible_facts.env.PATH }}"
   tags:
     - install
     - update
