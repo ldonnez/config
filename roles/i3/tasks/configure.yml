@@ -28,6 +28,16 @@
   tags:
     - install
 
+- name: Copy interfaces file to /etc/network to ensure loopback only interfaces
+  become: true
+  ansible.builtin.copy:
+    src: interfaces
+    dest: /etc/network/interfaces
+    mode: "0644"
+    force: true
+  tags:
+    - install
+
 - name: Symlink ~/.config/i3
   ansible.builtin.file:
     src: "{{ i3_dotfiles_path }}"
