@@ -26,10 +26,10 @@
   tags:
     - install
 
-- name: Install network-manager with apt
+- name: Install network-manager & network-manager-applet with apt
   become: true
   ansible.builtin.apt:
-    name: network-manager # network manger with included system tray icon
+    name: ["network-manager", "network-manager-applet"] # network manger with included system tray icon
     state: present
   when: ansible_facts.os_family == "Debian"
   tags:
