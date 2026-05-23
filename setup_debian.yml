@@ -66,7 +66,6 @@
       - btop
       - imagemagick
       - jq
-      - watchman
       - luarocks
       - tree
       - ninja-build
