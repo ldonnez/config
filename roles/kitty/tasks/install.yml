@@ -39,7 +39,7 @@
       ansible.builtin.copy:
         src: "{{ ansible_facts.user_dir }}/.local/kitty.app/share/applications/kitty.desktop"
         dest: "{{ ansible_facts.user_dir }}/.local/share/applications/"
-        owner: "{{ ansible_facts._user_id }}"
+        owner: "{{ ansible_facts.user_id }}"
         mode: "0644"
 
     - name: Add the kitty-open.desktop file to open files and with file manager
