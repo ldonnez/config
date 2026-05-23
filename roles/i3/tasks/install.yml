@@ -71,6 +71,15 @@
   tags:
     - install
 
+- name: Install pipewire, pipewire-pulse & wireplumber with apt
+  become: true
+  ansible.builtin.apt:
+    name: ["pipewire", "pipewire-pulse", "wireplumber"]
+    state: present
+  when: ansible_facts.os_family == "Debian"
+  tags:
+    - install
+
 - name: Install xprintidle & playerctl with apt
   become: true
   ansible.builtin.apt:
