@@ -1,8 +1,9 @@
 ---
-- name: Install nvidia-driver & firmware-misc-nonfree with apt
+- name: Install linux-headers-amd64, nvidia-driver & firmware-misc-nonfree with apt
   become: true
   ansible.builtin.apt:
     pkg:
+      - linux-headers-amd64
       - nvidia-driver
       - firmware-misc-nonfree
   tags:
