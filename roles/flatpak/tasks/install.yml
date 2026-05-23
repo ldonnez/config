@@ -8,6 +8,7 @@
     - install
 
 - name: Add the flathub flatpak repository remote
+  become: true
   community.general.flatpak_remote:
     name: flathub
     state: present
