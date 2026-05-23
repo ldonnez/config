@@ -1,6 +1,12 @@
 ---
 - name: Include install
   ansible.builtin.import_tasks: install.yml
+  when:
+    - (ansible_facts.distribution == 'Debian' and ansible_facts.distribution_major_version is version('12', '>='))
+      or (ansible_facts.distribution == 'Ubuntu' and ansible_facts.distribution_version is version('24.04', '>='))
 
 - name: Include configure
   ansible.builtin.import_tasks: configure.yml
+  when:
+    - (ansible_facts.distribution == 'Debian' and ansible_facts.distribution_major_version is version('12', '>='))
+      or (ansible_facts.distribution == 'Ubuntu' and ansible_facts.distribution_version is version('24.04', '>='))
