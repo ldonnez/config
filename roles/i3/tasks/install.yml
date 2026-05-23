@@ -62,10 +62,10 @@
   tags:
     - install
 
-- name: Install materia gtk theme & papirus icon theme with apt
+- name: Install breeze gtk theme & papirus icon theme with apt
   become: true
   ansible.builtin.apt:
-    name: ["materia-gtk-theme", "papirus-icon-theme"]
+    name: ["breeze-gtk-theme", "papirus-icon-theme"]
     state: present
   when: ansible_facts.os_family == "Debian"
   tags:
