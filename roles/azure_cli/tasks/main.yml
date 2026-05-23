@@ -1,3 +1,10 @@
 ---
 - name: Include install
   ansible.builtin.import_tasks: install.yml
+  # Azure CLI doesn't support Debian Trixie yet:
+  # https://github.com/Azure/azure-cli/issues/32069
+  # Remove this when/if Trixie is added to
+  # https://packages.microsoft.com/repos/azure-cli/
+  when: >-
+    ansible_facts.distribution == 'Ubuntu'
+    or (ansible_facts.distribution == 'Debian' and ansible_facts.distribution_release == 'bookworm')
