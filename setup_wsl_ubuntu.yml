@@ -212,7 +212,7 @@
         name: opencode
       when: configure_opencode
       tags:
-        - opencoe
+        - opencode
 
     - name: Configure bat
       ansible.builtin.import_role:
