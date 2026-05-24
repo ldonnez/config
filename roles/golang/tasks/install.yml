@@ -47,6 +47,7 @@
             src: "/tmp/go.tar.gz"
             dest: /usr/local
 
+      always:
         - name: Remove /tmp/go.tar.gz
           ansible.builtin.file:
             path: /tmp/go.tar.gz

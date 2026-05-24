@@ -243,3 +243,9 @@
       ansible.builtin.command: open /tmp/cloudflare-https.mobileconfig
       args:
         creates: "/Library/Managed Preferences/{{ ansible_facts.user_id }}/com.apple.dnsSettings.managed.plist"
+
+  always:
+    - name: Cleanup /tmp/cloudflare-https.mobileconfig
+      ansible.builtin.file:
+        path: /tmp/cloudflare-https.mobileconfig
+        state: absent

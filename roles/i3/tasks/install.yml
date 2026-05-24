@@ -139,6 +139,7 @@
       args:
         chdir: /tmp/i3lock-color
 
+  always:
     - name: Remove /tmp/i3lock-color
       ansible.builtin.file:
         path: /tmp/i3lock-color

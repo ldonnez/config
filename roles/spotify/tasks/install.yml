@@ -39,7 +39,8 @@
         name: "spotify-client"
         state: present
 
-    - name: Cleanup /tmp/spotify.gpg
+  always:
+    - name: Cleanup /tmp/spotify.asc
       ansible.builtin.file:
-        path: /tmp/spotify.gpg
+        path: /tmp/spotify.asc
         state: absent

@@ -46,6 +46,7 @@
       args:
         chdir: /tmp/neovim/build
 
+  always:
     - name: Remove /tmp/neovim
       ansible.builtin.file:
         path: /tmp/neovim

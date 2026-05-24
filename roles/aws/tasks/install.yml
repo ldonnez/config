@@ -30,6 +30,7 @@
       args:
         chdir: /tmp
 
+  always:
     - name: Remove /tmp/aws
       ansible.builtin.file:
         path: /tmp/aws
@@ -62,6 +63,7 @@
       args:
         chdir: /tmp
 
+  always:
     - name: Remove /tmp/aws
       ansible.builtin.file:
         path: /tmp/aws

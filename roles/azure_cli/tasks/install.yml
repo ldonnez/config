@@ -53,6 +53,7 @@
         name: "azure-cli"
         state: present
 
+  always:
     - name: Cleanup /tmp/microsoft.asc
       ansible.builtin.file:
         path: /tmp/microsoft.asc
