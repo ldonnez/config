@@ -117,20 +117,6 @@
       tags:
         - nvidia
 
-    - name: Install steam
-      ansible.builtin.import_role:
-        name: steam
-      when: install_steam
-      tags:
-        - steam
-
-    - name: Install docker desktop
-      ansible.builtin.import_role:
-        name: docker_desktop
-      when: install_docker_desktop
-      tags:
-        - docker_desktop
-
     - name: Configure git
       ansible.builtin.import_role:
         name: git
@@ -144,6 +130,34 @@
       when: configure_zsh
       tags:
         - zsh
+
+    - name: Configure fonts
+      ansible.builtin.import_role:
+        name: fonts
+      when: configure_fonts
+      tags:
+        - fonts
+
+    - name: Configure secrets
+      ansible.builtin.import_role:
+        name: secrets
+      when: configure_secrets
+      tags:
+        - secrets
+
+    - name: Configure gnupg
+      ansible.builtin.import_role:
+        name: gnupg
+      when: configure_gnupg
+      tags:
+        - gnupg
+
+    - name: Configure ssh
+      ansible.builtin.import_role:
+        name: ssh
+      when: configure_ssh
+      tags:
+        - ssh
 
     - name: Configure mise
       ansible.builtin.import_role:
@@ -243,19 +257,19 @@
       tags:
         - lsp
 
+    - name: Configure terraform
+      ansible.builtin.import_role:
+        name: terraform
+      when: configure_terraform
+      tags:
+        - terraform
+
     - name: Configure neovim
       ansible.builtin.import_role:
         name: neovim
       when: configure_neovim
       tags:
         - neovim
-
-    - name: Configure opencode
-      ansible.builtin.import_role:
-        name: opencode
-      when: configure_opencode
-      tags:
-        - opencode
 
     - name: Configure bat
       ansible.builtin.import_role:
@@ -285,27 +299,6 @@
       tags:
         - libpq
 
-    - name: Configure secrets
-      ansible.builtin.import_role:
-        name: secrets
-      when: configure_secrets
-      tags:
-        - secrets
-
-    - name: Configure gnupg
-      ansible.builtin.import_role:
-        name: gnupg
-      when: configure_gnupg
-      tags:
-        - gnupg
-
-    - name: Configure ssh
-      ansible.builtin.import_role:
-        name: ssh
-      when: configure_ssh
-      tags:
-        - ssh
-
     - name: Configure neomutt
       ansible.builtin.import_role:
         name: neomutt
@@ -313,19 +306,19 @@
       tags:
         - neomutt
 
-    - name: Configure calibre
+    - name: Install docker desktop
       ansible.builtin.import_role:
-        name: calibre
-      when: configure_calibre
+        name: docker_desktop
+      when: install_docker_desktop
       tags:
-        - calibre
+        - docker_desktop
 
-    - name: Configure fonts
+    - name: Configure opencode
       ansible.builtin.import_role:
-        name: fonts
-      when: configure_fonts
+        name: opencode
+      when: configure_opencode
       tags:
-        - fonts
+        - opencode
 
     - name: Configure aws
       ansible.builtin.import_role:
@@ -348,19 +341,19 @@
       tags:
         - azure_cli
 
-    - name: Configure terraform
-      ansible.builtin.import_role:
-        name: terraform
-      when: configure_terraform
-      tags:
-        - terraform
-
     - name: Configure firefox
       ansible.builtin.import_role:
         name: firefox
       when: configure_firefox
       tags:
         - firefox
+
+    - name: Configure calibre
+      ansible.builtin.import_role:
+        name: calibre
+      when: configure_calibre
+      tags:
+        - calibre
 
     - name: Configure discord
       ansible.builtin.import_role:
@@ -410,6 +403,13 @@
       when: configure_virt_manager
       tags:
         - virt_manager
+
+    - name: Install steam
+      ansible.builtin.import_role:
+        name: steam
+      when: install_steam
+      tags:
+        - steam
 
     - name: Configure systemd_resolved
       ansible.builtin.import_role:
