@@ -49,6 +49,8 @@
       - python3-venv
       - clang
 
+    cargo_packages: []
+
     pip_packages:
       - ansible-lint
 

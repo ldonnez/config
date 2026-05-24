@@ -91,6 +91,8 @@
       - com.plexamp.Plexamp
       - org.telegram.desktop
 
+    cargo_packages: []
+
     pip_packages:
       - ansible-lint
 

@@ -47,6 +47,10 @@
     configure_kitty: true
     configure_linearmouse: true
 
+    cargo_packages: []
+
+    pip_packages: []
+
     packages:
       - coreutils
       - htop
