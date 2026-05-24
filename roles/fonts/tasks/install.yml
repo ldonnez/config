@@ -52,3 +52,4 @@
 
     - name: Update font cache
       ansible.builtin.command: "fc-cache -f -v"
+      changed_when: false

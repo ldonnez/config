@@ -82,6 +82,7 @@
     - name: Getting flock binary location
       ansible.builtin.command: which flock
       register: neomutt_flock_binary
+      changed_when: false
 
     - name: Check mail every minute with cron
       ansible.builtin.cron:

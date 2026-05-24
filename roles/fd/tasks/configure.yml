@@ -24,6 +24,7 @@
     - name: Getting fdfind binary location
       ansible.builtin.command: which fdfind
       register: fd_fdfind_binary
+      changed_when: false
 
     - name: Link with fdfind binary location
       ansible.builtin.file:
