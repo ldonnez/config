@@ -144,7 +144,7 @@
     - name: Install synology drive
       ansible.builtin.import_role:
         name: synology_drive
-      when: install_fonts
+      when: install_synology_drive
       tags:
         - synology_drive
 
