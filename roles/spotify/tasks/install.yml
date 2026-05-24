@@ -25,7 +25,6 @@
       args:
         executable: /bin/bash
         creates: /etc/apt/keyrings/spotify.gpg
-      register: spotify_gpg_output
 
     - name: Add spotify to sources list
       ansible.builtin.apt_repository:
