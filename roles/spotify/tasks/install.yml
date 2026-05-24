@@ -1,6 +1,15 @@
 ---
+- name: Check if spotify is installed
+  ansible.builtin.stat:
+    path: /usr/bin/spotify
+  register: spotify_bin
+  tags:
+    - install
+
 - name: Install Spotify client with apt
-  when: ansible_facts.os_family == "Debian"
+  when:
+    - ansible_facts.os_family == "Debian"
+    - not spotify_bin.stat.exists
   become: true
   tags:
     - install

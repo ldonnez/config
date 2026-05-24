@@ -1,6 +1,15 @@
 ---
+- name: Check if aws cli is installed
+  ansible.builtin.stat:
+    path: /usr/local/bin/aws
+  register: aws_cli
+  tags:
+    - install
+
 - name: Install aws cli
-  when: ansible_facts.os_family == "Debian"
+  when:
+    - ansible_facts.os_family == "Debian"
+    - not aws_cli.stat.exists
   tags:
     - install
   block:
@@ -20,7 +29,6 @@
       ansible.builtin.command: ./aws/install
       args:
         chdir: /tmp
-        creates: /usr/local/bin/aws
 
     - name: Remove /tmp/aws
       ansible.builtin.file:

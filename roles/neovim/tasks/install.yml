@@ -1,6 +1,15 @@
 ---
+- name: Check if nvim is installed
+  ansible.builtin.stat:
+    path: /usr/bin/nvim
+  register: neovim_bin
+  tags:
+    - install
+
 - name: Install neovim
-  when: ansible_facts.os_family == "Debian"
+  when:
+    - ansible_facts.os_family == "Debian"
+    - not neovim_bin.stat.exists
   become: true
   tags:
     - install

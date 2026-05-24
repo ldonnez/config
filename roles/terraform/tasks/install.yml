@@ -15,8 +15,18 @@
   tags:
     - install
 
-- name: Install terraform with apt
+- name: Check if terraform is installed
   when: ansible_facts.os_family == "Debian"
+  ansible.builtin.stat:
+    path: /usr/bin/terraform
+  register: terraform_bin
+  tags:
+    - install
+
+- name: Install terraform with apt
+  when:
+    - ansible_facts.os_family == "Debian"
+    - not terraform_bin.stat.exists
   become: true
   tags:
     - install

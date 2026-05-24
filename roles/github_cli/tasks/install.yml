@@ -1,5 +1,14 @@
+- name: Check if gh is installed
+  ansible.builtin.stat:
+    path: /usr/bin/gh
+  register: github_cli_bin
+  tags:
+    - install
+
 - name: Install GitHub CLI with apt
-  when: ansible_facts.os_family == "Debian"
+  when:
+    - ansible_facts.os_family == "Debian"
+    - not github_cli_bin.stat.exists
   become: true
   tags:
     - install

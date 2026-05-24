@@ -1,6 +1,15 @@
 ---
+- name: Check if Azure CLI is installed
+  ansible.builtin.stat:
+    path: /usr/bin/az
+  register: azure_cli_bin
+  tags:
+    - install
+
 - name: Install Azure CLI with apt
-  when: ansible_facts.os_family == "Debian"
+  when:
+    - ansible_facts.os_family == "Debian"
+    - not azure_cli_bin.stat.exists
   become: true
   tags:
     - install
