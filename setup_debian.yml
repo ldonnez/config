@@ -44,7 +44,6 @@
     configure_neomutt: true
     configure_calibre: true
     configure_mbsync_with_cron: false
-    configure_fonts: true
     configure_aws: true
     configure_github_cli: true
     configure_azure_cli: true
@@ -131,10 +130,10 @@
       tags:
         - zsh
 
-    - name: Configure fonts
+    - name: Install fonts
       ansible.builtin.import_role:
         name: fonts
-      when: configure_fonts
+      when: install_fonts
       tags:
         - fonts
 
