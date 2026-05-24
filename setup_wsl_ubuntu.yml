@@ -38,6 +38,7 @@
     packages:
       - coreutils
       - build-essential
+      - curl
       - htop
       - btop
       - imagemagick

@@ -62,6 +62,7 @@
       - coreutils
       - build-essential
       - htop
+      - curl
       - btop
       - imagemagick
       - jq
