@@ -50,5 +50,7 @@
 - name: Generate root key
   become: true
   ansible.builtin.command: ssh-keygen -A
+  args:
+    creates: /etc/ssh/ssh_host_rsa_key
   tags:
     - install

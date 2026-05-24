@@ -20,6 +20,8 @@
 
     - name: Configure repository
       ansible.builtin.command: /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
+      args:
+        creates: /etc/apt/sources.list.d/pgdg.sources
 
     - name: Update apt
       ansible.builtin.apt:

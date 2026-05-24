@@ -138,6 +138,7 @@
       ansible.builtin.command: ./install-i3lock-color.sh
       args:
         chdir: /tmp/i3lock-color
+        creates: /usr/bin/i3lock-color
 
   always:
     - name: Remove /tmp/i3lock-color
