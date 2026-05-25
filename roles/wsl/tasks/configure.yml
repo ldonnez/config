@@ -1,15 +1,21 @@
 ---
-- name: Symlink wslview with xdg-open
-  ansible.builtin.file:
-    src: /usr/bin/wslview
+- name: Create xdg-open that opens URLs/files in Windows
+  ansible.builtin.copy:
     dest: "{{ ansible_facts.user_dir }}/.local/bin/xdg-open"
-    state: link
+    mode: "0700"
+    content: |
+      #!/bin/sh
+      path="$1"
+      if [ -f "$path" ] || [ -d "$path" ]; then
+        path=$(wslpath -w "$path" 2>/dev/null || echo "$path")
+      fi
+      exec powershell.exe -NoProfile -Command "Start-Process '$path'"
   tags:
     - install
 
-- name: Symlink wslview with open
+- name: Symlink open to xdg-open
   ansible.builtin.file:
-    src: /usr/bin/wslview
+    src: "{{ ansible_facts.user_dir }}/.local/bin/xdg-open"
     dest: "{{ ansible_facts.user_dir }}/.local/bin/open"
     state: link
   tags:
