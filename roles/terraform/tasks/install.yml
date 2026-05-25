@@ -34,21 +34,48 @@
     - name: Get hashicorp signing key
       ansible.builtin.get_url:
         url: https://apt.releases.hashicorp.com/gpg
-        dest: /etc/apt/keyrings/hashicorp-archive-keyring.asc
+        dest: /tmp/hashicorp.asc
         mode: "0644"
 
-    - name: Add terraform to sources list
-      ansible.builtin.apt_repository:
-        repo: "deb [signed-by=/etc/apt/keyrings/hashicorp-archive-keyring.asc] https://apt.releases.hashicorp.com {{ ansible_facts.distribution_release }} main"
-        state: present
-        filename: hashicorp
+    - name: Convert key to GPG format
+      ansible.builtin.shell: gpg --dearmor -o /etc/apt/keyrings/hashicorp.gpg /tmp/hashicorp.asc
+      args:
+        executable: /bin/bash
+        creates: /etc/apt/keyrings/hashicorp.gpg
+
+    - name: Get system architecture
+      ansible.builtin.command: dpkg --print-architecture
+      register: terraform_system_arch
+      changed_when: false
+
+    - name: Create hashicorp sources file
+      ansible.builtin.copy:
+        mode: "0644"
+        content: |
+          Types: deb
+          URIs: https://apt.releases.hashicorp.com
+          Suites: {{ ansible_facts.lsb.codename }}
+          Components: main
+          Architectures: {{ terraform_system_arch.stdout }}
+          Signed-by: /etc/apt/keyrings/hashicorp.gpg
+        dest: /etc/apt/sources.list.d/hashicorp.sources
+
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: true
 
     - name: Install terraform with apt
       ansible.builtin.apt:
         name: terraform
-        update_cache: true
+        state: present
 
     - name: Install terraform-ls with apt
       ansible.builtin.apt:
         name: terraform-ls
-        update_cache: true
+        state: present
+
+  always:
+    - name: Cleanup /tmp/hashicorp.asc
+      ansible.builtin.file:
+        path: /tmp/hashicorp.asc
+        state: absent
