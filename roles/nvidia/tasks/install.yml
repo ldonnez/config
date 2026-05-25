@@ -6,6 +6,7 @@
       - linux-headers-amd64
       - nvidia-driver
       - firmware-misc-nonfree
+      - mesa-utils
   tags:
     - install
 
