@@ -5,6 +5,8 @@
   # https://github.com/Azure/azure-cli/issues/32069
   # Remove this when/if Trixie is added to
   # https://packages.microsoft.com/repos/azure-cli/
+  # Remove Ubuntu check if 26.04 (resolute) is added
+  # https://github.com/Azure/azure-cli/issues/33282
   when: >-
-    ansible_facts.distribution == 'Ubuntu'
+    (ansible_facts.distribution == 'Ubuntu' and ansible_facts.distribution_version is version('26.04', '<'))
     or (ansible_facts.distribution == 'Debian' and ansible_facts.distribution_release == 'bookworm')
