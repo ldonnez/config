@@ -1,5 +1,13 @@
 ---
+- name: Check if win32yank.exe is installed
+  ansible.builtin.stat:
+    path: "{{ ansible_facts.user_dir }}/.local/bin/win32yank.exe"
+  register: wsl_win32yank_exe
+  tags:
+    - install
+
 - name: Install win32yank.exe
+  when: not wsl_win32yank_exe.stat.exists
   tags:
     - install
 
