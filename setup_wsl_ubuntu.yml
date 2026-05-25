@@ -55,6 +55,19 @@
     pip_packages:
       - ansible-lint
 
+  pre_tasks:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+      when: ansible_facts.os_family == "Debian"
+      tags: always
+
+    - name: Set become_exe for sudo-rs compatibility
+      ansible.builtin.set_fact:
+        ansible_become_exe: "{{ 'sudo.ws' if 'sudo-rs' in ansible_facts.packages else 'sudo' }}"
+      when: ansible_facts.os_family == "Debian"
+      tags: always
+
   tasks:
     - name: Install packages
       ansible.builtin.import_role:
