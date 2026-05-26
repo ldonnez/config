@@ -1,0 +1,6 @@
+# {{ ansible_managed }}
+[boot]
+systemd=true
+
+[user]
+default={{ ansible_facts.user_id }}

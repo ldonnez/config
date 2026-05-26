@@ -21,19 +21,11 @@
   tags:
     - install
 
-- name: Remove existing /etc/wsl.conf if present
+- name: Template wsl.conf to /etc
   become: true
-  ansible.builtin.file:
-    path: /etc/wsl.conf
-    state: absent
-  tags:
-    - install
-
-- name: Copy wsl.conf to /etc
-  become: true
-  ansible.builtin.copy:
-    src: wsl.conf
-    dest: /etc
+  ansible.builtin.template:
+    src: wsl.conf.j2
+    dest: /etc/wsl.conf
     mode: "0600"
   tags:
     - install
