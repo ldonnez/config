@@ -29,6 +29,7 @@
     configure_vim: true
     configure_lsp: true
     configure_neovim: true
+    configure_copilot_cli: true
     configure_opencode: true
     configure_vifm: true
     configure_bat: true
@@ -235,6 +236,13 @@
       when: configure_opencode
       tags:
         - opencode
+
+    - name: Configure copilot cli
+      ansible.builtin.import_role:
+        name: copilot_cli
+      when: configure_copilot_cli
+      tags:
+        - copilot_cli
 
     - name: Configure vifm
       ansible.builtin.import_role:
