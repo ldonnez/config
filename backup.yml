@@ -20,12 +20,26 @@
         dest: "{{ansible_facts.user_dir}}/SynologyDrive"
         delete: true
 
-      - name: "projects"
-        src: "{{ansible_facts.user_dir}}/projects/"
-        dest: "{{ansible_facts.user_dir}}/SynologyDrive/projects"
-        delete: false
-
   tasks:
-    - name: Synchronize
+    - name: Synchronize static dirs
       ansible.builtin.import_role:
         name: synchronize
+
+    - name: Find local project directories
+      ansible.builtin.find:
+        paths: "{{ ansible_facts.user_dir }}/projects"
+        file_type: directory
+        recurse: false
+      register: local_projects
+
+    - name: Sync each project individually with delete
+      when: local_projects.files | length > 0
+      ansible.posix.synchronize:
+        src: "{{ item.path }}/"
+        dest: "{{ ansible_facts.user_dir }}/SynologyDrive/projects/{{ item.path | basename }}"
+        recursive: true
+        delete: true
+        checksum: true
+      loop: "{{ local_projects.files }}"
+      loop_control:
+        label: "{{ item.path | basename }}"
