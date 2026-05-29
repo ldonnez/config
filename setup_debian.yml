@@ -37,6 +37,7 @@
     configure_ag: true
     configure_fd: true
     configure_rg: true
+    configure_gnome_keyring: true
     configure_memo: true
     configure_libpq: true
     configure_secrets: true
@@ -238,6 +239,13 @@
       when: configure_fd
       tags:
         - fd
+
+    - name: Configure gnome keyring
+      ansible.builtin.import_role:
+        name: gnome_keyring
+      when: configure_gnome_keyring
+      tags:
+        - gnome_keyring
 
     - name: Configure rg
       ansible.builtin.import_role:

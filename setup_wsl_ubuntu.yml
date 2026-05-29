@@ -32,6 +32,7 @@
     configure_ag: true
     configure_fd: true
     configure_rg: true
+    configure_gnome_keyring: true
     configure_memo: true
     configure_github_cli: true
     configure_azure_cli: true
@@ -181,6 +182,13 @@
       when: configure_rg
       tags:
         - rg
+
+    - name: Configure gnome keyring
+      ansible.builtin.import_role:
+        name: gnome_keyring
+      when: configure_gnome_keyring
+      tags:
+        - gnome_keyring
 
     - name: Configure memo
       ansible.builtin.import_role:

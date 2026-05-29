@@ -1,0 +1,17 @@
+---
+galaxy_info:
+  role_name: gnome_keyring
+  author: ldonnez
+  description: GNOME Keyring is a software application designed to store security credentials such as usernames, passwords, and keys, together with a small amount of relevant metadata.
+  license: MIT
+  min_ansible_version: "2.10"
+
+  platforms:
+    - name: Debian
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all
+
+dependencies: []

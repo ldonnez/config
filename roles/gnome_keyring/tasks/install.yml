@@ -1,0 +1,15 @@
+---
+- name: Install gnome-keyring, libsecret and seahorse
+  when: ansible_facts.os_family == "Debian"
+  tags:
+    - install
+  ansible.builtin.apt:
+    name:
+      - libsecret-1-0
+      - libsecret-common
+      - libsecret-tools
+      - gnome-keyring
+      - gnome-keyring-pkcs11
+      - seahorse
+    state: present
+  become: true

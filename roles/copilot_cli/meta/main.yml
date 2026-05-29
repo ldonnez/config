@@ -20,3 +20,4 @@ galaxy_info:
 dependencies:
   - role: dotfiles
   - role: packages
+  - role: gnome_keyring # Ensures access tokens of Github (after authenticating) is stored securely.
