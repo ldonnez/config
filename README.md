@@ -26,36 +26,6 @@ Run
   ansible-playbook setup_macos.yml --tags=update
 ```
 
-## Setup Windows
-
-Make sure to check the config file in `powershell/config.json`!
-
-- Clone this repo, preferably in your home directory
-- Open Powershell with Administrator permissions and run `Set-ExecutionPolicy Unrestricted -Scope CurrentUser` to be able to run powershell scripts.
-- Run `powershell/setup_windows.ps1` as Administrator
-- Reboot
-- Open Powershell with Administrator permissions and run `wsl --set-default-version 2` to set wsl2 as default wsl version
-
-### Configuration options
-
-You can configure the following options in `powershell/config.json`
-
-```json
-{
-  "dotfilesRepo": "https://github.com/ldonnez/dotfiles.git",
-  "dotfilesPath": <path>,
-  "installDotfiles": true,
-  "configureGit": true,
-  "configureVim": true,
-  "configureAlacritty": true,
-  "configureAg": true,
-  "configureVifm": true,
-  "configureSsh": true,
-  "configureWsl": true,
-  "extraPackagesToInstallWithChocolatey": [<packageName>]
-}
-```
-
 ## Setup WSL2 (Ubuntu >= 22.04)
 
 Make sure to check vars in `setup_wsl_ubuntu.yml`.
