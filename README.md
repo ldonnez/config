@@ -51,10 +51,10 @@ Make sure to check vars in `setup_wsl_ubuntu.yml`.
 - Launch the installed distro from the Start menu or with Windows Terminal, create your Linux user, and let it finish initial setup
 - To ensure network compatibility (especially for services that require bridged/mirrored networking like corporate VPN's), create or edit the `.wslconfig` file in your Windows user home directory (C:\Users\\\<YourUsername>\\\.wslconfig) and add the following:
 
-```shell
-[wsl2]
-networkingMode=mirrored
-```
+  ```shell
+  [wsl2]
+  networkingMode=mirrored
+  ```
 
 - Clone this repo, preferably in your home directory
 - Run `sh run_setup_wsl_ubuntu.sh`. This will install python and pipx and installs latest ansible and ansible-lint with pipx.
