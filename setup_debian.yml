@@ -6,8 +6,6 @@
   vars:
     dotfiles_repo: "https://github.com/ldonnez/dotfiles.git"
     dotfiles_directory_path: "{{ ansible_facts.user_dir }}/dotfiles"
-    private_dotfiles_path: "{{ ansible_facts.user_dir }}/private"
-    private_dotfiles_source: "{{ ansible_facts.user_dir }}/SynologyDrive/private"
 
     install_packages: true
     install_dotfiles: true

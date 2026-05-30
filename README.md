@@ -4,10 +4,15 @@
 
 This setup is mostly for my own usage and needs.
 
-## Setup macOS
+## Prerequisites
 
-Make sure to check the vars in `setup_macos.yml` and configure the location of the `private_dotfiles_path` option
-This path should be the location of your `.ssh`, `.gnupg` & `.secrets` directories.
+Ansible playbooks **setup_macos.yml** and **setup_debian.yml** includes the **secrets** role which installs vault encrypted (`ansible-vault encrypt <filename>`) files from a repository cloned to `~/.secrets`. Run with `--ask-vault-pass` to decrypt them:
+
+```zsh
+ansible-playbook setup_macos.yml -K --ask-vault-pass --tags install
+```
+
+## Setup macOS
 
 - When running from fresh install run `xcode-select --install` to install minimal tools like git etc
 - Clone this repo, preferably in your home directory
@@ -76,13 +81,10 @@ Run
 
 ## Setup Debian 13 (Trixie)
 
-Make sure to check vars in `setup_debian.yml`, configure the location of the `private_dotfiles_path` and `private_dotfiles_source` option.
-This path should be the location of your `.ssh`, `.gnupg` & `.secrets` directories.
-
 - Add current user to sudoers file. (log in as root `su` and run `sudo usermod -aG sudo [username]`)
 - Install git `sudo apt install git`
 - Clone this repo, preferably in your home directory
-- Run `sh run_setup_debian.sh`. This will install all dependencies necessary (python, pipx and ansible) and run the playbook (`ansible-playbook setup_debian.yml -K --tags install`).
+- Run `sh run_setup_debian.sh`. This will install all dependencies necessary (python, pipx and ansible) and run the playbook.
 
 ### Update Debian 13 (Trixie) packages
 

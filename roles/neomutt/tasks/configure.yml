@@ -23,11 +23,12 @@
   tags:
     - install
 
-- name: Symlink .mutt-alias
-  ansible.builtin.file:
-    src: "{{ private_dotfiles_path }}/.mutt-alias"
+- name: Copy .mutt-alias
+  ansible.builtin.copy:
+    src: "{{ ansible_facts.user_dir }}/.secrets/.mutt-alias"
     dest: "{{ ansible_facts.user_dir }}/.mutt-alias"
-    state: link
+    mode: "0700"
+    decrypt: true
   tags:
     - install
 

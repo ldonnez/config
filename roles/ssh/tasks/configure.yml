@@ -14,36 +14,38 @@
   tags:
     - install
 
-- name: Remove existing .ssh directory
+- name: Ensure .ssh directory
   ansible.builtin.file:
     path: "{{ ansible_facts.user_dir }}/.ssh"
-    state: absent
-  tags:
-    - install
-
-- name: Symlink .ssh
-  ansible.builtin.file:
-    src: "{{ private_dotfiles_path }}/.ssh"
-    dest: "{{ ansible_facts.user_dir }}/.ssh"
-    state: link
-  tags:
-    - install
-
-- name: Ensure access rights id_rsa
-  become: true
-  become_user: root
-  ansible.builtin.file:
-    path: "{{ ansible_facts.user_dir }}/.ssh/id_rsa"
+    state: directory
     mode: "0700"
   tags:
     - install
 
-- name: Ensure access rights .ssh/config
-  become: true
-  become_user: root
-  ansible.builtin.file:
-    path: "{{ ansible_facts.user_dir }}/.ssh/config"
-    mode: "0700"
+- name: Copy SSH private key from secrets repo
+  ansible.builtin.copy:
+    src: "{{ ansible_facts.user_dir }}/.secrets/.ssh/id_rsa"
+    dest: "{{ ansible_facts.user_dir }}/.ssh/id_rsa"
+    mode: "0600"
+    decrypt: true
+  tags:
+    - install
+
+- name: Copy SSH public key from secrets repo
+  ansible.builtin.copy:
+    src: "{{ ansible_facts.user_dir }}/.secrets/.ssh/id_rsa.pub"
+    dest: "{{ ansible_facts.user_dir }}/.ssh/id_rsa.pub"
+    mode: "0644"
+    decrypt: false
+  tags:
+    - install
+
+- name: Copy SSH config from secrets repo
+  ansible.builtin.copy:
+    src: "{{ ansible_facts.user_dir }}/.secrets/.ssh/config"
+    dest: "{{ ansible_facts.user_dir }}/.ssh/config"
+    mode: "0600"
+    decrypt: true
   tags:
     - install
 
