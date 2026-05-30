@@ -21,4 +21,4 @@ pipx install ansible-lint
 ansible-galaxy install -r requirements.yml
 
 # Run playbook
-ansible-playbook setup_debian.yml -K --tags install
+ansible-playbook setup_debian.yml -K --ask-vault-pass --tags install

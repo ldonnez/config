@@ -20,7 +20,7 @@ brew install ansible ansible-lint
 ansible-galaxy install -r requirements.yml
 
 # run playbook
-ansible-playbook setup_macos.yml -K --tags install
+ansible-playbook setup_macos.yml -K --ask-vault-pass --tags install
 
 # brew cleanup
 brew cleanup

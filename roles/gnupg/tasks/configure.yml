@@ -1,25 +1,44 @@
 ---
-- name: Remove existing .gnupg directory
+- name: Create .gnupg directory
   ansible.builtin.file:
     path: "{{ ansible_facts.user_dir }}/.gnupg"
-    state: absent
+    state: directory
+    mode: "0700"
   tags:
     - install
 
-- name: Symlink .gnupg
+- name: Copy decrypted GPG key to temp location
+  ansible.builtin.copy:
+    src: "{{ ansible_facts.user_dir }}/.secrets/lenny.donnez@gmail.com.asc"
+    dest: /tmp/lenny.donnez@gmail.com.asc
+    mode: "0600"
+    decrypt: true
+  tags:
+    - install
+
+- name: Symlink gpg-agent.conf
   ansible.builtin.file:
-    src: "{{ private_dotfiles_path }}/.gnupg"
-    dest: "{{ ansible_facts.user_dir }}/.gnupg"
+    src: "{{ dotfiles_directory_path }}/.gnupg/gpg-agent.conf"
+    dest: "{{ ansible_facts.user_dir }}/.gnupg/gpg-agent.conf"
     state: link
   tags:
     - install
 
-- name: Ensure access rights to .gnupg
+- name: Reload gpg-agent
+  ansible.builtin.command: gpgconf --reload gpg-agent
+  failed_when: false
+  changed_when: false
+  tags:
+    - install
+
+- name: Import GPG key
+  ansible.builtin.command: gpg --batch --yes --pinentry-mode loopback --import /tmp/lenny.donnez@gmail.com.asc
+  tags:
+    - install
+
+- name: Remove temp key file
   ansible.builtin.file:
-    path: "{{ ansible_facts.user_dir }}/.gnupg"
-    owner: "{{ ansible_facts.user_id }}"
-    state: directory
-    mode: "0700"
-    recurse: true
+    path: /tmp/lenny.donnez@gmail.com.asc
+    state: absent
   tags:
     - install
