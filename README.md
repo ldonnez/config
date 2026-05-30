@@ -1,8 +1,8 @@
-# My setup configuration
+# Provisioning (MacOS, Debian, WSL)
 
 ## Disclaimer
 
-This setup is mostly for my own usage and needs.
+This is mostly for my own usage.
 
 ## Prerequisites
 
