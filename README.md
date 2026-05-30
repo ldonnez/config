@@ -1,4 +1,4 @@
-# My setup configuration
+# Provisioning (MacOS, Debian, WSL)
 
 ## Disclaimer
 
