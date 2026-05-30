@@ -60,6 +60,24 @@ You can configure the following options in `powershell/config.json`
 
 Make sure to check vars in `setup_wsl_ubuntu.yml`.
 
+- First, install WSL from an Administrator PowerShell:
+  ```powershell
+  wsl --install
+  ```
+- Then install the desired Ubuntu distro (replace version as needed):
+
+  ```powershell
+  wsl --install -d Ubuntu-22.04
+  ```
+
+  Supported versions: `Ubuntu-22.04`, `Ubuntu-24.04`, `Ubuntu-26.04`
+  You can list available versions with:
+
+  ```powershell
+   wsl --list --online
+  ```
+
+- Launch the installed distro from the Start menu, create your Linux user, and let it finish initial setup
 - To ensure network compatibility (especially for services that require bridged/mirrored networking like corporate VPN's), create or edit the `.wslconfig` file in your Windows user home directory (C:\Users\\\<YourUsername>\\\.wslconfig) and add the following:
 
 ```shell
@@ -69,7 +87,7 @@ networkingMode=mirrored
 
 - Clone this repo, preferably in your home directory
 - Run `sh run_setup_wsl_ubuntu.sh`. This will install python and pipx and installs latest ansible and ansible-lint with pipx.
-- Close The WSL session and run `wsl.exe --shutdown` in a powershell shell to rerstart WSL.
+- Close The WSL session and run `wsl.exe --shutdown` in a powershell shell to restart WSL.
 
 ### Update WSL2 (Ubuntu) packages
 
