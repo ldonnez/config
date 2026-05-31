@@ -2,7 +2,7 @@
 - name: Install dependencies
   become: true
   ansible.builtin.apt:
-    name: ["libxcb-cursor0"]
+    name: ["libxcb-cursor0", "libopengl0"]
     state: present
   when: ansible_facts.os_family == "Debian"
   tags:
