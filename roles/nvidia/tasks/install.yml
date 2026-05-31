@@ -9,24 +9,22 @@
   tags:
     - install
 
-- name: Install linux-headers-amd64, nvidia-driver & firmware-misc-nonfree with apt
+- name: Install NVIDIA driver and remove conflicting intel driver
   become: true
-  ansible.builtin.apt:
-    pkg:
-      - linux-headers-amd64
-      - nvidia-driver
-      - firmware-misc-nonfree
-      - mesa-utils
   when: nvidia_gpu_detect.rc == 0
   tags:
     - install
+  block:
+    - name: Install linux-headers-amd64, nvidia-driver, firmware-misc-nonfree & mesa-utils with apt
+      ansible.builtin.apt:
+        pkg:
+          - linux-headers-amd64
+          - nvidia-driver
+          - firmware-misc-nonfree
+          - mesa-utils
 
-# Prevents Nvidia Optimus from working. More info -> https://wiki.debian.org/NVIDIA%20Optimus
-- name: Remove the outdated xserver-xorg-video-intel package if present
-  become: true
-  ansible.builtin.apt:
-    name: xserver-xorg-video-intel
-    state: absent
-  when: nvidia_gpu_detect.rc == 0
-  tags:
-    - install
+    # Prevents Nvidia Optimus from working. More info -> https://wiki.debian.org/NVIDIA%20Optimus
+    - name: Remove the outdated xserver-xorg-video-intel package if present
+      ansible.builtin.apt:
+        name: xserver-xorg-video-intel
+        state: absent
