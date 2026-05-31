@@ -7,15 +7,6 @@
   tags:
     - install
 
-- name: Copy decrypted GPG key to temp location
-  ansible.builtin.copy:
-    src: "{{ ansible_facts.user_dir }}/.secrets/lenny.donnez@gmail.com.asc"
-    dest: /tmp/lenny.donnez@gmail.com.asc
-    mode: "0600"
-    decrypt: true
-  tags:
-    - install
-
 - name: Symlink gpg-agent.conf
   ansible.builtin.file:
     src: "{{ dotfiles_directory_path }}/.gnupg/gpg-agent.conf"
@@ -31,14 +22,22 @@
   tags:
     - install
 
-- name: Import GPG key
-  ansible.builtin.command: gpg --batch --yes --pinentry-mode loopback --import /tmp/lenny.donnez@gmail.com.asc
+- name: Import GPG key with temp file cleanup
   tags:
     - install
+  block:
+    - name: Copy decrypted GPG key to temp location
+      ansible.builtin.copy:
+        src: "{{ ansible_facts.user_dir }}/.secrets/lenny.donnez@gmail.com.asc"
+        dest: /tmp/lenny.donnez@gmail.com.asc
+        mode: "0600"
+        decrypt: true
 
-- name: Remove temp key file
-  ansible.builtin.file:
-    path: /tmp/lenny.donnez@gmail.com.asc
-    state: absent
-  tags:
-    - install
+    - name: Import GPG key
+      ansible.builtin.command: gpg --batch --yes --pinentry-mode loopback --import /tmp/lenny.donnez@gmail.com.asc
+
+  always:
+    - name: Remove temp key file
+      ansible.builtin.file:
+        path: /tmp/lenny.donnez@gmail.com.asc
+        state: absent
