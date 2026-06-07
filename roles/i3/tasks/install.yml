@@ -71,10 +71,10 @@
   tags:
     - install
 
-- name: Install pipewire, pipewire-pulse, wireplumber & pulseaudio with apt
+- name: Install pipewire, pipewire-audio, pipewire-pulse & wireplumber with apt
   become: true
   ansible.builtin.apt:
-    name: ["pipewire", "pipewire-pulse", "wireplumber", "pulseaudio"]
+    name: ["pipewire", "pipewire-audio", "pipewire-pulse", "wireplumber"]
     state: present
   when: ansible_facts.os_family == "Debian"
   tags:
