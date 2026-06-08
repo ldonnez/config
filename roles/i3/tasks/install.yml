@@ -71,10 +71,44 @@
   tags:
     - install
 
-- name: Install pipewire, pipewire-audio, pipewire-pulse & wireplumber with apt
+- name: Install media codecs with apt
   become: true
   ansible.builtin.apt:
-    name: ["pipewire", "pipewire-audio", "pipewire-pulse", "wireplumber"]
+    name:
+      [
+        "ffmpeg",
+        "libavcodec-extra",
+        "dav1d",
+        "libgstreamer1.0-dev",
+        "libgstreamer-plugins-base1.0-dev",
+        "libgstreamer-plugins-bad1.0-dev",
+        "gstreamer1.0-plugins-base",
+        "gstreamer1.0-plugins-good",
+        "gstreamer1.0-plugins-bad",
+        "gstreamer1.0-plugins-ugly",
+        "gstreamer1.0-libav",
+        "gstreamer1.0-tools",
+        "gstreamer1.0-x",
+        "gstreamer1.0-alsa",
+        "gstreamer1.0-gl",
+        "gstreamer1.0-gtk3",
+      ]
+    state: present
+  when: ansible_facts.os_family == "Debian"
+  tags:
+    - install
+
+- name: Install pipewire & dependencies with apt
+  become: true
+  ansible.builtin.apt:
+    name:
+      [
+        "pipewire",
+        "pipewire-audio",
+        "pipewire-pulse",
+        "wireplumber",
+        "gstreamer1.0-pipewire",
+      ]
     state: present
   when: ansible_facts.os_family == "Debian"
   tags:
