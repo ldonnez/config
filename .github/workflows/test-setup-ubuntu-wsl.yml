@@ -8,6 +8,6 @@ jobs:
     name: setup_wsl_ubuntu
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Run run_setup_wsl_ubuntu.sh
         run: sh run_setup_wsl_ubuntu.sh
