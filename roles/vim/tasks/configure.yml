@@ -34,17 +34,38 @@
   tags:
     - install
 
-- name: Upgrade vim-plug
-  ansible.builtin.command: vim +PlugUpgrade +qall
-  environment:
-    PATH: "{{ ansible_facts.user_dir }}/.local/share/mise/shims:{{ ansible_facts.user_dir }}/.local/bin:{{ ansible_facts.env.PATH }}"
-  tags:
-    - update
-
-- name: Install/Update vim plugins
-  ansible.builtin.command: vim +PlugUpdate +qall
-  environment:
-    PATH: "{{ ansible_facts.user_dir }}/.local/share/mise/shims:{{ ansible_facts.user_dir }}/.local/bin:{{ ansible_facts.env.PATH }}"
+- name: Check for vim.basic
+  ansible.builtin.stat:
+    path: /usr/bin/vim.basic
+  register: vim_basic
   tags:
     - install
     - update
+
+# `vim` may resolve to nvim via update-alternatives. Use `vim.basic` when
+# available to ensure Vim plugins are managed with vim, not nvim.
+- name: Set vim binary
+  ansible.builtin.set_fact:
+    vim_binary: "{{ '/usr/bin/vim.basic' if vim_basic.stat.exists else 'vim' }}"
+  tags:
+    - install
+    - update
+
+- name: Upgrade vim-plug & Install/Update vim plugins
+  tags:
+    - install
+    - update
+  block:
+    - name: Upgrade vim-plug
+      ansible.builtin.command:
+        argv:
+          - "{{ vim_binary }}"
+          - "+PlugUpgrade"
+          - "+qall"
+
+    - name: Install/Update vim plugins
+      ansible.builtin.command:
+        argv:
+          - "{{ vim_binary }}"
+          - "+PlugUpdate"
+          - "+qall"
