@@ -7,8 +7,31 @@
   tags:
     - install
 
-- name: Install kitty
+- name: Check if kitty is installed
   when: ansible_facts.os_family == "Debian"
+  ansible.builtin.stat:
+    path: "{{ ansible_facts.user_dir }}/.local/kitty.app/bin/kitty"
+  register: kitty_binary
+  tags:
+    - install
+    - update
+
+- name: Force update kitty with installation script
+  when:
+    - ansible_facts.os_family == "Debian"
+    - kitty_binary.stat.exists | default(false)
+  ansible.builtin.shell: |
+    set -o pipefail
+    curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
+  args:
+    executable: /bin/bash
+  tags:
+    - update
+
+- name: Install kitty
+  when:
+    - ansible_facts.os_family == "Debian"
+    - not kitty_binary.stat.exists | default(false)
   tags:
     - install
   block:
@@ -18,9 +41,6 @@
         curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
       args:
         executable: /bin/bash
-        creates: "{{ ansible_facts.user_dir }}/.local/kitty.app/bin/kitty"
-      tags:
-        - update
 
     - name: Create symbolic links to add kitty to PATH
       ansible.builtin.file:
