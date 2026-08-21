@@ -55,7 +55,7 @@ Make sure to check vars in `setup_wsl_ubuntu.yml`.
   ```
 
 - Clone this repo, preferably in your home directory
-- Run `make setup-wsl-ubuntu`. This will install python, pipx and installs latest ansible and ansible-lint with pipx.
+- Run `make setup-wsl-ubuntu`. This will install python and pipx, plus the latest ansible & ansible-lint via pipx.
 - Close The WSL session and run `wsl.exe --shutdown` in a powershell shell to restart WSL.
 
 ### Update WSL2 (Ubuntu) packages
@@ -73,7 +73,7 @@ This upgrades the Galaxy collections from requirements.yml and runs the playbook
 - Add current user to sudoers file. (log in as root `su` and run `sudo usermod -aG sudo [username]`)
 - Install git `sudo apt install git`
 - Clone this repo, preferably in your home directory
-- Run `make setup-debian`. This will install all dependencies necessary (python, pipx and ansible) and run the playbook.
+- Run `make setup-debian`. This will install python and make, plus the latest ansible & ansible-lint via pipx, then run the playbook.
 
 ### Update Debian 13 (Trixie) packages
 
