@@ -34,17 +34,10 @@ setup-debian:
 setup-wsl-ubuntu:
 	sudo apt update && sudo apt upgrade -y
 	@mkdir -p ~/.local/bin
-	@VERSION=$$(lsb_release -rs | tr -d '.'); \
-	if [ "$$VERSION" -ge 2404 ]; then \
-		sudo apt install -y git python3-setuptools python3-pip python3-apt pipx make; \
-		pipx install pipx; \
-		sudo apt purge -y --autoremove pipx; \
-		pipx install ansible --include-deps; \
-	else \
-		sudo apt install -y git python3-setuptools python3-pip python3-venv python3-packaging make; \
-		pip3 install pipx; \
-		pipx install ansible --include-deps; \
-	fi
+	sudo apt install -y git python3-setuptools python3-pip python3-apt pipx make
+	pipx install pipx
+	sudo apt purge -y --autoremove pipx
+	pipx install ansible --include-deps
 	pipx install ansible-lint
 	ansible-galaxy collection install -r requirements.yml --upgrade
 	ansible-playbook setup_wsl_ubuntu.yml -K --tags install

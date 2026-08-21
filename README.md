@@ -24,7 +24,7 @@ make update-macos
 
 This upgrades the Galaxy collections from requirements.yml and runs the playbook's update tasks.
 
-## Setup WSL2 (Ubuntu >= 22.04)
+## Setup WSL2 (Ubuntu >= 24.04)
 
 Make sure to check vars in `setup_wsl_ubuntu.yml`.
 
@@ -35,10 +35,10 @@ Make sure to check vars in `setup_wsl_ubuntu.yml`.
 - Then install the desired Ubuntu distro (replace version as needed):
 
   ```powershell
-  wsl --install -d Ubuntu-22.04
+  wsl --install -d Ubuntu-24.04
   ```
 
-  Supported versions: `Ubuntu-22.04`, `Ubuntu-24.04`, `Ubuntu-26.04`
+  Supported versions: `Ubuntu-24.04`, `Ubuntu-26.04`
 
   You can list available versions with:
 
