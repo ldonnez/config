@@ -26,6 +26,7 @@ setup-debian:
 	# community.general.pipx needs pipx >= 1.7.0; apt ships older, so bootstrap current pipx via pipx
 	pipx install pipx
 	sudo apt purge -y --autoremove pipx
+	pipx install ansible --include-deps
 	pipx install ansible-lint
 	ansible-galaxy collection install -r requirements.yml --upgrade
 	ansible-playbook setup_debian.yml -K --ask-vault-pass --tags install
@@ -38,6 +39,7 @@ setup-wsl-ubuntu:
 		sudo apt install -y git python3-setuptools python3-pip python3-apt pipx make; \
 		pipx install pipx; \
 		sudo apt purge -y --autoremove pipx; \
+		pipx install ansible --include-deps; \
 	else \
 		sudo apt install -y git python3-setuptools python3-pip python3-venv python3-packaging make; \
 		pip3 install pipx; \
