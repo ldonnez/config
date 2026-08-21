@@ -1,29 +1,35 @@
 ---
-- name: Install python3-setuptools, pipx with apt
+- name: Check if pipx is already bootstrapped in ~/.local/bin
   when: ansible_facts.distribution == 'Debian' or ansible_facts.distribution == 'Ubuntu'
-  ansible.builtin.apt:
-    name: ["python3-setuptools", "pipx"]
-    state: present
-  become: true
+  ansible.builtin.stat:
+    path: "{{ ansible_facts.user_dir }}/.local/bin/pipx"
+  register: pip_pipx_bin
   tags:
     - install
 
-- name: Bootstrap current pipx into ~/.local/bin
-  when: ansible_facts.distribution == 'Debian' or ansible_facts.distribution == 'Ubuntu'
-  ansible.builtin.command: pipx install pipx
-  args:
-    creates: "{{ ansible_facts.user_dir }}/.local/bin/pipx"
+- name: Install pipx
+  when:
+    - ansible_facts.distribution == 'Debian' or ansible_facts.distribution == 'Ubuntu'
+    - not pip_pipx_bin.stat.exists
   tags:
     - install
+  block:
+    - name: Install python3-setuptools, pipx with apt
+      ansible.builtin.apt:
+        name: ["python3-setuptools", "pipx"]
+        state: present
+      become: true
 
-- name: Remove outdated apt pipx
-  when: ansible_facts.distribution == 'Debian' or ansible_facts.distribution == 'Ubuntu'
-  ansible.builtin.apt:
-    name: pipx
-    state: absent
-  become: true
-  tags:
-    - install
+    - name: Bootstrap current pipx into ~/.local/bin
+      ansible.builtin.command: pipx install pipx
+      args:
+        creates: "{{ ansible_facts.user_dir }}/.local/bin/pipx"
+
+    - name: Remove outdated apt pipx
+      ansible.builtin.apt:
+        name: pipx
+        state: absent
+      become: true
 
 - name: Install python3 with hombrew
   community.general.homebrew:
