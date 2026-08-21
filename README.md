@@ -70,7 +70,7 @@ This upgrades the Galaxy collections from requirements.yml and runs the playbook
 
 ## Setup Debian 13 (Trixie)
 
-- Add current user to sudoers file. (log in as root `su` and run `sudo usermod -aG sudo [username]`)
+- Add current user to sudoers file. (log in as root `su -` and run `usermod -aG sudo [username]`)
 - Install git `sudo apt install git`
 - Clone this repo, preferably in your home directory
 - Run `make setup-debian`. This will install python and make, plus the latest ansible & ansible-lint via pipx, then run the playbook.
