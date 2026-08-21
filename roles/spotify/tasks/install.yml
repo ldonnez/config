@@ -14,32 +14,23 @@
   tags:
     - install
   block:
-    - name: Get spotify signing key
-      ansible.builtin.get_url:
-        url: https://download.spotify.com/debian/pubkey_5384CE82BA52C83A.asc
-        dest: /tmp/spotify.asc
-        mode: "0644"
-
-    - name: Convert key to GPG format
-      ansible.builtin.shell: gpg --dearmor -o /etc/apt/keyrings/spotify.gpg /tmp/spotify.asc
-      args:
-        executable: /bin/bash
-        creates: /etc/apt/keyrings/spotify.gpg
+    - name: Install python3-debian (required by deb822_repository)
+      ansible.builtin.apt:
+        name: python3-debian
+        state: present
 
     - name: Add spotify to sources list
-      ansible.builtin.apt_repository:
-        repo: "deb [signed-by=/etc/apt/keyrings/spotify.gpg] https://repository.spotify.com stable non-free"
+      ansible.builtin.deb822_repository:
+        name: spotify
+        types: deb
+        uris: https://repository.spotify.com
+        suites: stable
+        components: non-free
+        signed_by: https://download.spotify.com/debian/pubkey_5384CE82BA52C83A.asc
         state: present
-        filename: spotify
-        update_cache: true
 
     - name: Install Spotify client package
       ansible.builtin.apt:
         name: "spotify-client"
         state: present
-
-  always:
-    - name: Cleanup /tmp/spotify.asc
-      ansible.builtin.file:
-        path: /tmp/spotify.asc
-        state: absent
+        update_cache: true

@@ -13,43 +13,37 @@
   tags:
     - install
   block:
-    - name: Install wget if not present
+    - name: Install python3-debian (required by deb822_repository)
       ansible.builtin.apt:
-        name: wget
+        name: python3-debian
         state: present
-
-    - name: Ensure /etc/apt/keyrings exists
-      ansible.builtin.file:
-        path: /etc/apt/keyrings
-        state: directory
-        mode: "0755"
-
-    - name: Get GitHub CLI signing key
-      ansible.builtin.get_url:
-        url: https://cli.github.com/packages/githubcli-archive-keyring.gpg
-        dest: /etc/apt/keyrings/githubcli-archive-keyring.gpg
-        mode: "0644"
 
     - name: Get system architecture (e.g. amd64)
       ansible.builtin.command: dpkg --print-architecture
       register: github_cli_system_arch
       changed_when: false
 
-    - name: Create GitHub CLI sources file
-      ansible.builtin.copy:
-        mode: "0644"
-        content: |
-          deb [arch={{ github_cli_system_arch.stdout }} signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main
-        dest: /etc/apt/sources.list.d/github-cli.list
+    - name: Remove legacy github cli sources entry
+      ansible.builtin.file:
+        path: /etc/apt/sources.list.d/github-cli.list
+        state: absent
 
-    - name: Update apt cache
-      ansible.builtin.apt:
-        update_cache: true
+    - name: Add github cli to sources list
+      ansible.builtin.deb822_repository:
+        name: github-cli
+        types: deb
+        uris: https://cli.github.com/packages
+        suites: stable
+        components: main
+        architectures: "{{ github_cli_system_arch.stdout }}"
+        signed_by: https://cli.github.com/packages/githubcli-archive-keyring.gpg
+        state: present
 
     - name: Install GitHub CLI package
       ansible.builtin.apt:
         name: gh
         state: present
+        update_cache: true
 
 - name: Install gh with homebrew
   when: ansible_facts.os_family == "Darwin"

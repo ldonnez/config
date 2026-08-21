@@ -31,51 +31,39 @@
   tags:
     - install
   block:
-    - name: Get hashicorp signing key
-      ansible.builtin.get_url:
-        url: https://apt.releases.hashicorp.com/gpg
-        dest: /tmp/hashicorp.asc
-        mode: "0644"
+    - name: Install python3-debian (required by deb822_repository)
+      ansible.builtin.apt:
+        name: python3-debian
+        state: present
 
-    - name: Convert key to GPG format
-      ansible.builtin.shell: gpg --dearmor -o /etc/apt/keyrings/hashicorp.gpg /tmp/hashicorp.asc
-      args:
-        executable: /bin/bash
-        creates: /etc/apt/keyrings/hashicorp.gpg
+    - name: Remove legacy hashicorp keyring
+      ansible.builtin.file:
+        path: /etc/apt/keyrings/hashicorp.gpg
+        state: absent
 
     - name: Get system architecture
       ansible.builtin.command: dpkg --print-architecture
       register: terraform_system_arch
       changed_when: false
 
-    - name: Create hashicorp sources file
-      ansible.builtin.copy:
-        mode: "0644"
-        content: |
-          Types: deb
-          URIs: https://apt.releases.hashicorp.com
-          Suites: {{ ansible_facts.lsb.codename }}
-          Components: main
-          Architectures: {{ terraform_system_arch.stdout }}
-          Signed-by: /etc/apt/keyrings/hashicorp.gpg
-        dest: /etc/apt/sources.list.d/hashicorp.sources
-
-    - name: Update apt cache
-      ansible.builtin.apt:
-        update_cache: true
+    - name: Add hashicorp to sources list
+      ansible.builtin.deb822_repository:
+        name: hashicorp
+        types: deb
+        uris: https://apt.releases.hashicorp.com
+        suites: "{{ ansible_facts.lsb.codename }}"
+        components: main
+        architectures: "{{ terraform_system_arch.stdout }}"
+        signed_by: https://apt.releases.hashicorp.com/gpg
+        state: present
 
     - name: Install terraform with apt
       ansible.builtin.apt:
         name: terraform
         state: present
+        update_cache: true
 
     - name: Install terraform-ls with apt
       ansible.builtin.apt:
         name: terraform-ls
         state: present
-
-  always:
-    - name: Cleanup /tmp/hashicorp.asc
-      ansible.builtin.file:
-        path: /tmp/hashicorp.asc
-        state: absent
