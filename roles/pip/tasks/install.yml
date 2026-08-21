@@ -8,6 +8,23 @@
   tags:
     - install
 
+- name: Bootstrap current pipx into ~/.local/bin
+  when: ansible_facts.distribution == 'Debian' or (ansible_facts.distribution == 'Ubuntu' and ansible_facts.distribution_version is version('24.04', '>='))
+  ansible.builtin.command: pipx install pipx
+  args:
+    creates: "{{ ansible_facts.user_dir }}/.local/bin/pipx"
+  tags:
+    - install
+
+- name: Remove outdated apt pipx
+  when: ansible_facts.distribution == 'Debian' or (ansible_facts.distribution == 'Ubuntu' and ansible_facts.distribution_version is version('24.04', '>='))
+  ansible.builtin.apt:
+    name: pipx
+    state: absent
+  become: true
+  tags:
+    - install
+
 - name: Install pipx with pip3
   when:
     - ansible_facts.distribution == "Ubuntu"

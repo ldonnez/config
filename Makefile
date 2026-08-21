@@ -21,8 +21,11 @@ setup-macos:
 
 setup-debian:
 	sudo apt update && sudo apt upgrade -y
-	sudo apt install -y git python3-setuptools python3-pip python3-apt pipx make ansible
+	sudo apt install -y git python3-setuptools python3-pip python3-apt pipx make
 	@mkdir -p ~/.local/bin
+	# community.general.pipx needs pipx >= 1.7.0; apt ships older, so bootstrap current pipx via pipx
+	pipx install pipx
+	sudo apt purge -y --autoremove pipx
 	pipx install ansible-lint
 	ansible-galaxy collection install -r requirements.yml --upgrade
 	ansible-playbook setup_debian.yml -K --ask-vault-pass --tags install
@@ -32,7 +35,9 @@ setup-wsl-ubuntu:
 	@mkdir -p ~/.local/bin
 	@VERSION=$$(lsb_release -rs | tr -d '.'); \
 	if [ "$$VERSION" -ge 2404 ]; then \
-		sudo apt install -y git python3-setuptools python3-pip python3-apt pipx make ansible; \
+		sudo apt install -y git python3-setuptools python3-pip python3-apt pipx make; \
+		pipx install pipx; \
+		sudo apt purge -y --autoremove pipx; \
 	else \
 		sudo apt install -y git python3-setuptools python3-pip python3-venv python3-packaging make; \
 		pip3 install pipx; \
