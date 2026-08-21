@@ -21,11 +21,11 @@ lsp_npm:
 
 lsp_cargo: ["stylua", "emmylua_ls", "tree-sitter-cli"]
 lsp_go:
-  - "github.com/mattn/efm-langserver@latest"
-  - "mvdan.cc/sh/v3/cmd/shfmt@latest"
-  - "golang.org/x/tools/gopls@latest"
-  - "github.com/golangci/golangci-lint/cmd/golangci-lint@latest"
-  - "github.com/nametake/golangci-lint-langserver@latest"
+  - "github.com/mattn/efm-langserver"
+  - "mvdan.cc/sh/v3/cmd/shfmt"
+  - "golang.org/x/tools/gopls"
+  - "github.com/golangci/golangci-lint/cmd/golangci-lint"
+  - "github.com/nametake/golangci-lint-langserver"
 lsp_pip: ["shandy-sqlfmt"]
 # libxml2 for xmllint an xml formatter
 lsp_homebrew: ["hashicorp/tap/terraform-ls", "shellcheck", "libxml2"]
