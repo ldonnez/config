@@ -6,25 +6,23 @@ This is mostly for my own usage.
 
 ## Prerequisites
 
-Ansible playbooks **setup_macos.yml** and **setup_debian.yml** includes the **secrets** role which installs vault encrypted (`ansible-vault encrypt <filename>`) files from a repository cloned to `~/.secrets`. Run with `--ask-vault-pass` to decrypt them:
-
-```zsh
-ansible-playbook setup_macos.yml -K --ask-vault-pass --tags install
-```
+Ansible playbooks **setup_macos.yml** and **setup_debian.yml** includes the **secrets** role which installs vault encrypted (`ansible-vault encrypt <filename>`) files from a repository cloned to `~/.secrets`. The `make setup-macos` and `make setup-debian` targets prompt for both the vault and become passwords automatically (`--ask-vault-pass -K`).
 
 ## Setup macOS
 
 - When running from fresh install run `xcode-select --install` to install minimal tools like git etc
 - Clone this repo, preferably in your home directory
-- Run `sh run_setup_macos.sh`. This will install homebrew, pip & ansible, install the requirements specified in requirements.yml and run the setup_macos.yml playbook
+- Run `make setup-macos`. This will install homebrew, ansible & ansible-lint, upgrade the Galaxy collections from requirements.yml and run the setup_macos.yml playbook
 
 ### Update macOS packages
 
 Run
 
 ```zsh
-  ansible-playbook setup_macos.yml --tags=update
+make update-macos
 ```
+
+This upgrades the Galaxy collections from requirements.yml and runs the playbook's update tasks.
 
 ## Setup WSL2 (Ubuntu >= 22.04)
 
@@ -57,7 +55,7 @@ Make sure to check vars in `setup_wsl_ubuntu.yml`.
   ```
 
 - Clone this repo, preferably in your home directory
-- Run `sh run_setup_wsl_ubuntu.sh`. This will install python and pipx and installs latest ansible and ansible-lint with pipx.
+- Run `make setup-wsl-ubuntu`. This will install python, pipx and installs latest ansible and ansible-lint with pipx.
 - Close The WSL session and run `wsl.exe --shutdown` in a powershell shell to restart WSL.
 
 ### Update WSL2 (Ubuntu) packages
@@ -65,20 +63,24 @@ Make sure to check vars in `setup_wsl_ubuntu.yml`.
 Run
 
 ```zsh
-  ansible-playbook setup_wsl_ubuntu.yml -K --tags update
+make update-wsl-ubuntu
 ```
+
+This upgrades the Galaxy collections from requirements.yml and runs the playbook's update tasks.
 
 ## Setup Debian 13 (Trixie)
 
 - Add current user to sudoers file. (log in as root `su` and run `sudo usermod -aG sudo [username]`)
 - Install git `sudo apt install git`
 - Clone this repo, preferably in your home directory
-- Run `sh run_setup_debian.sh`. This will install all dependencies necessary (python, pipx and ansible) and run the playbook.
+- Run `make setup-debian`. This will install all dependencies necessary (python, pipx and ansible) and run the playbook.
 
 ### Update Debian 13 (Trixie) packages
 
 Run
 
 ```zsh
-  ansible-playbook setup_debian.yml -K --tags update
+make update-debian
 ```
+
+This upgrades the Galaxy collections from requirements.yml and runs the playbook's update tasks.

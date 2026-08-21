@@ -9,5 +9,5 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v7
-      - name: Run run_setup_wsl_ubuntu.sh
-        run: sh run_setup_wsl_ubuntu.sh
+      - name: Run make setup-wsl-ubuntu
+        run: make setup-wsl-ubuntu
