@@ -16,6 +16,7 @@
       community.general.cargo:
         name: "{{ item }}"
         state: latest
+        locked: true
       loop: "{{ lsp_cargo }}"
       tags:
         - update
