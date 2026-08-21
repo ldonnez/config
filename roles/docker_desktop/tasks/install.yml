@@ -5,28 +5,31 @@
   tags:
     - install
   block:
-    - name: Get docker signing key
-      ansible.builtin.get_url:
-        url: https://download.docker.com/linux/debian/gpg
-        dest: /etc/apt/keyrings/docker.asc
-        mode: "0644"
+    - name: Install python3-debian (required by deb822_repository)
+      ansible.builtin.apt:
+        name: python3-debian
+        state: present
 
     - name: Add docker to sources list
-      ansible.builtin.apt_repository:
-        repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian {{ ansible_facts.distribution_release }} stable"
+      ansible.builtin.deb822_repository:
+        name: docker
+        types: deb
+        uris: https://download.docker.com/linux/debian
+        suites: "{{ ansible_facts.distribution_release }}"
+        components: stable
+        architectures: amd64
+        signed_by: https://download.docker.com/linux/debian/gpg
         state: present
-        filename: docker
-        update_cache: true
 
     - name: Install docker packages
       ansible.builtin.apt:
         name: "docker-ce, docker-ce-cli, containerd.io, docker-buildx-plugin, docker-compose-plugin"
         state: present
+        update_cache: true
 
     - name: Download & install docker-desktop .deb package
       ansible.builtin.apt:
-        deb:
-          https://desktop.docker.com/linux/main/amd64/docker-desktop-amd64.deb?utm_source=docker&utm_medium=webreferral&utm_campaign=docs-driven-download-linux-amd64
+        deb: https://desktop.docker.com/linux/main/amd64/docker-desktop-amd64.deb?utm_source=docker&utm_medium=webreferral&utm_campaign=docs-driven-download-linux-amd64
       register: docker_desktop_result
       failed_when: >
         docker_desktop_result.failed and

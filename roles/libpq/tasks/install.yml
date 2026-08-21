@@ -15,19 +15,27 @@
   block:
     - name: Install dependencies
       ansible.builtin.apt:
-        name: postgresql-common
+        name: ["postgresql-common", "python3-debian"]
         state: present
 
-    - name: Configure repository
-      ansible.builtin.command: /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
-      args:
-        creates: /etc/apt/sources.list.d/pgdg.sources
+    - name: Get system architecture (e.g. amd64)
+      ansible.builtin.command: dpkg --print-architecture
+      register: libpq_system_arch
+      changed_when: false
 
-    - name: Update apt
-      ansible.builtin.apt:
-        update_cache: true
+    - name: Add postgresql to sources list
+      ansible.builtin.deb822_repository:
+        name: pgdg
+        types: deb
+        uris: https://apt.postgresql.org/pub/repos/apt
+        suites: "{{ ansible_facts.distribution_release }}-pgdg"
+        components: main
+        architectures: "{{ libpq_system_arch.stdout }}"
+        signed_by: /usr/share/postgresql-common/pgdg/apt.postgresql.org.gpg
+        state: present
 
     - name: Install postgresql-client with apt
       ansible.builtin.apt:
         name: postgresql-client
         state: present
+        update_cache: true

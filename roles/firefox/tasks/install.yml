@@ -5,17 +5,20 @@
   tags:
     - install
   block:
-    - name: Get mozilla signing key
-      ansible.builtin.get_url:
-        url: https://packages.mozilla.org/apt/repo-signing-key.gpg
-        dest: /etc/apt/keyrings/packages.mozilla.org.asc
-        mode: "0644"
+    - name: Install python3-debian (required by deb822_repository)
+      ansible.builtin.apt:
+        name: python3-debian
+        state: present
 
     - name: Add mozilla to sources list
-      ansible.builtin.apt_repository:
-        repo: "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main"
+      ansible.builtin.deb822_repository:
+        name: mozilla
+        types: deb
+        uris: https://packages.mozilla.org/apt
+        suites: mozilla
+        components: main
+        signed_by: https://packages.mozilla.org/apt/repo-signing-key.gpg
         state: present
-        filename: mozilla
 
     - name: Configure APT to prioritize packages from the Mozilla repository
       ansible.builtin.copy:
