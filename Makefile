@@ -4,7 +4,7 @@ SHELL := /bin/bash
 # Harmless if these don't exist; needed for pipx (~/.local/bin) and fresh Apple Silicon brew
 export PATH := $(HOME)/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:$(PATH)
 
-.PHONY: collections setup-macos setup-debian setup-wsl-ubuntu update-macos update-debian update-wsl-ubuntu lint
+.PHONY: collections setup-macos setup-debian setup-wsl-ubuntu update-macos update-debian update-wsl-ubuntu backup lint
 
 collections:
 	ansible-galaxy collection install -r requirements.yml --upgrade
@@ -50,6 +50,9 @@ update-debian: collections
 
 update-wsl-ubuntu: collections
 	ansible-playbook setup_wsl_ubuntu.yml -K --tags update
+
+backup: collections
+	ansible-playbook backup.yml
 
 lint:
 	ansible-lint
