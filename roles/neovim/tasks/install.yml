@@ -5,18 +5,49 @@
   register: neovim_bin
   tags:
     - install
+    - update
 
-- name: Install neovim
+- name: Get installed nvim version
+  ansible.builtin.command: nvim --version
+  register: neovim_current_version
+  changed_when: false
   when:
     - ansible_facts.os_family == "Debian"
-    - not neovim_bin.stat.exists
-  become: true
+    - neovim_bin.stat.exists
   tags:
     - install
+    - update
+
+- name: Get latest neovim stable release
+  ansible.builtin.uri:
+    url: "https://api.github.com/repos/neovim/neovim/releases/latest"
+    return_content: true
+  register: neovim_latest_release
+  when: ansible_facts.os_family == "Debian"
+  tags:
+    - install
+    - update
+
+- name: Build neovim when missing or outdated
+  become: true
+  when:
+    - ansible_facts.os_family == "Debian"
+    - not neovim_bin.stat.exists or neovim_latest_release.json.tag_name != neovim_current_version.stdout_lines[0].split()[1]
+  tags:
+    - install
+    - update
   block:
     - name: Install build dependencies
       ansible.builtin.apt:
-        name: ["ninja-build", "gettext", "cmake", "unzip", "curl", "build-essential"]
+        name:
+          [
+            "ninja-build",
+            "gettext",
+            "cmake",
+            "unzip",
+            "curl",
+            "build-essential",
+          ]
         state: present
 
     - name: Install inotify-tools
