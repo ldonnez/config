@@ -16,32 +16,46 @@
     - install
     - update
 
-- name: Force update kitty with installation script
+- name: Get installed kitty version
+  ansible.builtin.command: "{{ ansible_facts.user_dir }}/.local/kitty.app/bin/kitty --version"
+  register: kitty_current_version
+  changed_when: false
   when:
     - ansible_facts.os_family == "Debian"
-    - kitty_binary.stat.exists | default(false)
+    - kitty_binary.stat.exists
+  tags:
+    - install
+    - update
+
+- name: Get latest kitty stable release
+  ansible.builtin.uri:
+    url: "https://api.github.com/repos/kovidgoyal/kitty/releases/latest"
+    return_content: true
+  register: kitty_latest_release
+  when: ansible_facts.os_family == "Debian"
+  tags:
+    - install
+    - update
+
+- name: Run kitty installation script
   ansible.builtin.shell: |
     set -o pipefail
     curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
   args:
     executable: /bin/bash
-  tags:
-    - update
-
-- name: Install kitty
   when:
     - ansible_facts.os_family == "Debian"
-    - not kitty_binary.stat.exists | default(false)
+    - not kitty_binary.stat.exists or kitty_latest_release.json.tag_name | replace("v", "") != kitty_current_version.stdout.split()[1]
+  tags:
+    - install
+    - update
+
+- name: Setup kitty
+  when:
+    - ansible_facts.os_family == "Debian"
   tags:
     - install
   block:
-    - name: Run kitty installation script
-      ansible.builtin.shell: |
-        set -o pipefail
-        curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
-      args:
-        executable: /bin/bash
-
     - name: Create symbolic links to add kitty to PATH
       ansible.builtin.file:
         src: "{{ ansible_facts.user_dir }}/.local/kitty.app/bin/kitty"
