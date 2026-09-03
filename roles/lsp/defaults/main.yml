@@ -13,7 +13,6 @@ lsp_npm:
   - "yaml-language-server"
   - "graphql-language-service-cli"
   - "@ansible/ansible-language-server"
-  - "@vtsls/language-server"
   - "bash-language-server"
   - "@mistweaverco/kulala-fmt"
   - "@mistweaverco/kulala-ls"
