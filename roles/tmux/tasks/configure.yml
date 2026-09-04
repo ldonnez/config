@@ -17,10 +17,95 @@
 
 - name: Install tmux plugins
   ansible.builtin.command: "{{ ansible_facts.user_dir }}/.tmux/plugins/tpm/bin/install_plugins"
+  environment:
+    TMUX_PLUGIN_MANAGER_PATH: "{{ ansible_facts.user_dir }}/.tmux/plugins"
   tags:
     - install
 
 - name: Update tmux plugins
   ansible.builtin.command: "{{ ansible_facts.user_dir }}/.tmux/plugins/tpm/bin/update_plugins all"
+  environment:
+    TMUX_PLUGIN_MANAGER_PATH: "{{ ansible_facts.user_dir }}/.tmux/plugins"
   tags:
     - update
+
+- name: Create tmux resurrect directory
+  ansible.builtin.file:
+    path: "{{ ansible_facts.user_dir }}/.tmux/resurrect"
+    state: directory
+    mode: "0700"
+  tags:
+    - install
+
+# macOS (launchd) status checks:
+#   launchctl list | grep local.tmux-resurrect
+#   launchctl print gui/$(id -u)/local.tmux-resurrect
+#   plutil -lint ~/Library/LaunchAgents/local.tmux-resurrect.plist
+#   ls -la ~/.tmux/resurrect/last   # newest save after a 5-min tick
+# Manually trigger a save:  launchctl start local.tmux-resurrect
+# The job runs every 300s (StartInterval) and only saves while a tmux server
+# is running (`tmux has-session`).
+- name: Save tmux session every 5 minutes with launchctl
+  when: ansible_facts.os_family == "Darwin"
+  tags:
+    - install
+  block:
+    - name: Unload existing local.tmux-resurrect.plist
+      ansible.builtin.command:
+        cmd: launchctl unload -w {{ ansible_facts.user_dir }}/Library/LaunchAgents/local.tmux-resurrect.plist
+      failed_when: false
+
+    - name: Delete existing local.tmux-resurrect.plist
+      ansible.builtin.file:
+        path: "{{ ansible_facts.user_dir }}/Library/LaunchAgents/local.tmux-resurrect.plist"
+        state: absent
+
+    - name: Install local.tmux-resurrect.plist
+      ansible.builtin.template:
+        src: local.tmux-resurrect.plist.j2
+        dest: "{{ ansible_facts.user_dir }}/Library/LaunchAgents/local.tmux-resurrect.plist"
+        mode: "0600"
+
+    - name: Load local.tmux-resurrect.plist
+      ansible.builtin.command:
+        cmd: launchctl load -w {{ ansible_facts.user_dir }}/Library/LaunchAgents/local.tmux-resurrect.plist
+
+# systemd (user) status checks:
+#   systemctl --user status tmux-resurrect.timer
+#   systemctl --user status tmux-resurrect.service
+#   systemctl --user list-timers tmux-resurrect.timer
+#   journalctl --user -u tmux-resurrect.service -e
+#   ls -la ~/.tmux/resurrect/last   # newest save after a 5-min tick
+# Manually trigger a save:  systemctl --user start tmux-resurrect.service
+# The timer fires every 5m; the oneshot service only saves while a tmux server
+# is running (`tmux has-session`).
+- name: Save tmux session every 5 minutes with systemd
+  when: ansible_facts.os_family == "Debian"
+  tags:
+    - install
+  block:
+    - name: Ensure ~/.config/systemd/user
+      ansible.builtin.file:
+        path: "{{ ansible_facts.user_dir }}/.config/systemd/user"
+        state: directory
+        recurse: true
+
+    - name: Install tmux-resurrect.service
+      ansible.builtin.template:
+        src: tmux-resurrect.service.j2
+        dest: "{{ ansible_facts.user_dir }}/.config/systemd/user/tmux-resurrect.service"
+        mode: "0600"
+
+    - name: Install tmux-resurrect.timer
+      ansible.builtin.template:
+        src: tmux-resurrect.timer.j2
+        dest: "{{ ansible_facts.user_dir }}/.config/systemd/user/tmux-resurrect.timer"
+        mode: "0600"
+
+    - name: Enable and start tmux-resurrect.timer
+      ansible.builtin.systemd:
+        name: tmux-resurrect.timer
+        state: started
+        scope: user
+        enabled: true
+        daemon_reload: true

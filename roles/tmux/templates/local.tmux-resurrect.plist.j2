@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>local.tmux-resurrect</string>
+    <key>ProgramArguments</key>
+    <array>
+      <string>/bin/bash</string>
+      <string>-c</string>
+      <string>if tmux has-session > /dev/null 2>&1; then {{ ansible_facts.user_dir }}/.tmux/plugins/tmux-resurrect/scripts/save.sh quiet; fi</string>
+    </array>
+    <key>EnvironmentVariables</key>
+    <dict>
+      <key>HOME</key>
+      <string>{{ ansible_facts.user_dir }}</string>
+      <key>LC_ALL</key>
+      <string>en_US.UTF-8</string>
+      <key>LANG</key>
+      <string>en_US.UTF-8</string>
+      <key>PATH</key>
+      <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/sbin</string>
+    </dict>
+    <key>RunAtLoad</key>
+    <false/>
+    <key>StandardErrorPath</key>
+    <string>/dev/null</string>
+    <key>StandardOutPath</key>
+    <string>/dev/null</string>
+    <key>StartInterval</key>
+    <integer>300</integer>
+  </dict>
+</plist>
