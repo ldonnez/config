@@ -1,0 +1,11 @@
+[Unit]
+Description=Save tmux session with tmux-resurrect
+
+[Service]
+Type=oneshot
+Environment="HOME={{ ansible_facts.user_dir }}"
+Environment="PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
+ExecStart=/bin/bash -c "if tmux has-session > /dev/null 2>&1; then {{ ansible_facts.user_dir }}/.tmux/plugins/tmux-resurrect/scripts/save.sh quiet; fi"
+
+[Install]
+WantedBy=default.target
