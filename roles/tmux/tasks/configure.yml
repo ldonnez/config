@@ -22,6 +22,21 @@
   tags:
     - install
 
+- name: Symlink .tmux/auto-restore.sh
+  ansible.builtin.file:
+    src: "{{ dotfiles_directory_path }}/.tmux/auto-restore.sh"
+    dest: "{{ ansible_facts.user_dir }}/.tmux/auto-restore.sh"
+    state: link
+  tags:
+    - install
+
+- name: Make .tmux/auto-restore.sh executable
+  ansible.builtin.file:
+    path: "{{ dotfiles_directory_path }}/.tmux/auto-restore.sh"
+    mode: "0755"
+  tags:
+    - install
+
 - name: Update tmux plugins
   ansible.builtin.command: "{{ ansible_facts.user_dir }}/.tmux/plugins/tpm/bin/update_plugins all"
   environment:
