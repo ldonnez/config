@@ -7,12 +7,25 @@
   tags:
     - install
 
-- name: Update synology-drive via homebrew cask
+- name: Ask for sudo password
   when: ansible_facts.os_family == "Darwin"
+  ansible.builtin.pause:
+    prompt: "Enter password for synology-drive cask update"
+    echo: false
+    minutes: 2
+  register: synology_drive_sudo_password
+  tags:
+    - update
+
+- name: Update synology-drive via homebrew cask
+  when:
+    - ansible_facts.os_family == "Darwin"
+    - synology_drive_sudo_password.user_input | length > 0
   community.general.homebrew_cask:
     update_homebrew: true
     name: synology-drive
     greedy: true
     state: upgraded
+    sudo_password: "{{ synology_drive_sudo_password.user_input }}"
   tags:
     - update
