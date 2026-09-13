@@ -8,6 +8,7 @@ lsp_npm:
   - "typescript"
   - "vscode-langservers-extracted"
   - "@fsouza/prettierd"
+  - "prettier"
   - "@tailwindcss/language-server"
   - "@prisma/language-server"
   - "yaml-language-server"
