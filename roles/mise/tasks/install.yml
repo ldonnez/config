@@ -16,36 +16,42 @@
   environment:
     PATH: "{{ ansible_facts.user_dir }}/.local/bin:{{ ansible_facts.env.PATH }}"
 
-- name: "Ensure /usr/local/share/zsh/site-functions exists"
-  ansible.builtin.file:
+- name: Check system zsh completions directory
+  ansible.builtin.stat:
     path: /usr/local/share/zsh/site-functions
-    state: directory
-    owner: "{{ ansible_facts.user_id }}"
-    recurse: true
-  become: true
+  register: mise_zsh_site_functions
   tags:
     - install
 
-- name: "Ensure /usr/local/share/zsh/site-functions to be writable"
-  ansible.builtin.command: chown -R {{ ansible_facts.user_id }} /usr/local/share/zsh/site-functions
-  become: true
-  when: ansible_facts.os_family == 'Debian'
+- name: Set zsh completions directory
+  ansible.builtin.set_fact:
+    mise_zsh_completion_dir: >-
+      {{
+        '/usr/local/share/zsh/site-functions'
+        if mise_zsh_site_functions.stat.writeable | default(false)
+        else ansible_facts.user_dir + '/.local/share/zsh/site-functions'
+      }}
   tags:
     - install
-  environment:
-    PATH: "{{ ansible_facts.user_dir }}/.local/bin:{{ ansible_facts.env.PATH }}"
+
+- name: Ensure zsh completions directory exists
+  ansible.builtin.file:
+    path: "{{ mise_zsh_completion_dir }}"
+    state: directory
+    mode: "0755"
+  tags:
+    - install
 
 - name: Install zsh completions
   ansible.builtin.shell: |
-    set -o pipefail
-    mise completion zsh  > /usr/local/share/zsh/site-functions/_mise
+    mise completion zsh > "{{ mise_zsh_completion_dir }}/_mise"
   args:
-    creates: "/usr/local/share/zsh/site-functions/_mise"
+    creates: "{{ mise_zsh_completion_dir }}/_mise"
     executable: /bin/zsh
-  tags:
-    - install
   environment:
     PATH: "{{ ansible_facts.user_dir }}/.local/bin:{{ ansible_facts.env.PATH }}"
+  tags:
+    - install
 
 - name: Update mise
   ansible.builtin.command: mise self-update
