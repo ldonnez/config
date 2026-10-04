@@ -70,10 +70,8 @@
       - mkcert
       - nss
       - sqlcmd
-      - llvm
       - awscli
       - azure-cli
-      - yazi
 
     homebrew_casks:
       - firefox-developer-edition
@@ -81,11 +79,8 @@
       - rectangle
       - calibre
       - google-chrome
-      - insomnia
       - signal
       - whatsapp
-      - zulu
-      - android-studio
       - drawio
       - figma
       - dbeaver-community
