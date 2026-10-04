@@ -13,14 +13,12 @@ setup-macos:
 	@if ! command -v brew > /dev/null 2>&1; then \
 		/bin/bash -c "$$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; \
 	fi
-	brew update && brew upgrade
 	brew install ansible ansible-lint
 	ansible-galaxy collection install -r requirements.yml --upgrade
 	ansible-playbook setup_macos.yml -K --ask-vault-pass --tags install
 	brew cleanup
 
 setup-debian:
-	sudo apt update && sudo apt upgrade -y
 	sudo apt install -y git python3-setuptools python3-pip python3-apt pipx make
 	@mkdir -p ~/.local/bin
 	# community.general.pipx needs pipx >= 1.7.0; apt ships older, so bootstrap current pipx via pipx
@@ -32,7 +30,6 @@ setup-debian:
 	ansible-playbook setup_debian.yml -K --ask-vault-pass --tags install
 
 setup-wsl-ubuntu:
-	sudo apt update && sudo apt upgrade -y
 	@mkdir -p ~/.local/bin
 	sudo apt install -y git python3-setuptools python3-pip python3-apt pipx make
 	pipx install pipx
