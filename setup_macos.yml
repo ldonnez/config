@@ -74,7 +74,7 @@
       - azure-cli
 
     homebrew_casks:
-      - firefox-developer-edition
+      - firefox@developer-edition
       - docker
       - rectangle
       - calibre
