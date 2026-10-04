@@ -98,19 +98,33 @@
       - ansible-lint
 
   tasks:
-    - name: Install packages
-      ansible.builtin.import_role:
-        name: packages
-      when: install_packages
-      tags:
-        - packages
-
     - name: Install dotfiles
       ansible.builtin.import_role:
         name: dotfiles
       when: install_dotfiles
       tags:
         - dotfiles
+
+    - name: Configure github cli
+      ansible.builtin.import_role:
+        name: github_cli
+      when: configure_github_cli
+      tags:
+        - github_cli
+
+    - name: Configure secrets
+      ansible.builtin.import_role:
+        name: secrets
+      when: configure_secrets
+      tags:
+        - secrets
+
+    - name: Install packages
+      ansible.builtin.import_role:
+        name: packages
+      when: install_packages
+      tags:
+        - packages
 
     - name: Install nvidia
       ansible.builtin.import_role:
@@ -139,13 +153,6 @@
       when: install_fonts
       tags:
         - fonts
-
-    - name: Configure secrets
-      ansible.builtin.import_role:
-        name: secrets
-      when: configure_secrets
-      tags:
-        - secrets
 
     - name: Configure gnupg
       ansible.builtin.import_role:
@@ -342,13 +349,6 @@
       when: configure_aws
       tags:
         - aws
-
-    - name: Configure github cli
-      ansible.builtin.import_role:
-        name: github_cli
-      when: configure_github_cli
-      tags:
-        - github_cli
 
     - name: Configure azure cli
       ansible.builtin.import_role:

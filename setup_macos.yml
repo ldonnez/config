@@ -104,12 +104,26 @@
         id: 497799835
 
   tasks:
-    - name: Install packages
+    - name: Install dotfiles
       ansible.builtin.import_role:
-        name: packages
-      when: install_packages
+        name: dotfiles
+      when: install_dotfiles
       tags:
-        - packages
+        - dotfiles
+
+    - name: Configure github cli
+      ansible.builtin.import_role:
+        name: github_cli
+      when: configure_github_cli
+      tags:
+        - github_cli
+
+    - name: Configure secrets
+      ansible.builtin.import_role:
+        name: secrets
+      when: configure_secrets
+      tags:
+        - secrets
 
     - name: Configure preferences
       ansible.builtin.import_role:
@@ -118,12 +132,12 @@
       tags:
         - preferences
 
-    - name: Install dotfiles
+    - name: Install packages
       ansible.builtin.import_role:
-        name: dotfiles
-      when: install_dotfiles
+        name: packages
+      when: install_packages
       tags:
-        - dotfiles
+        - packages
 
     - name: Install fonts
       ansible.builtin.import_role:
@@ -188,12 +202,12 @@
       tags:
         - pip
 
-    - name: Configure haskell
-      ansible.builtin.import_role:
-        name: haskell
-      when: configure_haskell
-      tags:
-        - haskell
+    # - name: Configure haskell
+    #   ansible.builtin.import_role:
+    #     name: haskell
+    #   when: configure_haskell
+    #   tags:
+    #     - haskell
 
     - name: Configure fzf
       ansible.builtin.import_role:
@@ -286,26 +300,12 @@
       tags:
         - memo
 
-    - name: Configure github cli
-      ansible.builtin.import_role:
-        name: github_cli
-      when: configure_github_cli
-      tags:
-        - github_cli
-
     - name: Configure libpq
       ansible.builtin.import_role:
         name: libpq
       when: configure_libpq
       tags:
         - libpq
-
-    - name: Configure secrets
-      ansible.builtin.import_role:
-        name: secrets
-      when: configure_secrets
-      tags:
-        - secrets
 
     - name: Configure gnupg
       ansible.builtin.import_role:
