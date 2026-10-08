@@ -22,9 +22,17 @@
   tags:
     - install
 
+- name: Check if .secrets exists
+  ansible.builtin.stat:
+    path: "{{ ansible_facts.user_dir }}/.secrets"
+  register: gnupg_secrets_directory
+  tags:
+    - install
+
 - name: Import GPG key with temp file cleanup
   tags:
     - install
+  when: gnupg_secrets_directory.stat.exists
   block:
     - name: Copy decrypted GPG key to temp location
       ansible.builtin.copy:
