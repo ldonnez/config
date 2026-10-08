@@ -13,6 +13,7 @@
     configure_wsl: true
     configure_git: true
     configure_zsh: true
+    configure_gnupg: true
     configure_mise: true
     configure_golang: true
     configure_npm: true
@@ -104,6 +105,13 @@
       when: configure_zsh
       tags:
         - zsh
+
+    - name: Configure gnupg
+      ansible.builtin.import_role:
+        name: gnupg
+      when: configure_gnupg
+      tags:
+        - gnupg
 
     - name: Configure mise
       ansible.builtin.import_role:
