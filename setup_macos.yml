@@ -70,7 +70,6 @@
       - nss
       - sqlcmd
       - awscli
-      - azure-cli
 
     homebrew_casks:
       - firefox@developer-edition
@@ -88,6 +87,7 @@
       - zotero
       - telegram
       - bitwarden
+      - azure-cli
 
     mas_apps:
       - name: "Slack for Desktop"
