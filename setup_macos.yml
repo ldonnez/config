@@ -58,7 +58,6 @@
       - jq
       - go
       - reattach-to-user-namespace
-      - watchman
       - luarocks
       - tree
       - ninja
