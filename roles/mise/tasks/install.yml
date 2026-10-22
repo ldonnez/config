@@ -54,7 +54,7 @@
     - install
 
 - name: Update mise
-  ansible.builtin.command: mise self-update
+  ansible.builtin.command: mise self-update --yes
   tags:
     - update
   environment:
