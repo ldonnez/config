@@ -50,6 +50,7 @@
       - ninja-build
       - python3-venv
       - clang
+      - dnsutils # nslookup
 
     cargo_packages: []
 
