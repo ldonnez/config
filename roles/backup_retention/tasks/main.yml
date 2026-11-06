@@ -1,0 +1,26 @@
+---
+- name: Backup_retention | Validate keep count
+  ansible.builtin.assert:
+    that:
+      - backup_retention_keep | int >= 0
+    fail_msg: "backup_retention_keep must be greater than or equal to 0"
+
+- name: Backup_retention | Find existing backups in {{ backup_retention_dir }}
+  ansible.builtin.find:
+    paths: "{{ backup_retention_dir }}"
+    patterns: "{{ backup_retention_pattern }}"
+    file_type: file
+  register: backup_retention_files
+
+- name: Backup_retention | Remove old backups in {{ backup_retention_dir }}
+  when:
+    - backup_retention_keep | int > 0
+    - (backup_retention_files.files | length) > (backup_retention_keep | int)
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: absent
+  loop: >-
+    {{ (backup_retention_files.files | sort(attribute='path'))
+       [:((backup_retention_files.files | length) - (backup_retention_keep | int))] }}
+  loop_control:
+    label: "{{ item.path | basename }}"

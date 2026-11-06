@@ -1,0 +1,12 @@
+- name: Restore configured GPG keys separately
+  tags:
+    - restore
+  ansible.builtin.include_tasks:
+    file: restore_key.yml
+    apply:
+      tags:
+        - restore
+  loop: "{{ gnupg_backup_gpg_key_ids }}"
+  loop_control:
+    loop_var: gnupg_backup_key_id
+    label: "{{ gnupg_backup_key_id }}"

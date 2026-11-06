@@ -22,30 +22,10 @@
   tags:
     - install
 
-- name: Copy SSH private key from secrets repo
-  ansible.builtin.copy:
-    src: "{{ ansible_facts.user_dir }}/.secrets/.ssh/id_rsa"
-    dest: "{{ ansible_facts.user_dir }}/.ssh/id_rsa"
-    mode: "0600"
-    decrypt: true
-  tags:
-    - install
-
-- name: Copy SSH public key from secrets repo
-  ansible.builtin.copy:
-    src: "{{ ansible_facts.user_dir }}/.secrets/.ssh/id_rsa.pub"
-    dest: "{{ ansible_facts.user_dir }}/.ssh/id_rsa.pub"
-    mode: "0644"
-    decrypt: false
-  tags:
-    - install
-
-- name: Copy SSH config from secrets repo
-  ansible.builtin.copy:
-    src: "{{ ansible_facts.user_dir }}/.secrets/.ssh/config"
-    dest: "{{ ansible_facts.user_dir }}/.ssh/config"
-    mode: "0600"
-    decrypt: true
+- name: Restore ssh keys and config
+  ansible.builtin.import_role:
+    name: ssh_backup
+    tasks_from: restore.yml
   tags:
     - install
 

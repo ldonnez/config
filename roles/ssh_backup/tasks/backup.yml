@@ -1,0 +1,36 @@
+---
+- name: Check SSH config
+  ansible.builtin.stat:
+    path: "{{ ssh_backup_config_path }}"
+  register: ssh_backup_config
+
+- name: Warn when SSH config is missing
+  when: not ssh_backup_config.stat.exists
+  ansible.builtin.debug:
+    msg: "Skipping SSH config backup: {{ ssh_backup_config_path }} not found"
+
+- name: Secure SSH key backup
+  tags:
+    - backup
+  block:
+    - name: Ensure backup dir
+      ansible.builtin.file:
+        path: "{{ ssh_backup_dir }}"
+        state: directory
+        recurse: true
+
+    - name: Backup configured SSH keys
+      ansible.builtin.include_tasks: backup_key.yml
+      loop: "{{ ssh_backup_keys }}"
+      loop_control:
+        label: "{{ item.name }}"
+
+    - name: Encrypt SSH config
+      when: ssh_backup_config.stat.exists
+      ansible.builtin.import_role:
+        name: vault_backup
+        tasks_from: encrypt.yml
+      vars:
+        vault_backup_password_file: "{{ ssh_backup_vault_password_file_path }}"
+        vault_backup_source: "{{ ssh_backup_config_path }}"
+        vault_backup_destination: "{{ ssh_backup_config_backup_path }}"

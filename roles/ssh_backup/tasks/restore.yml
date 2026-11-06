@@ -1,0 +1,17 @@
+---
+- name: Restore configured SSH keys
+  tags:
+    - restore
+  ansible.builtin.include_tasks: restore_key.yml
+  loop: "{{ ssh_backup_keys }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: Restore SSH config
+  tags:
+    - restore
+  ansible.builtin.copy:
+    src: "{{ ssh_backup_config_backup_path }}"
+    dest: "{{ ssh_backup_config_path }}"
+    mode: "0600"
+    decrypt: true

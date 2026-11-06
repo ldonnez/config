@@ -1,0 +1,9 @@
+---
+- name: Secret_file_backup | Restore configured secret files
+  tags:
+    - restore
+  ansible.builtin.include_tasks: restore_item.yml
+  loop: "{{ secret_file_backup_items }}"
+  loop_control:
+    loop_var: secret_file_backup_item
+    label: "{{ secret_file_backup_item.name }}"
