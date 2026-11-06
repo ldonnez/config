@@ -16,6 +16,7 @@
 
     configure_git: true
     configure_zsh: true
+    configure_atuin: true
     configure_mise: true
     configure_golang: true
     configure_npm: true
@@ -147,6 +148,13 @@
       when: configure_zsh
       tags:
         - zsh
+
+    - name: Configure atuin
+      ansible.builtin.import_role:
+        name: atuin
+      when: configure_atuin
+      tags:
+        - atuin
 
     - name: Install fonts
       ansible.builtin.import_role:

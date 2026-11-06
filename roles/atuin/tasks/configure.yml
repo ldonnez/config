@@ -1,0 +1,17 @@
+- name: "Symlink atuin config"
+  ansible.builtin.file:
+    src: "{{ atuin_dotfiles_path }}/config.toml"
+    dest: "{{ atuin_config_dir }}/config.toml"
+    state: link
+    force: true
+    follow: false
+  tags:
+    - install
+
+- name: "Symlink atuin themes"
+  ansible.builtin.file:
+    src: "{{ atuin_dotfiles_path }}/themes"
+    dest: "{{ atuin_config_dir }}/themes"
+    state: link
+  tags:
+    - install

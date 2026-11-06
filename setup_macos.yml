@@ -19,6 +19,7 @@
     configure_terminal: true
     configure_git: true
     configure_zsh: true
+    configure_atuin: true
     configure_mise: true
     configure_npm: true
     configure_pip: true
@@ -171,6 +172,13 @@
       when: configure_zsh
       tags:
         - zsh
+
+    - name: Configure atuin
+      ansible.builtin.import_role:
+        name: atuin
+      when: configure_atuin
+      tags:
+        - atuin
 
     - name: Install terraform
       ansible.builtin.import_role:
