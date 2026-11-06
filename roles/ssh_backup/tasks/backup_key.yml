@@ -1,0 +1,51 @@
+---
+- name: Check SSH private key {{ item.name }}
+  ansible.builtin.stat:
+    path: "{{ item.private_key_path }}"
+  register: ssh_backup_private_key
+
+- name: Check SSH public key {{ item.name }}
+  ansible.builtin.stat:
+    path: "{{ item.public_key_path }}"
+  register: ssh_backup_public_key
+
+- name: Check existing SSH private key backup {{ item.name }}
+  ansible.builtin.stat:
+    path: "{{ ssh_backup_dir }}/{{ item.name }}.vault"
+  register: ssh_backup_private_key_backup
+
+- name: Check existing SSH public key backup {{ item.name }}
+  ansible.builtin.stat:
+    path: "{{ ssh_backup_dir }}/{{ item.name }}.pub"
+  register: ssh_backup_public_key_backup
+
+- name: Warn when SSH private key is missing {{ item.name }}
+  when: not ssh_backup_private_key.stat.exists
+  ansible.builtin.debug:
+    msg: "Skipping SSH private key backup for {{ item.name }}: {{ item.private_key_path }} not found"
+
+- name: Warn when SSH public key is missing {{ item.name }}
+  when: not ssh_backup_public_key.stat.exists
+  ansible.builtin.debug:
+    msg: "Skipping SSH public key backup for {{ item.name }}: {{ item.public_key_path }} not found"
+
+- name: Encrypt SSH private key
+  when:
+    - ssh_backup_private_key.stat.exists
+    - not ssh_backup_private_key_backup.stat.exists
+  ansible.builtin.import_role:
+    name: vault_backup
+    tasks_from: encrypt.yml
+  vars:
+    vault_backup_password_file: "{{ ssh_backup_vault_password_file_path }}"
+    vault_backup_source: "{{ item.private_key_path }}"
+    vault_backup_destination: "{{ ssh_backup_dir }}/{{ item.name }}.vault"
+
+- name: Copy SSH public key to backup path
+  when:
+    - ssh_backup_public_key.stat.exists
+    - not ssh_backup_public_key_backup.stat.exists
+  ansible.builtin.copy:
+    src: "{{ item.public_key_path }}"
+    dest: "{{ ssh_backup_dir }}/{{ item.name }}.pub"
+    mode: "0600"

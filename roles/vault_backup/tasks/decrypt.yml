@@ -1,0 +1,7 @@
+---
+- name: Vault_backup | Decrypt backup with Ansible Vault
+  ansible.builtin.copy:
+    src: "{{ vault_backup_source }}"
+    dest: "{{ vault_backup_destination }}"
+    mode: "{{ vault_backup_mode | default('0600') }}"
+    decrypt: true

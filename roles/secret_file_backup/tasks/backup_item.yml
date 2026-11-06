@@ -1,0 +1,63 @@
+---
+- name: Secret_file_backup | Check source for {{ secret_file_backup_item.name }}
+  ansible.builtin.stat:
+    path: "{{ secret_file_backup_item.src }}"
+    follow: true
+  register: secret_file_backup_source
+
+- name: Secret_file_backup | Warn when source is missing for {{ secret_file_backup_item.name }}
+  when: not secret_file_backup_source.stat.exists
+  ansible.builtin.debug:
+    msg: "Skipping backup of {{ secret_file_backup_item.name }}: {{ secret_file_backup_item.src }} not found"
+
+- name: Secret_file_backup | Backup {{ secret_file_backup_item.name }}
+  when: secret_file_backup_source.stat.exists
+  block:
+    - name: Secret_file_backup | Ensure backup directory for {{ secret_file_backup_item.name }}
+      ansible.builtin.file:
+        path: "{{ secret_file_backup_item.dir }}"
+        state: directory
+        mode: "0700"
+
+    - name: Secret_file_backup | Set backup base name for {{ secret_file_backup_item.name }}
+      ansible.builtin.set_fact:
+        secret_file_backup_base_name: '{{ secret_file_backup_item.name | regex_replace("^\.", "") }}'
+
+    - name: Secret_file_backup | Set backup destination for {{ secret_file_backup_item.name }}
+      ansible.builtin.set_fact:
+        secret_file_backup_destination: >-
+          {{ secret_file_backup_item.dir }}/{{ ansible_facts.date_time.iso8601_basic_short }}-{{ secret_file_backup_base_name }}.{{ secret_file_backup_item.method }}
+
+    - name: Secret_file_backup | Encrypt with GPG {{ secret_file_backup_item.name }}
+      ansible.builtin.include_role:
+        name: gpg_file_backup
+        tasks_from: encrypt.yml
+      vars:
+        gpg_file_backup_source: "{{ secret_file_backup_item.src }}"
+        gpg_file_backup_destination: "{{ secret_file_backup_destination }}"
+      when: secret_file_backup_item.method == "gpg"
+
+    - name: Secret_file_backup | Encrypt with Ansible Vault {{ secret_file_backup_item.name }}
+      ansible.builtin.include_role:
+        name: vault_backup
+        tasks_from: encrypt.yml
+      vars:
+        vault_backup_password_file: "{{ secret_file_backup_vault_password_file }}"
+        vault_backup_source: "{{ secret_file_backup_item.src }}"
+        vault_backup_destination: "{{ secret_file_backup_destination }}"
+      when: secret_file_backup_item.method == "vault"
+
+    - name: Secret_file_backup | Update latest backup symlink for {{ secret_file_backup_item.name }}
+      ansible.builtin.file:
+        src: "{{ secret_file_backup_destination | basename }}"
+        dest: "{{ secret_file_backup_item.dir }}/latest"
+        state: link
+        force: true
+
+    - name: Secret_file_backup | Prune old backups for {{ secret_file_backup_item.name }}
+      ansible.builtin.include_role:
+        name: backup_retention
+      vars:
+        backup_retention_dir: "{{ secret_file_backup_item.dir }}"
+        backup_retention_pattern: "*-{{ secret_file_backup_base_name }}.{{ secret_file_backup_item.method }}"
+        backup_retention_keep: "{{ secret_file_backup_item.keep | default(secret_file_backup_keep) }}"
