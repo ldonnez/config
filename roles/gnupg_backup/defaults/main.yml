@@ -1,0 +1,4 @@
+---
+# defaults file for gnupg_backup
+
+gnupg_backup_dir: "{{ secrets_directory }}"

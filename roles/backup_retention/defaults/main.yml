@@ -1,0 +1,6 @@
+---
+# defaults file for backup_retention
+
+backup_retention_dir: ""
+backup_retention_pattern: "*"
+backup_retention_keep: 0
