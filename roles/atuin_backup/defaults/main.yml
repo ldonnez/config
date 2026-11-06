@@ -1,0 +1,9 @@
+---
+# defaults file for atuin_backup
+
+atuin_backup_secrets_directory: "{{ ansible_facts.user_dir }}/.secrets"
+
+atuin_backup_db_path: "{{ ansible_facts.user_dir }}/.atuin/data/history.db"
+atuin_backup_dir: "{{ ansible_facts.user_dir }}/.secrets/atuin/{{ ansible_facts.hostname }}"
+atuin_backup_path: "{{ atuin_backup_dir }}/{{ ansible_facts.date_time.iso8601_basic_short }}-atuin-history.db.gpg"
+atuin_backup_latest_backup_symlink: "{{ atuin_backup_dir }}/latest"

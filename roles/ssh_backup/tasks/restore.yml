@@ -1,0 +1,25 @@
+- name: Restore private key
+  tags:
+    - restore
+  ansible.builtin.copy:
+    src: "{{ ssh_backup_private_key_backup_path }}"
+    dest: "{{ ssh_backup_private_key_path }}"
+    mode: "0600"
+    decrypt: true
+
+- name: Restore ssh config
+  tags:
+    - restore
+  ansible.builtin.copy:
+    src: "{{ ssh_backup_config_backup_path }}"
+    dest: "{{ ssh_backup_config_path }}"
+    mode: "0700"
+    decrypt: true
+
+- name: Restore public key
+  tags:
+    - restore
+  ansible.builtin.copy:
+    src: "{{ ssh_backup_public_key_backup_path }}"
+    dest: "{{ ssh_backup_public_key_path }}"
+    mode: "0644"

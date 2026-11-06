@@ -1,0 +1,14 @@
+- name: Restore .zsh_history
+  tags:
+    - restore
+  block:
+    - name: Decrypt and restore backup
+      ansible.builtin.command:
+        argv:
+          - gpg
+          - --batch
+          - --yes
+          - --decrypt
+          - --output
+          - "{{ zsh_history_backup_path }}"
+          - "{{ zsh_history_backup_latest_backup_symlink }}"

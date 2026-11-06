@@ -1,0 +1,68 @@
+- name: Secure ssh key backup
+  tags:
+    - backup
+  block:
+    - name: Ensure backup dir
+      ansible.builtin.file:
+        path: "{{ ssh_backup_dir }}"
+        state: directory
+        recurse: true
+
+    - name: Create temporary file for vault passphrase
+      ansible.builtin.tempfile:
+        state: file
+        suffix: .txt
+      register: ssh_backup_pass_tmp
+      no_log: true
+
+    - name: Write vault passphrase to temp file
+      ansible.builtin.copy:
+        src: "{{ ssh_backup_vault_password_file_path }}"
+        dest: "{{ ssh_backup_pass_tmp.path }}"
+        mode: "0600"
+        decrypt: true
+      no_log: true
+
+    - name: Encrypt ssh private key with ansible-vault
+      ansible.builtin.command:
+        argv:
+          - ansible-vault
+          - encrypt
+          - --vault-password-file
+          - "{{ ssh_backup_pass_tmp.path }}"
+          - --output
+          - "{{ ssh_backup_private_key_backup_path }}"
+          - "{{ ssh_backup_private_key_path }}"
+
+    - name: Encrypt ssh config with ansible-vault
+      ansible.builtin.command:
+        argv:
+          - ansible-vault
+          - encrypt
+          - --vault-password-file
+          - "{{ ssh_backup_pass_tmp.path }}"
+          - --output
+          - "{{ ssh_backup_config_backup_path }}"
+          - "{{ ssh_backup_config_path }}"
+
+    - name: Copy public key to backup path
+      ansible.builtin.copy:
+        src: "{{ ssh_backup_public_key_path }}"
+        dest: "{{ ssh_backup_public_key_backup_path }}"
+        mode: "0600"
+
+  always:
+    - name: Remove temporary passphrase file
+      ansible.builtin.file:
+        path: "{{ ssh_backup_pass_tmp.path }}"
+        state: absent
+      when: ssh_backup_pass_tmp.path is defined
+
+- name: Commit and push backup
+  ansible.builtin.command:
+    cmd: "{{ item }}"
+    chdir: "{{ ssh_backup_secrets_directory }}"
+  loop:
+    - git add -- "{{ ssh_backup_dir | relpath(ssh_backup_dir) }}"
+    - git commit -m "Backup ssh keys and config"
+    - git push

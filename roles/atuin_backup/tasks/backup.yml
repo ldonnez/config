@@ -1,0 +1,60 @@
+- name: Include install
+  ansible.builtin.import_tasks: install.yml
+
+- name: Backup history.db
+  tags:
+    - backup
+  block:
+    - name: Ensure backup dir
+      ansible.builtin.file:
+        path: "{{ atuin_backup_dir }}"
+        state: directory
+        recurse: true
+
+    - name: Create temporary database backup
+      ansible.builtin.tempfile:
+        state: file
+        suffix: .db
+      register: atuin_backup_tmp
+
+    - name: Create SQLite backup
+      ansible.builtin.command:
+        argv:
+          - sqlite3
+          - "{{ atuin_backup_db_path }}"
+          - ".backup {{ atuin_backup_tmp.path }}"
+
+    - name: Encrypt backup
+      ansible.builtin.command:
+        argv:
+          - gpg
+          - --batch
+          - --yes
+          - --encrypt
+          - --default-recipient-self
+          - --output
+          - "{{ atuin_backup_path }}"
+          - "{{ atuin_backup_tmp.path }}"
+
+    - name: Update latest backup symlink
+      ansible.builtin.file:
+        src: "{{ atuin_backup_path }}"
+        dest: "{{ atuin_backup_latest_backup_symlink }}"
+        state: link
+        force: true
+
+  always:
+    - name: Remove temporary database backup
+      ansible.builtin.file:
+        path: "{{ atuin_backup_tmp.path }}"
+        state: absent
+      when: atuin_backup_tmp.path is defined
+
+- name: Commit and push backup
+  ansible.builtin.command:
+    cmd: "{{ item }}"
+    chdir: "{{ atuin_backup_secrets_directory }}"
+  loop:
+    - git add -- "{{ atuin_backup_path | relpath(atuin_backup_path) }}"
+    - git commit -m "Backup atuin history.db"
+    - git push

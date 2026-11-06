@@ -1,0 +1,37 @@
+- name: Backup .zsh_history
+  tags:
+    - backup
+  block:
+    - name: Ensure backup dir
+      ansible.builtin.file:
+        path: "{{ zsh_history_backup_dir }}"
+        state: directory
+        recurse: true
+
+    - name: Encrypt backup
+      ansible.builtin.command:
+        argv:
+          - gpg
+          - --batch
+          - --yes
+          - --encrypt
+          - --default-recipient-self
+          - --output
+          - "{{ zsh_history_backup_path }}"
+          - "{{ zsh_history_backup_zsh_history_path }}"
+
+    - name: Update latest backup symlink
+      ansible.builtin.file:
+        src: "{{ zsh_history_backup_path }}"
+        dest: "{{ zsh_history_backup_latest_backup_symlink }}"
+        state: link
+        force: true
+
+- name: Commit and push backup
+  ansible.builtin.command:
+    cmd: "{{ item }}"
+    chdir: "{{ zsh_history_backup_secrets_directory }}"
+  loop:
+    - git add -- "{{ zsh_history_backup_path | relpath(zsh_history_backup_path) }}"
+    - git commit -m "Backup zsh history"
+    - git push

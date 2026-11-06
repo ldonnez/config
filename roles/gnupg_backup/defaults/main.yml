@@ -1,0 +1,8 @@
+---
+# defaults file for gnupg_backup
+
+gnupg_backup_secrets_directory: "{{ ansible_facts.user_dir }}/.secrets"
+gnupg_backup_gpg_key_id: "lenny.donnez@gmail.com"
+gnupg_backup_dir: "{{ gnupg_backup_secrets_directory }}"
+gnupg_backup_vault_password_file_path: "{{ gnupg_backup_dir }}/vault_password_file"
+gnupg_backup_path: "{{ gnupg_backup_dir }}/lenny.donnez@gmail.com.asc.vault"
