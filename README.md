@@ -84,3 +84,39 @@ make update-debian
 ```
 
 This upgrades the Galaxy collections from requirements.yml and runs the playbook's update tasks.
+
+## Backup
+
+### Backup local files
+
+Run
+
+```zsh
+make backup
+```
+
+This runs **backup.yml**, which synchronizes the configured local directories to the configured backup location.
+
+### Backup secrets
+
+Run
+
+```zsh
+make backup-secrets
+```
+
+This runs **backup_secrets.yml**, which updates the secrets repository and backs up the GPG keys, SSH keys and config, `.mutt-alias`, `.zsh_history` and Atuin history. It prompts for the become and vault passwords automatically (`--ask-vault-pass -K`), then commits and pushes the changes to the secrets repository.
+
+Timestamped backups (`.mutt-alias`, `.zsh_history` and Atuin history) keep the newest 10 by default. Set `keep` on a `secret_file_backup` item or `atuin_backup_keep` to change this; `0` keeps all backups.
+
+Backups whose source is missing are skipped with a warning, and the remaining backups continue.
+
+### Restore secrets
+
+Run
+
+```zsh
+make restore-secrets
+```
+
+This runs **restore_secrets.yml**, which updates the secrets repository and restores the SSH keys and config, `.mutt-alias`, `.zsh_history`, GPG keys and Atuin history. It prompts for the become and vault passwords automatically (`--ask-vault-pass -K`).

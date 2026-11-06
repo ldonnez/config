@@ -1,0 +1,6 @@
+---
+# defaults file for secret_file_backup
+
+secret_file_backup_items: []
+secret_file_backup_vault_password_file: "{{ secrets_directory }}/vault_password_file"
+secret_file_backup_keep: 10

@@ -1,0 +1,13 @@
+---
+- name: Gpg_file_backup | Encrypt backup with GPG
+  # GPG is used directly to preserve the existing default-recipient behavior.
+  ansible.builtin.command:
+    argv:
+      - gpg
+      - --batch
+      - --yes
+      - --encrypt
+      - --default-recipient-self
+      - --output
+      - "{{ gpg_file_backup_destination }}"
+      - "{{ gpg_file_backup_source }}"

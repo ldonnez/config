@@ -1,0 +1,52 @@
+---
+- name: Secret_file_backup | Check latest backup for {{ secret_file_backup_item.name }}
+  ansible.builtin.stat:
+    path: "{{ secret_file_backup_item.dir }}/latest"
+    follow: true
+  register: secret_file_backup_latest
+
+- name: Secret_file_backup | Find backups for {{ secret_file_backup_item.name }}
+  when: not secret_file_backup_latest.stat.exists
+  ansible.builtin.find:
+    paths: "{{ secret_file_backup_item.dir }}"
+    patterns: "*.{{ 'gpg' if secret_file_backup_item.method == 'gpg' else 'vault' }}"
+    file_type: file
+  register: secret_file_backup_candidates
+
+- name: Secret_file_backup | Ensure a backup exists for {{ secret_file_backup_item.name }}
+  when: not secret_file_backup_latest.stat.exists
+  ansible.builtin.assert:
+    that: secret_file_backup_candidates.files | length > 0
+    fail_msg: "No backup found in {{ secret_file_backup_item.dir }} for {{ secret_file_backup_item.name }}"
+
+- name: Secret_file_backup | Set backup source for {{ secret_file_backup_item.name }}
+  ansible.builtin.set_fact:
+    secret_file_backup_source: >-
+      {{ (secret_file_backup_item.dir ~ '/latest')
+         if secret_file_backup_latest.stat.exists
+         else (secret_file_backup_candidates.files | sort(attribute='path') | last).path }}
+
+- name: Secret_file_backup | Decrypt with GPG {{ secret_file_backup_item.name }}
+  ansible.builtin.include_role:
+    name: gpg_file_backup
+    tasks_from: decrypt.yml
+  vars:
+    gpg_file_backup_source: "{{ secret_file_backup_source }}"
+    gpg_file_backup_destination: "{{ secret_file_backup_item.src }}"
+  when: secret_file_backup_item.method == "gpg"
+
+- name: Secret_file_backup | Decrypt with Ansible Vault {{ secret_file_backup_item.name }}
+  ansible.builtin.include_role:
+    name: vault_backup
+    tasks_from: decrypt.yml
+  vars:
+    vault_backup_source: "{{ secret_file_backup_source }}"
+    vault_backup_destination: "{{ secret_file_backup_item.src }}"
+    vault_backup_mode: "{{ secret_file_backup_item.mode | default('0600') }}"
+  when: secret_file_backup_item.method == "vault"
+
+- name: Secret_file_backup | Set permissions on restored {{ secret_file_backup_item.name }}
+  ansible.builtin.file:
+    path: "{{ secret_file_backup_item.src }}"
+    mode: "{{ secret_file_backup_item.mode | default('0600') }}"
+    state: file

@@ -1,0 +1,20 @@
+- name: Secure GPG key backups
+  tags:
+    - backup
+  block:
+    - name: Ensure backup dir
+      ansible.builtin.file:
+        path: "{{ gnupg_backup_dir }}"
+        state: directory
+        recurse: true
+
+    - name: Backup configured GPG keys separately
+      ansible.builtin.include_tasks:
+        file: backup_key.yml
+        apply:
+          tags:
+            - backup
+      loop: "{{ gnupg_backup_gpg_key_ids }}"
+      loop_control:
+        loop_var: gnupg_backup_key_id
+        label: "{{ gnupg_backup_key_id }}"
