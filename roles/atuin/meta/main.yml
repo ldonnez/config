@@ -1,0 +1,22 @@
+---
+galaxy_info:
+  role_name: atuin
+  author: ldonnez
+  description: "Making your terminal magical. Atuin replaces your shell history with a SQLite database, and records extra context for every command: the directory it ran in, how long it took, whether it succeeded, and which machine and session it came from."
+  license: MIT
+  min_ansible_version: "2.10"
+
+  platforms:
+    - name: Ubuntu
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
+    - name: macOS
+      versions:
+        - all
+
+dependencies:
+  - role: dotfiles
+  - role: zsh
