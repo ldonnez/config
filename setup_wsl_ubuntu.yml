@@ -51,6 +51,7 @@
       - python3-venv
       - clang
       - dnsutils # nslookup
+      - gridsite-clients # urlencode
 
     cargo_packages: []
 
