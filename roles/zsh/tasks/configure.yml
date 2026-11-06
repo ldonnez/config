@@ -17,13 +17,6 @@
   tags:
     - install
 
-- name: Remove existing .zsh
-  ansible.builtin.file:
-    path: "{{ ansible_facts.user_dir }}/.zsh"
-    state: absent
-  tags:
-    - install
-
 - name: Don't show last login message when opening a terminal
   ansible.builtin.file:
     path: "{{ ansible_facts.user_dir }}/.hushlogin"
