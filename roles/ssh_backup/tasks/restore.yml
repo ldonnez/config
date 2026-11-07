@@ -1,5 +1,7 @@
 ---
 - name: Restore configured SSH keys
+  tags:
+    - restore
   ansible.builtin.include_tasks: restore_key.yml
   loop: "{{ ssh_backup_keys }}"
   loop_control:
