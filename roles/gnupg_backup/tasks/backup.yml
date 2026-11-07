@@ -31,7 +31,7 @@
           - --output
           - "{{ gnupg_backup_tmp.path }}"
           - "{{ gnupg_backup_gpg_key_id }}"
-        stdin: "{{ lookup('ansible.builtin.unvault', gnupg_backup_vault_password_file_path) | trim }}"
+        stdin: "{{ lookup('ansible.builtin.unvault', gnupg_backup_vault_password_file_path) | string | trim }}"
         stdin_add_newline: true
       changed_when: false
       no_log: true
