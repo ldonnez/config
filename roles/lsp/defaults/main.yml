@@ -16,7 +16,7 @@ lsp_npm:
   - "@ansible/ansible-language-server"
   - "oxlint"
   - "bash-language-server"
-  - "@mistweaverco/kulala-fmt"
+  - "@dont-be-evil-company/kulala-fmt"
   - "@mistweaverco/kulala-ls"
   - "@github/copilot-language-server"
 
