@@ -1,4 +1,5 @@
-- name: Secure ssh key backup
+---
+- name: Secure SSH key backup
   tags:
     - backup
   block:
@@ -8,16 +9,13 @@
         state: directory
         recurse: true
 
-    - name: Encrypt ssh private key
-      ansible.builtin.import_role:
-        name: vault_backup
-        tasks_from: encrypt.yml
-      vars:
-        vault_backup_password_file: "{{ ssh_backup_vault_password_file_path }}"
-        vault_backup_source: "{{ ssh_backup_private_key_path }}"
-        vault_backup_destination: "{{ ssh_backup_private_key_backup_path }}"
+    - name: Backup configured SSH keys
+      ansible.builtin.include_tasks: backup_key.yml
+      loop: "{{ ssh_backup_keys }}"
+      loop_control:
+        label: "{{ item.name }}"
 
-    - name: Encrypt ssh config
+    - name: Encrypt SSH config
       ansible.builtin.import_role:
         name: vault_backup
         tasks_from: encrypt.yml
@@ -25,9 +23,3 @@
         vault_backup_password_file: "{{ ssh_backup_vault_password_file_path }}"
         vault_backup_source: "{{ ssh_backup_config_path }}"
         vault_backup_destination: "{{ ssh_backup_config_backup_path }}"
-
-    - name: Copy public key to backup path
-      ansible.builtin.copy:
-        src: "{{ ssh_backup_public_key_path }}"
-        dest: "{{ ssh_backup_public_key_backup_path }}"
-        mode: "0600"
