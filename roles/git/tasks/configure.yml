@@ -1,9 +1,10 @@
 ---
 - name: Copy gitconfig to ~/.gitconfig
   ansible.builtin.copy:
-    src: gitconfig
-    dest: "{{ ansible_facts.user_dir }}/.gitconfig"
+    src: "{{ git_dotfiles_path }}/.gitconfig"
+    dest: "{{ git_config_dir }}/.gitconfig"
     mode: "0755"
+    force: false
   tags:
     - install
 
@@ -25,8 +26,8 @@
 
 - name: Symlink .gitignore_global
   ansible.builtin.file:
-    src: "{{ dotfiles_directory_path }}/.gitignore_global"
-    dest: "{{ ansible_facts.user_dir }}/.gitignore_global"
+    src: "{{ git_dotfiles_path }}/.gitignore_global"
+    dest: "{{ git_config_dir }}/.gitignore_global"
     state: link
   tags:
     - install
