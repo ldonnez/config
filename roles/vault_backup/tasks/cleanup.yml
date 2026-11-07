@@ -1,6 +1,0 @@
----
-- name: Remove temporary vault passphrase file
-  ansible.builtin.file:
-    path: "{{ vault_backup_password_tmp.path }}"
-    state: absent
-  when: vault_backup_password_tmp.path is defined
