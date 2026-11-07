@@ -1,8 +1,0 @@
----
-# Roles that provide a backup.yml task file.
-secrets_backup_roles:
-  - gnupg_backup
-  - ssh_backup
-  - neomutt_backup
-  - zsh_history_backup
-  - atuin_backup

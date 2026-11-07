@@ -1,8 +1,0 @@
----
-# Roles that provide a restore.yml task file.
-secrets_restore_roles:
-  - ssh_backup
-  - neomutt_backup
-  - gnupg_backup
-  - zsh_history_backup
-  - atuin_backup
