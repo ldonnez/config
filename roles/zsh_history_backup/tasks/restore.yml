@@ -3,12 +3,9 @@
     - restore
   block:
     - name: Decrypt and restore backup
-      ansible.builtin.command:
-        argv:
-          - gpg
-          - --batch
-          - --yes
-          - --decrypt
-          - --output
-          - "{{ zsh_history_backup_path }}"
-          - "{{ zsh_history_backup_latest_backup_symlink }}"
+      ansible.builtin.import_role:
+        name: gpg_file_backup
+        tasks_from: decrypt.yml
+      vars:
+        gpg_file_backup_source: "{{ zsh_history_backup_latest_backup_symlink }}"
+        gpg_file_backup_destination: "{{ zsh_history_backup_zsh_history_path }}"

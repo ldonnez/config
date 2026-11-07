@@ -1,0 +1,15 @@
+---
+- name: Vault_backup | Encrypt backup with Ansible Vault
+  # stdin avoids writing the decrypted Vault password to a temporary file.
+  ansible.builtin.command:
+    argv:
+      - ansible-vault
+      - encrypt
+      - --vault-password-file
+      - /dev/stdin
+      - --output
+      - "{{ vault_backup_destination }}"
+      - "{{ vault_backup_source }}"
+    stdin: "{{ lookup('ansible.builtin.unvault', vault_backup_password_file) | string | trim }}"
+    stdin_add_newline: true
+  no_log: true

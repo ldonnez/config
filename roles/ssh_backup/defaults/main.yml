@@ -1,13 +1,8 @@
 ---
 # defaults file for ssh_backup
 
-ssh_backup_secrets_directory: "{{ ansible_facts.user_dir }}/.secrets"
-ssh_backup_dir: "{{ ssh_backup_secrets_directory }}/.ssh"
-ssh_backup_vault_password_file_path: "{{ ssh_backup_secrets_directory }}/vault_password_file"
-ssh_backup_private_key_path: "{{ ansible_facts.user_dir }}/.ssh/id_rsa"
-ssh_backup_public_key_path: "{{ ansible_facts.user_dir }}/.ssh/id_rsa.pub"
+ssh_backup_dir: "{{ secrets_directory }}/.ssh"
+ssh_backup_vault_password_file_path: "{{ secrets_directory }}/vault_password_file"
+ssh_backup_keys: []
 ssh_backup_config_path: "{{ ansible_facts.user_dir }}/.ssh/config"
-
-ssh_backup_private_key_backup_path: "{{ ssh_backup_dir }}/id_rsa.vault"
 ssh_backup_config_backup_path: "{{ ssh_backup_dir }}/config.vault"
-ssh_backup_public_key_backup_path: "{{ ssh_backup_dir }}/id_rsa.pub"

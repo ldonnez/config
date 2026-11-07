@@ -1,0 +1,15 @@
+---
+- name: Encrypt SSH private key
+  ansible.builtin.import_role:
+    name: vault_backup
+    tasks_from: encrypt.yml
+  vars:
+    vault_backup_password_file: "{{ ssh_backup_vault_password_file_path }}"
+    vault_backup_source: "{{ item.private_key_path }}"
+    vault_backup_destination: "{{ ssh_backup_dir }}/{{ item.name }}.vault"
+
+- name: Copy SSH public key to backup path
+  ansible.builtin.copy:
+    src: "{{ item.public_key_path }}"
+    dest: "{{ ssh_backup_dir }}/{{ item.name }}.pub"
+    mode: "0600"
