@@ -9,6 +9,6 @@
       - --output
       - "{{ vault_backup_destination }}"
       - "{{ vault_backup_source }}"
-    stdin: "{{ lookup('ansible.builtin.unvault', vault_backup_password_file) | trim }}"
+    stdin: "{{ lookup('ansible.builtin.unvault', vault_backup_password_file) | string | trim }}"
     stdin_add_newline: true
   no_log: true
