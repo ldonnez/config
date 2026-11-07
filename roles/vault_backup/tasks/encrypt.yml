@@ -5,7 +5,10 @@
       - ansible-vault
       - encrypt
       - --vault-password-file
-      - "{{ vault_backup_password_tmp.path }}"
+      - /dev/stdin
       - --output
       - "{{ vault_backup_destination }}"
       - "{{ vault_backup_source }}"
+    stdin: "{{ lookup('ansible.builtin.unvault', vault_backup_password_file) | trim }}"
+    stdin_add_newline: true
+  no_log: true
