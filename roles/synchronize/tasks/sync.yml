@@ -1,9 +1,7 @@
 ---
-- name: Synchronize
-  ansible.posix.synchronize:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-    recursive: true
-    delete: "{{ item.delete }}"
-    checksum: true
-  loop: "{{ directories_to_synchronize }}"
+- name: Synchronize directories
+  ansible.builtin.include_tasks: sync_directory.yml
+  loop: "{{ synchronize_directories }}"
+  loop_control:
+    loop_var: sync_item
+    label: "{{ sync_item.name | default(sync_item.src) }}"
