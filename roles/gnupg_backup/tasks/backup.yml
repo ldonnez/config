@@ -71,12 +71,3 @@
         path: "{{ gnupg_backup_tmp.path }}"
         state: absent
       when: gnupg_backup_tmp.path is defined
-
-- name: Commit and push backup
-  ansible.builtin.command:
-    cmd: "{{ item }}"
-    chdir: "{{ gnupg_backup_secrets_directory }}"
-  loop:
-    - git add -- "{{ gnupg_backup_path | relpath(gnupg_backup_path) }}"
-    - git commit -m "Backup gpg keys"
-    - git push
