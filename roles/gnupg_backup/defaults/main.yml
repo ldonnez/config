@@ -1,8 +1,6 @@
 ---
 # defaults file for gnupg_backup
 
-gnupg_backup_gpg_key_ids:
-  - lenny.donnez@gmail.com
 gnupg_backup_dir: "{{ secrets_directory }}"
 gnupg_backup_vault_password_file_path: "{{ secrets_directory }}/vault_password_file"
-gnupg_backup_path: "{{ gnupg_backup_dir }}/gnupg-secret-keys.asc.vault"
+gnupg_backup_path: "{{ gnupg_backup_dir }}/lenny.donnez@gmail.com.asc.vault"
