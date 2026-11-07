@@ -49,12 +49,3 @@
         path: "{{ atuin_backup_tmp.path }}"
         state: absent
       when: atuin_backup_tmp.path is defined
-
-- name: Commit and push backup
-  ansible.builtin.command:
-    cmd: "{{ item }}"
-    chdir: "{{ atuin_backup_secrets_directory }}"
-  loop:
-    - git add -- "{{ atuin_backup_path | relpath(atuin_backup_path) }}"
-    - git commit -m "Backup atuin history.db"
-    - git push
