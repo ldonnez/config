@@ -1,0 +1,36 @@
+---
+- name: Synchronize {{ sync_item.name }}
+  when: not (sync_item.subdirectories | default(false))
+  ansible.posix.synchronize:
+    src: "{{ sync_item.src }}"
+    dest: "{{ sync_item.dest }}"
+    recursive: "{{ sync_item.recursive | default(true) }}"
+    delete: "{{ sync_item.delete | default(omit) }}"
+    checksum: "{{ sync_item.checksum | default(true) }}"
+
+- name: Ensure destination exists for {{ sync_item.name }}
+  when: sync_item.subdirectories | default(false)
+  ansible.builtin.file:
+    path: "{{ sync_item.dest }}"
+    state: directory
+    mode: "0755"
+
+- name: Find subdirectories of {{ sync_item.name }}
+  when: sync_item.subdirectories | default(false)
+  ansible.builtin.find:
+    paths: "{{ sync_item.src }}"
+    file_type: directory
+    recurse: false
+  register: synchronize_subdirectories
+
+- name: Synchronize subdirectories of {{ sync_item.name }}
+  when: sync_item.subdirectories | default(false)
+  ansible.posix.synchronize:
+    src: "{{ item.path }}/"
+    dest: "{{ sync_item.dest }}/{{ item.path | basename }}"
+    recursive: "{{ sync_item.recursive | default(true) }}"
+    delete: "{{ sync_item.delete | default(omit) }}"
+    checksum: "{{ sync_item.checksum | default(true) }}"
+  loop: "{{ synchronize_subdirectories.files }}"
+  loop_control:
+    label: "{{ item.path | basename }}"
