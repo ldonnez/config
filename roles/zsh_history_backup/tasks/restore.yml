@@ -10,5 +10,5 @@
           - --yes
           - --decrypt
           - --output
-          - "{{ zsh_history_backup_path }}"
+          - "{{ zsh_history_backup_zsh_history_path }}"
           - "{{ zsh_history_backup_latest_backup_symlink }}"
