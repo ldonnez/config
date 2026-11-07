@@ -1,0 +1,12 @@
+---
+- name: Gpg_file_backup | Decrypt backup with GPG
+  # GPG is used directly to preserve the existing keyring-based decryption.
+  ansible.builtin.command:
+    argv:
+      - gpg
+      - --batch
+      - --yes
+      - --decrypt
+      - --output
+      - "{{ gpg_file_backup_destination }}"
+      - "{{ gpg_file_backup_source }}"

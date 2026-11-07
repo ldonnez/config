@@ -8,44 +8,11 @@
         state: directory
         recurse: true
 
-    - name: Create temporary file for vault passphrase
-      ansible.builtin.tempfile:
-        state: file
-        suffix: .txt
-      register: neomutt_backup_pass_tmp
-      no_log: true
-
-    - name: Write vault passphrase to temp file
-      ansible.builtin.copy:
-        src: "{{ neomutt_backup_vault_password_file_path }}"
-        dest: "{{ neomutt_backup_pass_tmp.path }}"
-        mode: "0600"
-        decrypt: true
-      no_log: true
-
-    - name: Encrypt .mutt-alias with ansible-vault
-      ansible.builtin.command:
-        argv:
-          - ansible-vault
-          - encrypt
-          - --vault-password-file
-          - "{{ neomutt_backup_pass_tmp.path }}"
-          - --output
-          - "{{ neomutt_backup_mutt_alias_backup_path }}"
-          - "{{ neomutt_backup_mutt_alias_path }}"
-
-  always:
-    - name: Remove temporary passphrase file
-      ansible.builtin.file:
-        path: "{{ neomutt_backup_pass_tmp.path }}"
-        state: absent
-      when: neomutt_backup_pass_tmp.path is defined
-
-- name: Commit and push backup
-  ansible.builtin.command:
-    cmd: "{{ item }}"
-    chdir: "{{ neomutt_backup_secrets_directory }}"
-  loop:
-    - git add -- "{{ neomutt_backup_mutt_alias_backup_path | relpath(neomutt_backup_mutt_alias_backup_path) }}"
-    - git commit -m "Backup .mutt-alias"
-    - git push
+    - name: Encrypt .mutt-alias
+      ansible.builtin.import_role:
+        name: vault_backup
+        tasks_from: encrypt.yml
+      vars:
+        vault_backup_password_file: "{{ neomutt_backup_vault_password_file_path }}"
+        vault_backup_source: "{{ neomutt_backup_mutt_alias_path }}"
+        vault_backup_destination: "{{ neomutt_backup_mutt_alias_backup_path }}"

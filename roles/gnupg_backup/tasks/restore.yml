@@ -1,4 +1,4 @@
-- name: Secure GPG key  import
+- name: Secure GPG key import
   tags:
     - restore
   block:
@@ -7,21 +7,6 @@
         state: file
         suffix: .asc
       register: gnupg_backup_tmp
-
-    - name: Create temporary file for GPG passphrase
-      ansible.builtin.tempfile:
-        state: file
-        suffix: .txt
-      register: gnupg_backup_pass_tmp
-      no_log: true
-
-    - name: Write GPG passphrase to temp file
-      ansible.builtin.copy:
-        src: "{{ gnupg_backup_vault_password_file_path }}"
-        dest: "{{ gnupg_backup_pass_tmp.path }}"
-        mode: "0600"
-        decrypt: true
-      no_log: true
 
     - name: Decrypt GPG backup to temporary file
       ansible.builtin.copy:
@@ -41,12 +26,6 @@
       changed_when: true
 
   always:
-    - name: Remove temporary passphrase file
-      ansible.builtin.file:
-        path: "{{ gnupg_backup_pass_tmp.path }}"
-        state: absent
-      when: gnupg_backup_pass_tmp.path is defined
-
     - name: Remove temporary decrypted GPG restore file
       ansible.builtin.file:
         path: "{{ gnupg_backup_tmp.path }}"
