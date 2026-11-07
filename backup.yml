@@ -4,47 +4,35 @@
   connection: local
 
   vars:
-    directories_to_synchronize:
+    backup_directory: "{{ ansible_facts.user_dir }}/SynologyDrive"
+    synchronize_directories:
       - name: "dotfiles"
-        src: "{{ansible_facts.user_dir}}/dotfiles"
-        dest: "{{ansible_facts.user_dir}}/SynologyDrive"
+        src: "{{ ansible_facts.user_dir }}/dotfiles"
+        dest: "{{ backup_directory }}"
         delete: true
 
       - name: "config"
-        src: "{{ansible_facts.user_dir}}/config"
-        dest: "{{ansible_facts.user_dir}}/SynologyDrive"
+        src: "{{ ansible_facts.user_dir }}/config"
+        dest: "{{ backup_directory }}"
         delete: true
 
       - name: "notes"
-        src: "{{ansible_facts.user_dir}}/notes"
-        dest: "{{ansible_facts.user_dir}}/SynologyDrive"
+        src: "{{ ansible_facts.user_dir }}/notes"
+        dest: "{{ backup_directory }}"
         delete: true
 
       - name: "secrets"
-        src: "{{ansible_facts.user_dir}}/.secrets"
-        dest: "{{ansible_facts.user_dir}}/SynologyDrive"
+        src: "{{ ansible_facts.user_dir }}/.secrets"
+        dest: "{{ backup_directory }}"
         delete: true
+
+      - name: "projects"
+        src: "{{ ansible_facts.user_dir }}/projects"
+        dest: "{{ backup_directory }}/projects"
+        delete: true
+        subdirectories: true
 
   tasks:
-    - name: Synchronize static dirs
+    - name: Synchronize directories
       ansible.builtin.import_role:
         name: synchronize
-
-    - name: Find local project directories
-      ansible.builtin.find:
-        paths: "{{ ansible_facts.user_dir }}/projects"
-        file_type: directory
-        recurse: false
-      register: local_projects
-
-    - name: Sync each project individually with delete
-      when: local_projects.files | length > 0
-      ansible.posix.synchronize:
-        src: "{{ item.path }}/"
-        dest: "{{ ansible_facts.user_dir }}/SynologyDrive/projects/{{ item.path | basename }}"
-        recursive: true
-        delete: true
-        checksum: true
-      loop: "{{ local_projects.files }}"
-      loop_control:
-        label: "{{ item.path | basename }}"
