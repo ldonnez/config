@@ -26,12 +26,3 @@
         dest: "{{ zsh_history_backup_latest_backup_symlink }}"
         state: link
         force: true
-
-- name: Commit and push backup
-  ansible.builtin.command:
-    cmd: "{{ item }}"
-    chdir: "{{ zsh_history_backup_secrets_directory }}"
-  loop:
-    - git add -- "{{ zsh_history_backup_path | relpath(zsh_history_backup_path) }}"
-    - git commit -m "Backup zsh history"
-    - git push
