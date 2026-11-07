@@ -57,12 +57,3 @@
         path: "{{ ssh_backup_pass_tmp.path }}"
         state: absent
       when: ssh_backup_pass_tmp.path is defined
-
-- name: Commit and push backup
-  ansible.builtin.command:
-    cmd: "{{ item }}"
-    chdir: "{{ ssh_backup_secrets_directory }}"
-  loop:
-    - git add -- "{{ ssh_backup_dir | relpath(ssh_backup_dir) }}"
-    - git commit -m "Backup ssh keys and config"
-    - git push
