@@ -1,9 +1,7 @@
 ---
 # defaults file for backup_zsh_history
 
-zsh_history_backup_secrets_directory: "{{ ansible_facts.user_dir }}/.secrets"
-
 zsh_history_backup_zsh_history_path: "{{ ansible_facts.user_dir }}/.zsh_history"
-zsh_history_backup_dir: "{{ zsh_history_backup_secrets_directory }}/zsh_history/{{ ansible_facts.hostname }}"
+zsh_history_backup_dir: "{{ secrets_directory }}/zsh_history/{{ ansible_facts.hostname }}"
 zsh_history_backup_path: "{{ zsh_history_backup_dir }}/{{ ansible_facts.date_time.iso8601_basic_short }}-zsh_history.gpg"
 zsh_history_backup_latest_backup_symlink: "{{ zsh_history_backup_dir }}/latest"
