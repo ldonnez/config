@@ -1,43 +1,46 @@
 ---
-- name: Create temporary GPG export file
-  ansible.builtin.tempfile:
-    state: file
-    suffix: .asc
-  register: gnupg_backup_tmp
+- name: Secure GPG key backup for {{ gnupg_backup_key_id }}
+  block:
+    - name: Create temporary GPG export file
+      ansible.builtin.tempfile:
+        state: file
+        suffix: .asc
+      register: gnupg_backup_tmp
 
-- name: Export GPG secret and public keypair
-  ansible.builtin.command:
-    argv:
-      - gpg
-      - --batch
-      - --yes
-      - --pinentry-mode
-      - loopback
-      - --passphrase-fd
-      - "0"
-      - --armor
-      - --export-secret-keys
-      - --export-options
-      - backup
-      - --output
-      - "{{ gnupg_backup_tmp.path }}"
-      - "{{ gnupg_backup_key_id }}"
-    stdin: "{{ lookup('ansible.builtin.unvault', gnupg_backup_vault_password_file_path) | string | trim }}"
-    stdin_add_newline: true
-  changed_when: false
-  no_log: true
+    - name: Export GPG secret and public keypair
+      ansible.builtin.command:
+        argv:
+          - gpg
+          - --batch
+          - --yes
+          - --pinentry-mode
+          - loopback
+          - --passphrase-fd
+          - "0"
+          - --armor
+          - --export-secret-keys
+          - --export-options
+          - backup
+          - --output
+          - "{{ gnupg_backup_tmp.path }}"
+          - "{{ gnupg_backup_key_id }}"
+        stdin: "{{ lookup('ansible.builtin.unvault', gnupg_backup_vault_password_file_path) | string | trim }}"
+        stdin_add_newline: true
+      changed_when: false
+      no_log: true
 
-- name: Encrypt GPG export
-  ansible.builtin.import_role:
-    name: vault_backup
-    tasks_from: encrypt.yml
-  vars:
-    vault_backup_password_file: "{{ gnupg_backup_vault_password_file_path }}"
-    vault_backup_source: "{{ gnupg_backup_tmp.path }}"
-    vault_backup_destination: "{{ gnupg_backup_dir }}/{{ gnupg_backup_key_id }}.asc.vault"
+    - name: Encrypt GPG export
+      ansible.builtin.import_role:
+        name: vault_backup
+        tasks_from: encrypt.yml
+      vars:
+        vault_backup_password_file: "{{ gnupg_backup_vault_password_file_path }}"
+        vault_backup_source: "{{ gnupg_backup_tmp.path }}"
+        vault_backup_destination: "{{ gnupg_backup_dir }}/{{ gnupg_backup_key_id }}.asc.vault"
 
-- name: Remove temporary GPG export
-  ansible.builtin.file:
-    path: "{{ gnupg_backup_tmp.path }}"
-    state: absent
-  when: gnupg_backup_tmp.path is defined
+  always:
+    - name: Remove temporary GPG export
+      ansible.builtin.file:
+        path: "{{ gnupg_backup_tmp.path }}"
+        state: absent
+      when: gnupg_backup_tmp.path is defined
