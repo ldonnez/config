@@ -14,13 +14,6 @@
         suffix: .asc
       register: gnupg_backup_tmp
 
-    - name: Prepare vault passphrase
-      ansible.builtin.import_role:
-        name: vault_backup
-        tasks_from: prepare.yml
-      vars:
-        vault_backup_password_file: "{{ gnupg_backup_vault_password_file_path }}"
-
     - name: Export GPG secret and public keypair (non interactive)
       ansible.builtin.command:
         argv:
@@ -30,30 +23,29 @@
           - --batch
           - --pinentry-mode
           - loopback
+          - --passphrase-fd
+          - "0"
           - --export-secret-keys
-          - --passphrase-file
-          - "{{ vault_backup_password_tmp.path }}"
           - --export-options
           - backup
           - --output
           - "{{ gnupg_backup_tmp.path }}"
           - "{{ gnupg_backup_gpg_key_id }}"
+        stdin: "{{ lookup('ansible.builtin.unvault', gnupg_backup_vault_password_file_path) | trim }}"
+        stdin_add_newline: true
       changed_when: false
+      no_log: true
 
     - name: Encrypt GPG export
       ansible.builtin.import_role:
         name: vault_backup
         tasks_from: encrypt.yml
       vars:
+        vault_backup_password_file: "{{ gnupg_backup_vault_password_file_path }}"
         vault_backup_source: "{{ gnupg_backup_tmp.path }}"
         vault_backup_destination: "{{ gnupg_backup_path }}"
 
   always:
-    - name: Clean up vault passphrase
-      ansible.builtin.import_role:
-        name: vault_backup
-        tasks_from: cleanup.yml
-
     - name: Remove temporary GPG export
       ansible.builtin.file:
         path: "{{ gnupg_backup_tmp.path }}"
