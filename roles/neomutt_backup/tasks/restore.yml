@@ -1,8 +1,0 @@
-- name: Restore .mutt-alias
-  tags:
-    - restore
-  ansible.builtin.copy:
-    src: "{{ neomutt_backup_mutt_alias_backup_path }}"
-    dest: "{{ neomutt_backup_mutt_alias_path }}"
-    mode: "0700"
-    decrypt: true

@@ -1,18 +1,18 @@
 ---
 galaxy_info:
-  role_name: zsh_history_backup
+  role_name: secret_file_backup
   author: ldonnez
-  description: Backup .zsh_history to .secrets
+  description: Backup and restore declaratively configured secret files
   license: MIT
   min_ansible_version: "2.10"
 
   platforms:
-    - name: macOS
-      versions:
-        - all
     - name: Ubuntu
       versions:
         - all
     - name: Debian
+      versions:
+        - all
+    - name: macOS
       versions:
         - all

@@ -1,54 +1,12 @@
-- name: Secure GPG key  import
+- name: Restore configured GPG keys separately
   tags:
     - restore
-  block:
-    - name: Create temporary file for decrypted GPG import
-      ansible.builtin.tempfile:
-        state: file
-        suffix: .asc
-      register: gnupg_backup_tmp
-
-    - name: Create temporary file for GPG passphrase
-      ansible.builtin.tempfile:
-        state: file
-        suffix: .txt
-      register: gnupg_backup_pass_tmp
-      no_log: true
-
-    - name: Write GPG passphrase to temp file
-      ansible.builtin.copy:
-        src: "{{ gnupg_backup_vault_password_file_path }}"
-        dest: "{{ gnupg_backup_pass_tmp.path }}"
-        mode: "0600"
-        decrypt: true
-      no_log: true
-
-    - name: Decrypt GPG backup to temporary file
-      ansible.builtin.copy:
-        src: "{{ gnupg_backup_path }}"
-        dest: "{{ gnupg_backup_tmp.path }}"
-        mode: "0600"
-        decrypt: true
-
-    - name: Import GPG keypair into keyring (non-interactive)
-      ansible.builtin.command:
-        argv:
-          - gpg
-          - --batch
-          - --yes
-          - --import
-          - "{{ gnupg_backup_tmp.path }}"
-      changed_when: true
-
-  always:
-    - name: Remove temporary passphrase file
-      ansible.builtin.file:
-        path: "{{ gnupg_backup_pass_tmp.path }}"
-        state: absent
-      when: gnupg_backup_pass_tmp.path is defined
-
-    - name: Remove temporary decrypted GPG restore file
-      ansible.builtin.file:
-        path: "{{ gnupg_backup_tmp.path }}"
-        state: absent
-      when: gnupg_backup_tmp.path is defined
+  ansible.builtin.include_tasks:
+    file: restore_key.yml
+    apply:
+      tags:
+        - restore
+  loop: "{{ gnupg_backup_gpg_key_ids }}"
+  loop_control:
+    loop_var: gnupg_backup_key_id
+    label: "{{ gnupg_backup_key_id }}"

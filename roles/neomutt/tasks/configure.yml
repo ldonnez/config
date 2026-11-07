@@ -25,8 +25,15 @@
 
 - name: Restore .mutt-alias
   ansible.builtin.import_role:
-    name: neomutt_backup
+    name: secret_file_backup
     tasks_from: restore.yml
+  vars:
+    secret_file_backup_items:
+      - name: .mutt-alias
+        src: "{{ ansible_facts.user_dir }}/.mutt-alias"
+        dir: "{{ secrets_directory }}/mutt-alias"
+        method: vault
+        mode: "0700"
   tags:
     - install
 

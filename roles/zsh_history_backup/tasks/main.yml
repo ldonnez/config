@@ -1,6 +1,0 @@
----
-- name: Include backup
-  ansible.builtin.import_tasks: backup.yml
-
-- name: Include restore
-  ansible.builtin.import_tasks: restore.yml

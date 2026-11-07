@@ -25,20 +25,16 @@
           - ".backup {{ atuin_backup_tmp.path }}"
 
     - name: Encrypt backup
-      ansible.builtin.command:
-        argv:
-          - gpg
-          - --batch
-          - --yes
-          - --encrypt
-          - --default-recipient-self
-          - --output
-          - "{{ atuin_backup_path }}"
-          - "{{ atuin_backup_tmp.path }}"
+      ansible.builtin.import_role:
+        name: gpg_file_backup
+        tasks_from: encrypt.yml
+      vars:
+        gpg_file_backup_source: "{{ atuin_backup_tmp.path }}"
+        gpg_file_backup_destination: "{{ atuin_backup_path }}"
 
     - name: Update latest backup symlink
       ansible.builtin.file:
-        src: "{{ atuin_backup_path }}"
+        src: "{{ atuin_backup_path | basename }}"
         dest: "{{ atuin_backup_latest_backup_symlink }}"
         state: link
         force: true
@@ -49,12 +45,3 @@
         path: "{{ atuin_backup_tmp.path }}"
         state: absent
       when: atuin_backup_tmp.path is defined
-
-- name: Commit and push backup
-  ansible.builtin.command:
-    cmd: "{{ item }}"
-    chdir: "{{ atuin_backup_secrets_directory }}"
-  loop:
-    - git add -- "{{ atuin_backup_path | relpath(atuin_backup_path) }}"
-    - git commit -m "Backup atuin history.db"
-    - git push

@@ -11,16 +11,40 @@
         suffix: .db
       register: atuin_backup_restore_tmp
 
+    - name: Check latest backup
+      ansible.builtin.stat:
+        path: "{{ atuin_backup_latest_backup_symlink }}"
+        follow: true
+      register: atuin_backup_latest
+
+    - name: Find backups
+      when: not atuin_backup_latest.stat.exists
+      ansible.builtin.find:
+        paths: "{{ atuin_backup_dir }}"
+        patterns: "*.gpg"
+        file_type: file
+      register: atuin_backup_candidates
+
+    - name: Ensure a backup exists
+      when: not atuin_backup_latest.stat.exists
+      ansible.builtin.assert:
+        that: atuin_backup_candidates.files | length > 0
+        fail_msg: "No backup found in {{ atuin_backup_dir }}"
+
+    - name: Set backup source
+      ansible.builtin.set_fact:
+        atuin_backup_source: >-
+          {{ atuin_backup_latest_backup_symlink
+             if atuin_backup_latest.stat.exists
+             else (atuin_backup_candidates.files | sort(attribute='path') | last).path }}
+
     - name: Decrypt backup
-      ansible.builtin.command:
-        argv:
-          - gpg
-          - --batch
-          - --yes
-          - --decrypt
-          - --output
-          - "{{ atuin_backup_restore_tmp.path }}"
-          - "{{ atuin_backup_latest_backup_symlink }}"
+      ansible.builtin.import_role:
+        name: gpg_file_backup
+        tasks_from: decrypt.yml
+      vars:
+        gpg_file_backup_source: "{{ atuin_backup_source }}"
+        gpg_file_backup_destination: "{{ atuin_backup_restore_tmp.path }}"
 
     - name: Restore SQLite backup
       ansible.builtin.command:
