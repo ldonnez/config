@@ -1,0 +1,11 @@
+---
+- name: Decrypt backup with GPG
+  ansible.builtin.command:
+    argv:
+      - gpg
+      - --batch
+      - --yes
+      - --decrypt
+      - --output
+      - "{{ gpg_file_backup_destination }}"
+      - "{{ gpg_file_backup_source }}"
