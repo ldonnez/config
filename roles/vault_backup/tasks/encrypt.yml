@@ -1,0 +1,11 @@
+---
+- name: Encrypt backup with Ansible Vault
+  ansible.builtin.command:
+    argv:
+      - ansible-vault
+      - encrypt
+      - --vault-password-file
+      - "{{ vault_backup_password_tmp.path }}"
+      - --output
+      - "{{ vault_backup_destination }}"
+      - "{{ vault_backup_source }}"
