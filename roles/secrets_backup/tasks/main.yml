@@ -4,42 +4,16 @@
     name: secrets
     tasks_from: repository.yml
 
-- name: Secrets_backup | Back up GPG keys
-  ansible.builtin.import_role:
-    name: gnupg_backup
+- name: Secrets_backup | Run configured backups
+  ansible.builtin.include_role:
+    name: "{{ item }}"
     tasks_from: backup.yml
-
-- name: Secrets_backup | Back up SSH keys and config
-  ansible.builtin.import_role:
-    name: ssh_backup
-    tasks_from: backup.yml
-
-- name: Secrets_backup | Back up NeoMutt aliases
-  ansible.builtin.import_role:
-    name: neomutt_backup
-    tasks_from: backup.yml
-
-- name: Secrets_backup | Back up Zsh history
-  ansible.builtin.import_role:
-    name: zsh_history_backup
-    tasks_from: backup.yml
-
-- name: Secrets_backup | Back up Atuin history
-  ansible.builtin.import_role:
-    name: atuin_backup
-    tasks_from: backup.yml
+  loop: "{{ secrets_backup_roles }}"
+  loop_control:
+    label: "{{ item }}"
 
 - name: Secrets_backup | Commit and push artifacts
   ansible.builtin.import_role:
     name: secrets
     tasks_from: commit.yml
-  vars:
-    secrets_backup_paths:
-      - "{{ gnupg_backup_path | relpath(secrets_directory) }}"
-      - "{{ ssh_backup_private_key_backup_path | relpath(secrets_directory) }}"
-      - "{{ ssh_backup_config_backup_path | relpath(secrets_directory) }}"
-      - "{{ ssh_backup_public_key_backup_path | relpath(secrets_directory) }}"
-      - "{{ neomutt_backup_mutt_alias_backup_path | relpath(secrets_directory) }}"
-      - "{{ zsh_history_backup_dir | relpath(secrets_directory) }}"
-      - "{{ atuin_backup_dir | relpath(secrets_directory) }}"
   when: not ansible_check_mode
