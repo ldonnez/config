@@ -14,11 +14,16 @@
         suffix: .asc
       register: gnupg_backup_tmp
 
-    - name: Export GPG secret and public keypair using gpg-agent
+    - name: Export GPG secret and public keypair
       ansible.builtin.command:
         argv:
           - gpg
+          - --batch
           - --yes
+          - --pinentry-mode
+          - loopback
+          - --passphrase-fd
+          - "0"
           - --armor
           - --export-secret-keys
           - --export-options
@@ -26,7 +31,10 @@
           - --output
           - "{{ gnupg_backup_tmp.path }}"
           - "{{ gnupg_backup_gpg_key_id }}"
+        stdin: "{{ lookup('ansible.builtin.unvault', gnupg_backup_vault_password_file_path) | string | trim }}"
+        stdin_add_newline: true
       changed_when: false
+      no_log: true
 
     - name: Encrypt GPG export
       ansible.builtin.import_role:
