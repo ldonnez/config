@@ -1,8 +1,7 @@
 ---
 # defaults file for neomutt_backup
 
-neomutt_backup_secrets_directory: "{{ ansible_facts.user_dir }}/.secrets"
-neomutt_backup_dir: "{{ neomutt_backup_secrets_directory }}"
-neomutt_backup_vault_password_file_path: "{{ neomutt_backup_dir }}/vault_password_file"
+neomutt_backup_dir: "{{ secrets_directory }}"
+neomutt_backup_vault_password_file_path: "{{ secrets_directory }}/vault_password_file"
 neomutt_backup_mutt_alias_path: "{{ ansible_facts.user_dir }}/.mutt-alias"
 neomutt_backup_mutt_alias_backup_path: "{{ neomutt_backup_dir }}/.mutt-alias.vault"
