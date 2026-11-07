@@ -1,0 +1,12 @@
+---
+- name: Encrypt backup with GPG
+  ansible.builtin.command:
+    argv:
+      - gpg
+      - --batch
+      - --yes
+      - --encrypt
+      - --default-recipient-self
+      - --output
+      - "{{ gpg_file_backup_destination }}"
+      - "{{ gpg_file_backup_source }}"
