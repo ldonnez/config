@@ -146,3 +146,17 @@ To restore secrets locally without cloning/updating the repository, run:
 ```zsh
 make restore-secrets-local
 ```
+
+## Ansible tests
+
+The backup roles have a local Molecule scenario that exercises SSH, GPG and Ansible Vault backups using temporary test data. It does not access real keys or the user's secrets repository.
+
+Install the development dependencies and run the tests with:
+
+```sh
+python -m pip install -r requirements-dev.txt
+ansible-galaxy collection install -r requirements.yml
+make test-ansible
+```
+
+The scenario uses a committed, test-only Vault password at `tests/molecule/vault-password`. It must never be used for real secrets. The same Molecule tests run in GitHub Actions on pull requests.
