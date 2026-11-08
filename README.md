@@ -155,7 +155,6 @@ Install the development dependencies and run the tests with:
 
 ```sh
 python -m pip install -r requirements-dev.txt
-ansible-galaxy collection install -r requirements.yml
 make test-ansible
 ```
 
