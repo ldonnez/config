@@ -1,0 +1,43 @@
+---
+- name: Prepare Vault backup fixtures
+  hosts: localhost
+  gather_facts: false
+  vars:
+    fixture_dir: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/vault-backup"
+    vault_password_file: "{{ lookup('env', 'MOLECULE_SCENARIO_DIRECTORY') }}/vault-password"
+  tasks:
+    - name: Create fixture directory
+      ansible.builtin.file:
+        path: "{{ fixture_dir }}"
+        state: directory
+        mode: "0700"
+
+    - name: Create backup password fixture
+      ansible.builtin.copy:
+        content: "backup-test-password"
+        dest: "{{ fixture_dir }}/backup-password"
+        mode: "0600"
+
+    - name: Encrypt backup password fixture
+      ansible.builtin.command:
+        argv:
+          - ansible-vault
+          - encrypt
+          - --vault-password-file
+          - "{{ vault_password_file }}"
+          - --output
+          - "{{ fixture_dir }}/backup-password.vault"
+          - "{{ fixture_dir }}/backup-password"
+      changed_when: true
+      no_log: true
+
+    - name: Remove plaintext backup password fixture
+      ansible.builtin.file:
+        path: "{{ fixture_dir }}/backup-password"
+        state: absent
+
+    - name: Create source fixture
+      ansible.builtin.copy:
+        content: "Molecule Vault backup fixture\n"
+        dest: "{{ fixture_dir }}/source.txt"
+        mode: "0600"
