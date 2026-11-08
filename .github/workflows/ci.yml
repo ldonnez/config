@@ -18,3 +18,5 @@ jobs:
         uses: ansible/ansible-lint@main
         with:
           requirements_file: "requirements.yml"
+      - name: Run syntax check
+        run: ansible-playbook --syntax-check backup.yml backup_secrets.yml restore_secrets.yml setup_debian.yml setup_macos.yml setup_wsl_ubuntu.yml
