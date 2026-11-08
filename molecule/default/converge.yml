@@ -1,0 +1,54 @@
+---
+- name: Exercise backup roles
+  hosts: localhost
+  gather_facts: true
+  vars:
+    test_root: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/fixtures"
+  environment:
+    GNUPGHOME: "{{ test_root }}/gnupg"
+  tasks:
+    - name: Run SSH backup role
+      ansible.builtin.import_role:
+        name: ssh_backup
+        tasks_from: backup.yml
+      vars:
+        ssh_backup_dir: "{{ test_root }}/backup/ssh"
+        ssh_backup_vault_password_file_path: "{{ test_root }}/passwords/ssh-password.vault"
+        ssh_backup_config_path: "{{ test_root }}/ssh/config"
+        ssh_backup_config_backup_path: "{{ test_root }}/backup/ssh/config.vault"
+        ssh_backup_keys:
+          - name: id_ed25519
+            private_key_path: "{{ test_root }}/ssh/id_ed25519"
+            public_key_path: "{{ test_root }}/ssh/id_ed25519.pub"
+          - name: existing
+            private_key_path: "{{ test_root }}/ssh/missing-private"
+            public_key_path: "{{ test_root }}/ssh/missing-public"
+
+    - name: Run GPG backup role
+      ansible.builtin.import_role:
+        name: gnupg_backup
+        tasks_from: backup.yml
+      vars:
+        gnupg_backup_dir: "{{ test_root }}/backup/gpg"
+        gnupg_backup_gpg_keys:
+          - id: molecule-test@example.invalid
+            gpg_key_password_file: "{{ test_root }}/passwords/gpg-password.vault"
+          - id: existing@example.invalid
+            gpg_key_password_file: "{{ test_root }}/passwords/gpg-password.vault"
+
+    - name: Exercise Vault backup encryption
+      ansible.builtin.import_role:
+        name: vault_backup
+        tasks_from: encrypt.yml
+      vars:
+        vault_backup_password_file: "{{ test_root }}/passwords/ssh-password.vault"
+        vault_backup_source: "{{ test_root }}/vault/source.txt"
+        vault_backup_destination: "{{ test_root }}/vault/source.txt.vault"
+
+    - name: Exercise Vault backup decryption
+      ansible.builtin.import_role:
+        name: vault_backup
+        tasks_from: decrypt.yml
+      vars:
+        vault_backup_source: "{{ test_root }}/vault/source.txt.vault"
+        vault_backup_destination: "{{ test_root }}/vault/decrypted.txt"
