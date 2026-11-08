@@ -1,0 +1,9 @@
+---
+- name: Remove GPG backup fixtures
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Remove fixture directory
+      ansible.builtin.file:
+        path: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/gpg-file-backup"
+        state: absent
