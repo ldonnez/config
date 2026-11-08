@@ -1,5 +1,11 @@
 ---
+- name: Check existing GPG key backup {{ gnupg_backup_key.id }}
+  ansible.builtin.stat:
+    path: "{{ gnupg_backup_dir }}/{{ gnupg_backup_key.id }}.asc.vault"
+  register: gnupg_backup_existing
+
 - name: Check GPG key {{ gnupg_backup_key.id }}
+  when: not gnupg_backup_existing.stat.exists
   ansible.builtin.command:
     argv:
       - gpg
@@ -13,12 +19,17 @@
   check_mode: false
 
 - name: Warn when GPG key is missing {{ gnupg_backup_key.id }}
-  when: gnupg_backup_key_check.rc != 0 or 'sec:' not in gnupg_backup_key_check.stdout
+  when:
+    - not gnupg_backup_existing.stat.exists
+    - gnupg_backup_key_check.rc != 0 or 'sec:' not in gnupg_backup_key_check.stdout
   ansible.builtin.debug:
     msg: "Skipping GPG key backup for {{ gnupg_backup_key.id }}: key not found"
 
 - name: Secure GPG key backup for {{ gnupg_backup_key.id }}
-  when: gnupg_backup_key_check.rc == 0 and 'sec:' in gnupg_backup_key_check.stdout
+  when:
+    - not gnupg_backup_existing.stat.exists
+    - gnupg_backup_key_check.rc == 0
+    - "'sec:' in gnupg_backup_key_check.stdout"
   block:
     - name: Create temporary GPG export file
       ansible.builtin.tempfile:
