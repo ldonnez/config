@@ -2,4 +2,3 @@
 # defaults file for gnupg_backup
 
 gnupg_backup_dir: "{{ secrets_directory }}"
-gnupg_backup_vault_password_file_path: "{{ secrets_directory }}/vault_password_file"

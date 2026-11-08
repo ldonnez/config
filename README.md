@@ -107,13 +107,25 @@ make backup-secrets
 
 This runs **backup_secrets.yml**, which updates the secrets repository and backs up the GPG keys, SSH keys and config, `.mutt-alias`, `.zsh_history` and Atuin history. It prompts for the become and vault passwords automatically (`--ask-vault-pass -K`), then commits and pushes the changes to the secrets repository.
 
+Each GPG key backup specifies its own Vault-encrypted GPG key password file in `gnupg_backup_gpg_keys`. For example:
+
+```yaml
+gnupg_backup_gpg_keys:
+  - id: key-one@example.com
+    gpg_key_password_file: "{{ secrets_directory }}/key-one-password"
+  - id: key-two@example.com
+    gpg_key_password_file: "{{ secrets_directory }}/key-two-password"
+```
+
+Each file must contain that key's GPG passphrase and be encrypted with Ansible Vault. The Vault password entered at the prompt decrypts the file; the resulting passphrase unlocks the corresponding GPG key and is also used to encrypt its exported backup. The configured file path is per key, so different keys can use different passphrases.
+
 To back up secrets locally without cloning/updating the repository or committing/pushing changes, run:
 
 ```zsh
 make backup-secrets-local
 ```
 
-This runs the same backup tasks but writes directly to the existing `~/.secrets` directory. The directory and its Vault password file must already exist. Git operations are disabled; no changes are staged, committed or pushed.
+This runs the same backup tasks but writes directly to the existing `~/.secrets` directory. The directory and its Vault password files must already exist. Git operations are disabled; no changes are staged, committed or pushed.
 
 Timestamped backups (`.mutt-alias`, `.zsh_history` and Atuin history) keep the newest 10 by default. Set `keep` on a `secret_file_backup` item or `atuin_backup_keep` to change this; `0` keeps all backups.
 

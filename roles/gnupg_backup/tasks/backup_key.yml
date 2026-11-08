@@ -1,23 +1,23 @@
 ---
-- name: Check GPG key {{ gnupg_backup_key_id }}
+- name: Check GPG key {{ gnupg_backup_key.id }}
   ansible.builtin.command:
     argv:
       - gpg
       - --batch
       - --list-secret-keys
       - --with-colons
-      - "{{ gnupg_backup_key_id }}"
+      - "{{ gnupg_backup_key.id }}"
   register: gnupg_backup_key_check
   changed_when: false
   failed_when: false
   check_mode: false
 
-- name: Warn when GPG key is missing {{ gnupg_backup_key_id }}
+- name: Warn when GPG key is missing {{ gnupg_backup_key.id }}
   when: gnupg_backup_key_check.rc != 0 or 'sec:' not in gnupg_backup_key_check.stdout
   ansible.builtin.debug:
-    msg: "Skipping GPG key backup for {{ gnupg_backup_key_id }}: key not found"
+    msg: "Skipping GPG key backup for {{ gnupg_backup_key.id }}: key not found"
 
-- name: Secure GPG key backup for {{ gnupg_backup_key_id }}
+- name: Secure GPG key backup for {{ gnupg_backup_key.id }}
   when: gnupg_backup_key_check.rc == 0 and 'sec:' in gnupg_backup_key_check.stdout
   block:
     - name: Create temporary GPG export file
@@ -42,8 +42,8 @@
           - backup
           - --output
           - "{{ gnupg_backup_tmp.path }}"
-          - "{{ gnupg_backup_key_id }}"
-        stdin: "{{ lookup('ansible.builtin.unvault', gnupg_backup_vault_password_file_path) | string | trim }}"
+          - "{{ gnupg_backup_key.id }}"
+        stdin: "{{ lookup('ansible.builtin.unvault', gnupg_backup_key.gpg_key_password_file) | string | trim }}"
         stdin_add_newline: true
       changed_when: false
       no_log: true
@@ -53,9 +53,9 @@
         name: vault_backup
         tasks_from: encrypt.yml
       vars:
-        vault_backup_password_file: "{{ gnupg_backup_vault_password_file_path }}"
+        vault_backup_password_file: "{{ gnupg_backup_key.gpg_key_password_file }}"
         vault_backup_source: "{{ gnupg_backup_tmp.path }}"
-        vault_backup_destination: "{{ gnupg_backup_dir }}/{{ gnupg_backup_key_id }}.asc.vault"
+        vault_backup_destination: "{{ gnupg_backup_dir }}/{{ gnupg_backup_key.id }}.asc.vault"
 
   always:
     - name: Remove temporary GPG export
