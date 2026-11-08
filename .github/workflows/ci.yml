@@ -20,3 +20,11 @@ jobs:
           requirements_file: "requirements.yml"
       - name: Run syntax check
         run: ansible-playbook --syntax-check backup.yml backup_secrets.yml restore_secrets.yml setup_debian.yml setup_macos.yml setup_wsl_ubuntu.yml
+
+  vault-backup:
+    name: vault-backup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Run Molecule tests
+        run: make test-vault-backup
