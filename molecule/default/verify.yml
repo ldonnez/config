@@ -1,0 +1,136 @@
+---
+- name: Verify backup role behavior
+  hosts: localhost
+  gather_facts: false
+  vars:
+    test_root: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/fixtures"
+  tasks:
+    - name: Check expected backup files
+      ansible.builtin.stat:
+        path: "{{ item }}"
+      loop:
+        - "{{ test_root }}/backup/ssh/id_ed25519.vault"
+        - "{{ test_root }}/backup/ssh/id_ed25519.pub"
+        - "{{ test_root }}/backup/ssh/config.vault"
+        - "{{ test_root }}/backup/gpg/molecule-test@example.invalid.asc.vault"
+        - "{{ test_root }}/vault/source.txt.vault"
+        - "{{ test_root }}/vault/decrypted.txt"
+      register: backup_files
+
+    - name: Assert backup files exist
+      ansible.builtin.assert:
+        that:
+          - item.stat.exists
+          - item.stat.isreg
+      loop: "{{ backup_files.results }}"
+      loop_control:
+        label: "{{ item.stat.path }}"
+
+    - name: Assert existing SSH backups were preserved
+      ansible.builtin.assert:
+        that:
+          - lookup('ansible.builtin.file', test_root + '/backup/ssh/existing.vault') == 'preserve-existing-private-backup\n'
+          - lookup('ansible.builtin.file', test_root + '/backup/ssh/existing.pub') == 'preserve-existing-public-backup\n'
+
+    - name: Assert existing GPG backup was preserved
+      ansible.builtin.assert:
+        that:
+          - lookup('ansible.builtin.file', test_root + '/backup/gpg/existing@example.invalid.asc.vault') == 'preserve-existing-gpg-backup\n'
+
+    - name: Decrypt SSH private key backup
+      ansible.builtin.command:
+        argv:
+          - ansible-vault
+          - decrypt
+          - --vault-password-file
+          - "{{ test_root }}/passwords/backup-password"
+          - --output
+          - "{{ test_root }}/ssh/private-key-restored"
+          - "{{ test_root }}/backup/ssh/id_ed25519.vault"
+      changed_when: false
+
+    - name: Compare restored SSH private key
+      ansible.builtin.command:
+        argv:
+          - cmp
+          - "{{ test_root }}/ssh/id_ed25519"
+          - "{{ test_root }}/ssh/private-key-restored"
+      changed_when: false
+
+    - name: Compare copied SSH public key
+      ansible.builtin.command:
+        argv:
+          - cmp
+          - "{{ test_root }}/ssh/id_ed25519.pub"
+          - "{{ test_root }}/backup/ssh/id_ed25519.pub"
+      changed_when: false
+
+    - name: Decrypt SSH config backup
+      ansible.builtin.command:
+        argv:
+          - ansible-vault
+          - decrypt
+          - --vault-password-file
+          - "{{ test_root }}/passwords/backup-password"
+          - --output
+          - "{{ test_root }}/ssh/config-restored"
+          - "{{ test_root }}/backup/ssh/config.vault"
+      changed_when: false
+
+    - name: Compare restored SSH config
+      ansible.builtin.command:
+        argv:
+          - cmp
+          - "{{ test_root }}/ssh/config"
+          - "{{ test_root }}/ssh/config-restored"
+      changed_when: false
+
+    - name: Decrypt GPG key backup
+      ansible.builtin.command:
+        argv:
+          - ansible-vault
+          - decrypt
+          - --vault-password-file
+          - "{{ test_root }}/passwords/backup-password"
+          - --output
+          - "{{ test_root }}/gnupg-export.asc"
+          - "{{ test_root }}/backup/gpg/molecule-test@example.invalid.asc.vault"
+      changed_when: false
+
+    - name: Import restored GPG key
+      ansible.builtin.command:
+        argv:
+          - gpg
+          - --batch
+          - --import
+          - "{{ test_root }}/gnupg-export.asc"
+      environment:
+        GNUPGHOME: "{{ test_root }}/gnupg-restore"
+      changed_when: false
+
+    - name: Check restored GPG secret key
+      ansible.builtin.command:
+        argv:
+          - gpg
+          - --batch
+          - --list-secret-keys
+          - --with-colons
+          - molecule-test@example.invalid
+      environment:
+        GNUPGHOME: "{{ test_root }}/gnupg-restore"
+      register: restored_gpg_key
+      changed_when: false
+
+    - name: Assert GPG secret key was restored
+      ansible.builtin.assert:
+        that:
+          - restored_gpg_key.rc == 0
+          - "'sec:' in restored_gpg_key.stdout"
+
+    - name: Compare Vault round-trip output
+      ansible.builtin.command:
+        argv:
+          - cmp
+          - "{{ test_root }}/vault/source.txt"
+          - "{{ test_root }}/vault/decrypted.txt"
+      changed_when: false
