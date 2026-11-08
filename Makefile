@@ -4,7 +4,7 @@ SHELL := /bin/bash
 # Harmless if these don't exist; needed for pipx (~/.local/bin) and fresh Apple Silicon brew
 export PATH := $(HOME)/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:$(PATH)
 
-.PHONY: collections setup-macos setup-debian setup-wsl-ubuntu update-macos update-debian update-wsl-ubuntu backup lint backup-secrets backup-secrets-local restore-secrets restore-secrets-local
+.PHONY: collections setup-macos setup-debian setup-wsl-ubuntu update-macos update-debian update-wsl-ubuntu backup lint backup-secrets backup-secrets-local restore-secrets restore-secrets-local test-vault-backup
 
 collections:
 	ansible-galaxy collection install -r requirements.yml --upgrade
@@ -65,3 +65,6 @@ restore-secrets-local: collections
 
 lint:
 	ansible-lint
+
+test-vault-backup:
+	docker run --rm --volume "$(CURDIR):/workspace" --workdir /workspace/roles/vault_backup ghcr.io/ansible/community-ansible-dev-tools:latest molecule test
