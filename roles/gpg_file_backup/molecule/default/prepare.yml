@@ -1,0 +1,41 @@
+---
+- name: Prepare GPG backup fixtures
+  hosts: localhost
+  gather_facts: false
+  vars:
+    fixture_dir: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/gpg-file-backup"
+    gpg_home: "{{ fixture_dir }}/gnupg"
+  environment:
+    GNUPGHOME: "{{ gpg_home }}"
+  tasks:
+    - name: Create GPG home directory
+      ansible.builtin.file:
+        path: "{{ gpg_home }}"
+        state: directory
+        mode: "0700"
+
+    - name: Generate temporary test key
+      ansible.builtin.command:
+        argv:
+          - gpg
+          - --batch
+          - --passphrase
+          - ""
+          - --quick-generate-key
+          - Molecule Test <molecule@example.invalid>
+          - default
+          - default
+          - 1d
+      changed_when: true
+
+    - name: Configure default GPG key
+      ansible.builtin.copy:
+        content: "default-key molecule@example.invalid\n"
+        dest: "{{ gpg_home }}/gpg.conf"
+        mode: "0600"
+
+    - name: Create source fixture
+      ansible.builtin.copy:
+        content: "Molecule GPG backup fixture\n"
+        dest: "{{ fixture_dir }}/source.txt"
+        mode: "0600"
