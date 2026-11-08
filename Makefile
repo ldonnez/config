@@ -67,4 +67,4 @@ lint:
 	ansible-lint
 
 test-ansible:
-	molecule test
+	ANSIBLE_ROLES_PATH="$(CURDIR)/roles" molecule test
