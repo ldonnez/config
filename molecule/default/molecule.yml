@@ -12,7 +12,7 @@ platforms:
 provisioner:
   name: ansible
   options:
-    vault_password_file: tests/molecule/vault-password
+    vault_password_file: ../../tests/molecule/vault-password
   playbooks:
     prepare: prepare.yml
     converge: converge.yml
