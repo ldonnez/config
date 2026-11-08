@@ -1,0 +1,21 @@
+---
+- name: Verify Vault backup round trip
+  hosts: localhost
+  gather_facts: false
+  vars:
+    fixture_dir: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/vault-backup"
+  tasks:
+    - name: Read original fixture
+      ansible.builtin.slurp:
+        src: "{{ fixture_dir }}/source.txt"
+      register: original
+
+    - name: Read restored fixture
+      ansible.builtin.slurp:
+        src: "{{ fixture_dir }}/restored.txt"
+      register: restored
+
+    - name: Verify restored content matches original
+      ansible.builtin.assert:
+        that:
+          - restored.content == original.content
