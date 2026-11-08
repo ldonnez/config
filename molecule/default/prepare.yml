@@ -80,7 +80,6 @@
           - "{{ test_root }}/passwords/ssh-password.vault"
           - "{{ test_root }}/passwords/backup-password"
       changed_when: false
-      no_log: true
 
     - name: Encrypt GPG backup password fixture
       ansible.builtin.command:
@@ -93,7 +92,6 @@
           - "{{ test_root }}/passwords/gpg-password.vault"
           - "{{ test_root }}/passwords/backup-password"
       changed_when: false
-      no_log: true
 
     - name: Create Vault round-trip source fixture
       ansible.builtin.copy:
