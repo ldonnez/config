@@ -32,7 +32,7 @@ Make sure to check vars in `setup_wsl_ubuntu.yml`.
   ```powershell
   wsl --install
   ```
-- Then install the desired Ubuntu distro (replace version as needed):
+- Then install the desired Ubuntu distro (replace version as needed)
 
   ```powershell
   wsl --install -d Ubuntu-24.04
@@ -43,11 +43,11 @@ Make sure to check vars in `setup_wsl_ubuntu.yml`.
   You can list available versions with:
 
   ```powershell
-   wsl --list --online
+  wsl --list --online
   ```
 
 - Launch the installed distro from the Start menu or with Windows Terminal, create your Linux user, and let it finish initial setup
-- To ensure network compatibility (especially for services that require bridged/mirrored networking like corporate VPN's), create or edit the `.wslconfig` file in your Windows user home directory (C:\Users\\\<YourUsername>\\\.wslconfig) and add the following:
+- To ensure network compatibility (especially for services that require bridged/mirrored networking like corporate VPN's), create or edit the `.wslconfig` file in your Windows user home directory (C:\\Users\\<YourUsername>\\.wslconfig) and add the following:
 
   ```shell
   [wsl2]
@@ -107,6 +107,14 @@ make backup-secrets
 
 This runs **backup_secrets.yml**, which updates the secrets repository and backs up the GPG keys, SSH keys and config, `.mutt-alias`, `.zsh_history` and Atuin history. It prompts for the become and vault passwords automatically (`--ask-vault-pass -K`), then commits and pushes the changes to the secrets repository.
 
+To back up secrets locally without cloning/updating the repository or committing/pushing changes, run:
+
+```zsh
+make backup-secrets-local
+```
+
+This runs the same backup tasks but writes directly to the existing `~/.secrets` directory. The directory and its Vault password file must already exist. Git operations are disabled; no changes are staged, committed or pushed.
+
 Timestamped backups (`.mutt-alias`, `.zsh_history` and Atuin history) keep the newest 10 by default. Set `keep` on a `secret_file_backup` item or `atuin_backup_keep` to change this; `0` keeps all backups.
 
 Backups whose source is missing are skipped with a warning, and the remaining backups continue.
@@ -120,3 +128,9 @@ make restore-secrets
 ```
 
 This runs **restore_secrets.yml**, which updates the secrets repository and restores the SSH keys and config, `.mutt-alias`, `.zsh_history`, GPG keys and Atuin history. It prompts for the become and vault passwords automatically (`--ask-vault-pass -K`).
+
+To restore secrets locally without cloning/updating the repository, run:
+
+```zsh
+make restore-secrets-local
+```
