@@ -1,0 +1,33 @@
+---
+prerun: false
+
+driver:
+  name: default
+  options:
+    managed: false
+    ansible_connection_options:
+      ansible_connection: local
+
+platforms:
+  - name: localhost
+
+provisioner:
+  name: ansible
+  options:
+    vault_password_file: ${MOLECULE_SCENARIO_DIRECTORY}/vault-password
+  playbooks:
+    prepare: prepare.yml
+    converge: converge.yml
+    verify: verify.yml
+    cleanup: cleanup.yml
+
+verifier:
+  name: ansible
+
+scenario:
+  test_sequence:
+    - syntax
+    - prepare
+    - converge
+    - verify
+    - cleanup
