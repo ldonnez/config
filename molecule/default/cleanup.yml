@@ -1,0 +1,9 @@
+---
+- name: Remove backup role test fixtures
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Remove Molecule fixture directory
+      ansible.builtin.file:
+        path: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/fixtures"
+        state: absent
