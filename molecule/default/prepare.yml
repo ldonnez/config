@@ -75,7 +75,7 @@
           - ansible-vault
           - encrypt
           - --vault-password-file
-          - {{ lookup('env', 'ANSIBLE_VAULT_PASSWORD_FILE') }}
+          - "{{ lookup('env', 'ANSIBLE_VAULT_PASSWORD_FILE') }}"
           - --output
           - "{{ test_root }}/passwords/ssh-password.vault"
           - "{{ test_root }}/passwords/backup-password"
@@ -88,7 +88,7 @@
           - ansible-vault
           - encrypt
           - --vault-password-file
-          - {{ lookup('env', 'ANSIBLE_VAULT_PASSWORD_FILE') }}
+          - "{{ lookup('env', 'ANSIBLE_VAULT_PASSWORD_FILE') }}"
           - --output
           - "{{ test_root }}/passwords/gpg-password.vault"
           - "{{ test_root }}/passwords/backup-password"
