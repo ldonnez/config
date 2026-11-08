@@ -8,14 +8,14 @@
     - name: Read original fixture
       ansible.builtin.slurp:
         src: "{{ fixture_dir }}/source.txt"
-      register: original
+      register: vault_backup_original
 
     - name: Read restored fixture
       ansible.builtin.slurp:
         src: "{{ fixture_dir }}/restored.txt"
-      register: restored
+      register: vault_backup_restored
 
     - name: Verify restored content matches original
       ansible.builtin.assert:
         that:
-          - restored.content == original.content
+          - vault_backup_restored.content == vault_backup_original.content
