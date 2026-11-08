@@ -4,7 +4,7 @@
   gather_facts: false
   vars:
     test_root: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/fixtures"
-    test_password: backup-test-password
+    test_password: molecule-test-only
   tasks:
     - name: Create fixture directories
       ansible.builtin.file:
@@ -94,6 +94,12 @@
           - "{{ test_root }}/passwords/backup-password"
       changed_when: false
       no_log: true
+
+    - name: Create Vault round-trip source fixture
+      ansible.builtin.copy:
+        content: "vault backup round-trip test\\n"
+        dest: "{{ test_root }}/vault/source.txt"
+        mode: "0600"
 
     - name: Create existing SSH private backup fixture
       ansible.builtin.copy:
