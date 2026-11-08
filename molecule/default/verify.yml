@@ -29,13 +29,13 @@
     - name: Assert existing SSH backups were preserved
       ansible.builtin.assert:
         that:
-          - lookup('ansible.builtin.file', test_root + '/backup/ssh/existing.vault') == 'preserve-existing-private-backup\n'
-          - lookup('ansible.builtin.file', test_root + '/backup/ssh/existing.pub') == 'preserve-existing-public-backup\n'
+          - lookup('ansible.builtin.file', test_root + '/backup/ssh/existing.vault') == 'preserve-existing-private-backup'
+          - lookup('ansible.builtin.file', test_root + '/backup/ssh/existing.pub') == 'preserve-existing-public-backup'
 
     - name: Assert existing GPG backup was preserved
       ansible.builtin.assert:
         that:
-          - lookup('ansible.builtin.file', test_root + '/backup/gpg/existing@example.invalid.asc.vault') == 'preserve-existing-gpg-backup\n'
+          - lookup('ansible.builtin.file', test_root + '/backup/gpg/existing@example.invalid.asc.vault') == 'preserve-existing-gpg-backup'
 
     - name: Decrypt SSH private key backup
       ansible.builtin.command:
