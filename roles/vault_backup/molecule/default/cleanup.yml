@@ -1,0 +1,9 @@
+---
+- name: Remove Vault backup fixtures
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Remove fixture directory
+      ansible.builtin.file:
+        path: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/vault-backup"
+        state: absent
