@@ -14,7 +14,7 @@
 
     - name: Create backup password fixture
       ansible.builtin.copy:
-        content: "backup-test-password"
+        content: "molecule-test-only"
         dest: "{{ fixture_dir }}/backup-password"
         mode: "0600"
 
