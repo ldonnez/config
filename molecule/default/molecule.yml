@@ -16,8 +16,6 @@ provisioner:
     converge: converge.yml
     verify: verify.yml
     cleanup: cleanup.yml
-  env:
-    ANSIBLE_VAULT_PASSWORD_FILE: tests/molecule/vault-password
 
 verifier:
   name: ansible
