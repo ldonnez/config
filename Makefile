@@ -67,4 +67,4 @@ lint:
 	ansible-lint
 
 test-ansible:
-	molecule test
+	ANSIBLE_VAULT_PASSWORD_FILE="$(CURDIR)/tests/molecule/vault-password" molecule test
