@@ -1,0 +1,22 @@
+---
+- name: Test Vault backup encryption and decryption
+  hosts: localhost
+  gather_facts: false
+  vars:
+    fixture_dir: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/vault-backup"
+    role_directory: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}"
+  tasks:
+    - name: Encrypt source fixture
+      ansible.builtin.include_tasks:
+        file: "{{ role_directory }}/tasks/encrypt.yml"
+      vars:
+        vault_backup_source: "{{ fixture_dir }}/source.txt"
+        vault_backup_destination: "{{ fixture_dir }}/source.txt.vault"
+        vault_backup_password_file: "{{ fixture_dir }}/backup-password.vault"
+
+    - name: Decrypt encrypted fixture
+      ansible.builtin.include_tasks:
+        file: "{{ role_directory }}/tasks/decrypt.yml"
+      vars:
+        vault_backup_source: "{{ fixture_dir }}/source.txt.vault"
+        vault_backup_destination: "{{ fixture_dir }}/restored.txt"
