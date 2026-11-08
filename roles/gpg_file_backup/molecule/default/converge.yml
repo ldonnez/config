@@ -1,0 +1,23 @@
+---
+- name: Test GPG backup encryption and decryption
+  hosts: localhost
+  gather_facts: false
+  vars:
+    fixture_dir: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/gpg-file-backup"
+    role_directory: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}"
+  environment:
+    GNUPGHOME: "{{ fixture_dir }}/gnupg"
+  tasks:
+    - name: Encrypt source fixture
+      ansible.builtin.include_tasks:
+        file: "{{ role_directory }}/tasks/encrypt.yml"
+      vars:
+        gpg_file_backup_source: "{{ fixture_dir }}/source.txt"
+        gpg_file_backup_destination: "{{ fixture_dir }}/source.txt.gpg"
+
+    - name: Decrypt encrypted fixture
+      ansible.builtin.include_tasks:
+        file: "{{ role_directory }}/tasks/decrypt.yml"
+      vars:
+        gpg_file_backup_source: "{{ fixture_dir }}/source.txt.gpg"
+        gpg_file_backup_destination: "{{ fixture_dir }}/restored.txt"
