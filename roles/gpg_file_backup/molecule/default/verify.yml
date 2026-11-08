@@ -1,0 +1,27 @@
+---
+- name: Verify GPG backup round trip
+  hosts: localhost
+  gather_facts: false
+  vars:
+    fixture_dir: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/gpg-file-backup"
+  tasks:
+    - name: Check encrypted backup exists
+      ansible.builtin.stat:
+        path: "{{ fixture_dir }}/source.txt.gpg"
+      register: gpg_file_backup_encrypted
+
+    - name: Read original fixture
+      ansible.builtin.slurp:
+        src: "{{ fixture_dir }}/source.txt"
+      register: gpg_file_backup_original
+
+    - name: Read restored fixture
+      ansible.builtin.slurp:
+        src: "{{ fixture_dir }}/restored.txt"
+      register: gpg_file_backup_restored
+
+    - name: Verify encrypted backup and restored content
+      ansible.builtin.assert:
+        that:
+          - gpg_file_backup_encrypted.stat.exists
+          - gpg_file_backup_restored.content == gpg_file_backup_original.content
