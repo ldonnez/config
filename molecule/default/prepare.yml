@@ -1,0 +1,114 @@
+---
+- name: Prepare backup role test fixtures
+  hosts: localhost
+  gather_facts: false
+  vars:
+    test_root: "{{ lookup('env', 'MOLECULE_EPHEMERAL_DIRECTORY') }}/fixtures"
+    test_password: backup-test-password
+  tasks:
+    - name: Create fixture directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: "0700"
+      loop:
+        - "{{ test_root }}/ssh"
+        - "{{ test_root }}/backup/ssh"
+        - "{{ test_root }}/backup/gpg"
+        - "{{ test_root }}/gnupg"
+        - "{{ test_root }}/gnupg-restore"
+        - "{{ test_root }}/passwords"
+        - "{{ test_root }}/vault"
+
+    - name: Create SSH test key
+      ansible.builtin.command:
+        argv:
+          - ssh-keygen
+          - -q
+          - -t
+          - ed25519
+          - -N
+          - ""
+          - -f
+          - "{{ test_root }}/ssh/id_ed25519"
+      args:
+        creates: "{{ test_root }}/ssh/id_ed25519"
+      changed_when: false
+
+    - name: Create SSH config fixture
+      ansible.builtin.copy:
+        content: "Host molecule-test\n  HostName example.invalid\n"
+        dest: "{{ test_root }}/ssh/config"
+        mode: "0600"
+
+    - name: Create GPG test key
+      ansible.builtin.command:
+        argv:
+          - gpg
+          - --batch
+          - --pinentry-mode
+          - loopback
+          - --passphrase-fd
+          - "0"
+          - --quick-generate-key
+          - molecule-test@example.invalid
+          - ed25519
+          - sign
+          - "0"
+        stdin: "{{ test_password }}"
+        stdin_add_newline: true
+      environment:
+        GNUPGHOME: "{{ test_root }}/gnupg"
+      changed_when: false
+      no_log: true
+
+    - name: Create plaintext backup password fixture
+      ansible.builtin.copy:
+        content: "{{ test_password }}\n"
+        dest: "{{ test_root }}/passwords/backup-password"
+        mode: "0600"
+      no_log: true
+
+    - name: Encrypt SSH backup password fixture
+      ansible.builtin.command:
+        argv:
+          - ansible-vault
+          - encrypt
+          - --vault-password-file
+          - tests/molecule/vault-password
+          - --output
+          - "{{ test_root }}/passwords/ssh-password.vault"
+          - "{{ test_root }}/passwords/backup-password"
+      changed_when: false
+      no_log: true
+
+    - name: Encrypt GPG backup password fixture
+      ansible.builtin.command:
+        argv:
+          - ansible-vault
+          - encrypt
+          - --vault-password-file
+          - tests/molecule/vault-password
+          - --output
+          - "{{ test_root }}/passwords/gpg-password.vault"
+          - "{{ test_root }}/passwords/backup-password"
+      changed_when: false
+      no_log: true
+
+    - name: Create existing SSH private backup fixture
+      ansible.builtin.copy:
+        content: "preserve-existing-private-backup\n"
+        dest: "{{ test_root }}/backup/ssh/existing.vault"
+        mode: "0600"
+
+    - name: Create existing SSH public backup fixture
+      ansible.builtin.copy:
+        content: "preserve-existing-public-backup\n"
+        dest: "{{ test_root }}/backup/ssh/existing.pub"
+        mode: "0600"
+
+    - name: Create existing GPG backup fixture
+      ansible.builtin.copy:
+        content: "preserve-existing-gpg-backup\n"
+        dest: "{{ test_root }}/backup/gpg/existing@example.invalid.asc.vault"
+        mode: "0600"
