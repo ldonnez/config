@@ -1,0 +1,31 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Check the fzf repository
+      ansible.builtin.stat:
+        path: "{{ ansible_facts.user_dir }}/.fzf/.git"
+      register: fzf_repo
+
+    - name: Check the fzf binary
+      ansible.builtin.stat:
+        path: "{{ ansible_facts.user_dir }}/.fzf/bin/fzf"
+      register: fzf_bin
+
+    - name: Read the fzf version
+      ansible.builtin.command:
+        cmd: "{{ ansible_facts.user_dir }}/.fzf/bin/fzf --version"
+      register: fzf_version
+      changed_when: false
+
+    - name: Assert fzf is installed
+      ansible.builtin.assert:
+        that:
+          - fzf_repo.stat.exists
+          - fzf_repo.stat.isdir
+          - fzf_bin.stat.exists
+          - fzf_bin.stat.executable
+          - fzf_version.rc == 0
+          - fzf_version.stdout | length > 0
+        fail_msg: "fzf was not installed correctly in {{ ansible_facts.user_dir }}/.fzf"
+        success_msg: "fzf repository and binary are installed"

@@ -8,6 +8,28 @@ This is mostly for my own usage.
 
 Ansible playbooks **setup_macos.yml** and **setup_debian.yml** includes the **secrets** role which installs vault encrypted (`ansible-vault encrypt <filename>`) files from a repository cloned to `~/.secrets`. The `make setup-macos` and `make setup-debian` targets prompt for both the vault and become passwords automatically (`--ask-vault-pass -K`).
 
+## Testing
+
+Molecule scenarios live in `molecule/`. Install ansible-core, ansible-lint, molecule and the Docker plugin with pipx:
+
+```zsh
+make molecule
+```
+
+Then run every scenario on Debian 13, Ubuntu 24.04 and Ubuntu 26.04:
+
+```zsh
+make test
+```
+
+To run a single role's scenario, pass its name with `ROLE`:
+
+```zsh
+make test ROLE=dotfiles
+```
+
+All scenarios share the container image definition in `molecule/Dockerfile.j2`.
+
 ## Setup macOS
 
 - When running from fresh install run `xcode-select --install` to install minimal tools like git etc

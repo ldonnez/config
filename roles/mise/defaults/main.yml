@@ -3,14 +3,14 @@
 
 mise_tools:
   - name: "nodejs"
-    apt_dependencies: []
+    apt_dependencies: ["libatomic1"]
     homebrew_dependencies: []
     versions:
       - latest
     global_version: latest
 
   - name: "ruby"
-    apt_dependencies: ["libssl-dev", "libyaml-dev"]
+    apt_dependencies: ["build-essential", "libssl-dev", "libyaml-dev"]
     homebrew_dependencies: []
     versions:
       - latest

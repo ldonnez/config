@@ -1,0 +1,40 @@
+---
+- name: Verify
+  hosts: all
+  vars:
+    pipx_bin: "{{ ansible_facts.user_dir }}/.local/bin/pipx"
+  tasks:
+    - name: Check the pipx binaries
+      ansible.builtin.stat:
+        path: "{{ item }}"
+      loop:
+        - "{{ pipx_bin }}"
+        - "{{ ansible_facts.user_dir }}/.local/bin/pycowsay"
+      register: pipx_binaries
+
+    - name: Check that the apt pipx is not installed
+      ansible.builtin.stat:
+        path: /usr/bin/pipx
+      register: apt_pipx
+
+    - name: Read the pipx version
+      ansible.builtin.command:
+        cmd: "{{ pipx_bin }} --version"
+      register: pipx_version
+      changed_when: false
+
+    - name: List the pipx packages
+      ansible.builtin.command:
+        cmd: "{{ pipx_bin }} list --short"
+      register: pipx_packages
+      changed_when: false
+
+    - name: Assert the pip role installed pipx and the configured packages
+      ansible.builtin.assert:
+        that:
+          - pipx_binaries.results | selectattr('stat.exists') | list | length == 2
+          - not apt_pipx.stat.exists
+          - pipx_version.stdout is search('[0-9]+[.][0-9]+')
+          - pipx_packages.stdout is search('pycowsay')
+        fail_msg: "The pip role did not install pipx or pycowsay"
+        success_msg: "The pip role installed pipx and pycowsay"

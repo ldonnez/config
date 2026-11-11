@@ -22,7 +22,11 @@
   ansible.builtin.uri:
     url: "https://api.github.com/repos/neovim/neovim/releases/latest"
     return_content: true
+    status_code:
+      - 200
+      - 403
   register: neovim_latest_release
+  failed_when: neovim_latest_release.status not in [200, 403]
   when: ansible_facts.os_family == "Debian"
   tags:
     - install
@@ -32,6 +36,7 @@
   become: true
   when:
     - ansible_facts.os_family == "Debian"
+    - neovim_latest_release.status == 200
     - not neovim_bin.stat.exists or neovim_latest_release.json.tag_name != neovim_current_version.stdout_lines[0].split()[1]
   tags:
     - install
@@ -47,6 +52,7 @@
             "unzip",
             "curl",
             "build-essential",
+            "file",
           ]
         state: present
 

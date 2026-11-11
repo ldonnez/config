@@ -1,4 +1,21 @@
 ---
+- name: Install git with apt
+  become: true
+  ansible.builtin.apt:
+    name: git
+    state: present
+  when: ansible_facts.os_family == "Debian"
+  tags:
+    - install
+
+- name: Install git with homebrew
+  community.general.homebrew:
+    name: git
+    state: present
+  when: ansible_facts.os_family == "Darwin"
+  tags:
+    - install
+
 - name: Check if dotfiles already exists
   ansible.builtin.stat:
     path: "{{ dotfiles_directory_path }}"
@@ -6,7 +23,7 @@
   tags:
     - install
 
-- name: Clone dotfiles into dotfiles if not exists
+- name: Clone dotfiles if it does not exist
   when: not dotfiles_directory.stat.exists
   ansible.builtin.git:
     repo: "{{ dotfiles_repo }}"

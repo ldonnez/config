@@ -16,7 +16,8 @@
     - install
 
 - name: Install neovim plugins from nvim-pack-lock.json file
-  ansible.builtin.command: nvim --headless "+lua vim.pack.update(nil, { target = "lockfile" })" +qa
+  ansible.builtin.command: nvim --headless "+lua vim.pack.update(nil, { target = \"lockfile\" })" +qa
+  changed_when: false
   tags:
     - install
 
@@ -41,5 +42,6 @@
 
 - name: Update neovim plugins
   ansible.builtin.command: nvim --headless "+lua vim.pack.update(nil, { force = true })" +qa
+  changed_when: false
   tags:
     - update

@@ -1,0 +1,13 @@
+---
+- name: Converge
+  hosts: all
+  vars:
+    mise_tools:
+      - name: nodejs
+        apt_dependencies: [libatomic1]
+        homebrew_dependencies: []
+        versions:
+          - latest
+        global_version: latest
+  roles:
+    - role: vim

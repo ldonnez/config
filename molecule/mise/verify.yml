@@ -1,0 +1,59 @@
+---
+- name: Verify
+  hosts: all
+  vars:
+    mise_bin: "{{ ansible_facts.user_dir }}/.local/bin/mise"
+    mise_shims: "{{ ansible_facts.user_dir }}/.local/share/mise/shims"
+  tasks:
+    - name: Check that the mise binary exists
+      ansible.builtin.stat:
+        path: "{{ mise_bin }}"
+      register: mise_binary
+
+    - name: Check the zsh completion locations
+      ansible.builtin.stat:
+        path: "{{ item }}"
+      loop:
+        - "{{ ansible_facts.user_dir }}/.local/share/zsh/site-functions/_mise"
+        - /usr/local/share/zsh/site-functions/_mise
+      register: mise_completions
+
+    - name: Read the mise version
+      ansible.builtin.command:
+        cmd: "{{ mise_bin }} --version"
+      register: mise_version
+      changed_when: false
+
+    - name: List the installed mise tools
+      ansible.builtin.command:
+        cmd: "{{ mise_bin }} ls --installed"
+      register: mise_tool_list
+      changed_when: false
+
+    - name: Check the node shim
+      ansible.builtin.stat:
+        path: "{{ mise_shims }}/node"
+      register: mise_node_shim
+
+    - name: Read the node version from shim path
+      ansible.builtin.command:
+        cmd: node --version
+      register: mise_node_version
+      changed_when: false
+      environment:
+        PATH: "{{ mise_shims }}:{{ ansible_facts.user_dir }}/.local/bin:{{ ansible_facts.env.PATH }}"
+
+    - name: Assert the mise role installed mise, usage, node and zsh completions
+      ansible.builtin.assert:
+        that:
+          - mise_binary.stat.exists
+          - mise_version.stdout is search('[0-9]+[.][0-9]+')
+          - mise_tool_list.stdout is search('usage')
+          - mise_tool_list.stdout is search('node')
+          - mise_completions.results | selectattr('stat.exists') | list | length > 0
+          - mise_node_shim.stat.exists
+          - mise_node_shim.stat.executable
+          - mise_node_version.rc == 0
+          - mise_node_version.stdout is search('^v[0-9]+')
+        fail_msg: "The mise role did not install mise, usage, node or zsh completions"
+        success_msg: "The mise role installed mise, usage, node and zsh completions"

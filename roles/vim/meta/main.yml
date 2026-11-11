@@ -20,3 +20,4 @@ galaxy_info:
 dependencies:
   - role: fzf
   - role: vifm
+  - role: mise

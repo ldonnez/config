@@ -1,0 +1,61 @@
+---
+- name: Verify
+  hosts: all
+  vars_files:
+    - ../../roles/dotfiles/defaults/main.yml
+    - ../../roles/vifm/defaults/main.yml
+  tasks:
+    - name: Check that vifm is installed
+      ansible.builtin.command:
+        cmd: vifm --version
+      register: vifm_version
+      changed_when: false
+
+    - name: Assert vifm reports a version
+      ansible.builtin.assert:
+        that:
+          - vifm_version.rc == 0
+          - vifm_version.stdout is search('(?i)vifm|^Version:')
+        fail_msg: "vifm is not installed or does not report a version"
+        success_msg: "vifm is installed"
+
+    - name: Check that the dotfiles repository exists
+      ansible.builtin.stat:
+        path: "{{ dotfiles_directory_path }}"
+      register: dotfiles_directory
+
+    - name: Assert the dotfiles dependency is present
+      ansible.builtin.assert:
+        that:
+          - dotfiles_directory.stat.exists
+          - dotfiles_directory.stat.isdir
+        fail_msg: "Expected dotfiles repository at {{ dotfiles_directory_path }}"
+        success_msg: "Dotfiles repository is present"
+
+    - name: Check the vifm config directory
+      ansible.builtin.stat:
+        path: "{{ vifm_config_dir }}"
+      register: vifm_config
+
+    - name: Check the vifmrc symlink
+      ansible.builtin.stat:
+        path: "{{ vifm_config_dir }}/vifmrc"
+        follow: false
+      register: vifmrc
+
+    - name: Check the vifmrc source in dotfiles
+      ansible.builtin.stat:
+        path: "{{ vifm_dotfiles_path }}/vifmrc"
+      register: vifmrc_source
+
+    - name: Assert vifm is configured
+      ansible.builtin.assert:
+        that:
+          - vifm_config.stat.exists
+          - vifm_config.stat.isdir
+          - vifmrc.stat.exists
+          - vifmrc.stat.islnk
+          - vifmrc.stat.lnk_source == vifm_dotfiles_path ~ '/vifmrc'
+          - vifmrc_source.stat.exists
+        fail_msg: "Expected {{ vifm_config_dir }}/vifmrc to symlink to {{ vifm_dotfiles_path }}/vifmrc"
+        success_msg: "vifm is configured correctly"

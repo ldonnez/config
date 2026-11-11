@@ -4,10 +4,24 @@ SHELL := /bin/bash
 # Harmless if these don't exist; needed for pipx (~/.local/bin) and fresh Apple Silicon brew
 export PATH := $(HOME)/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:$(PATH)
 
-.PHONY: collections setup-macos setup-debian setup-wsl-ubuntu update-macos update-debian update-wsl-ubuntu backup lint backup-secrets backup-secrets-local restore-secrets restore-secrets-local
+# The docker CLI resolves contexts (e.g. Docker Desktop) itself, but the python docker SDK
+# used by molecule only honors DOCKER_HOST, so default it to the active context's endpoint.
+DOCKER_HOST ?= $(shell docker context inspect --format '{{.Endpoints.docker.Host}}' 2>/dev/null || echo unix:///var/run/docker.sock)
+export DOCKER_HOST
+
+.PHONY: collections molecule setup-macos setup-debian setup-wsl-ubuntu update-macos update-debian update-wsl-ubuntu backup lint test backup-secrets backup-secrets-local restore-secrets restore-secrets-local
 
 collections:
 	ansible-galaxy collection install -r requirements.yml --upgrade
+
+molecule:
+	-pipx uninstall ansible
+	pipx install ansible-core
+	pipx inject ansible-core requests docker
+	pipx install ansible-lint
+	pipx install molecule
+	pipx inject molecule "molecule-plugins[docker]"
+	-pipx runpip molecule uninstall --yes ansible
 
 setup-macos:
 	@if ! command -v brew > /dev/null 2>&1; then \
@@ -65,3 +79,6 @@ restore-secrets-local: collections
 
 lint:
 	ansible-lint
+
+test: collections
+	molecule test $(if $(ROLE),-s $(ROLE),--all --exclude default)

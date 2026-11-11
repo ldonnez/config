@@ -1,0 +1,48 @@
+---
+shared_state: true
+
+dependency:
+  name: galaxy
+  enabled: false
+
+driver:
+  name: docker
+
+platforms:
+  - name: debian13
+    image: debian:13
+    dockerfile: ../Dockerfile.j2
+    pre_build_image: false
+  - name: ubuntu2404
+    image: ubuntu:24.04
+    dockerfile: ../Dockerfile.j2
+    pre_build_image: false
+  - name: ubuntu2604
+    image: ubuntu:26.04
+    dockerfile: ../Dockerfile.j2
+    pre_build_image: false
+
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      roles_path: ${MOLECULE_SCENARIO_DIRECTORY}/../../roles
+  inventory:
+    group_vars:
+      all:
+        ansible_docker_extra_args: >-
+          -H={{ lookup('env', 'DOCKER_HOST') | default('unix:///var/run/docker.sock', true) }}
+
+verifier:
+  name: ansible
+
+scenario:
+  test_sequence:
+    - dependency
+    - destroy
+    - syntax
+    - create
+    - converge
+    - idempotence
+    - verify
+    - destroy

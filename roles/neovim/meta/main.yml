@@ -21,3 +21,4 @@ dependencies:
   - role: lsp
   - role: fd
   - role: rg
+  - role: fzf
