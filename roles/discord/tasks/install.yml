@@ -8,3 +8,5 @@
     - name: Download & install discord .deb package
       ansible.builtin.apt:
         deb: https://discord.com/api/download?platform=linux&format=deb
+        update_cache: true
+        cache_valid_time: 3600

@@ -1,4 +1,16 @@
 ---
+- name: Install curl with apt
+  become: true
+  when: ansible_facts.os_family == "Debian"
+  ansible.builtin.apt:
+    name: curl
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+  tags:
+    - install
+    - update
+
 - name: Install kitty via homebrew cask
   when: ansible_facts.os_family == "Darwin"
   community.general.homebrew_cask:
