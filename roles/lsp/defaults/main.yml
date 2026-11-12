@@ -1,9 +1,6 @@
 ---
 # defaults file for lsp
 
-lsp_efm_config_dir: "{{ ansible_facts.user_dir }}/.config/efm-langserver"
-lsp_efm_dotfiles_path: "{{ dotfiles_directory_path }}/.config/efm-langserver"
-
 lsp_npm:
   - "typescript"
   - "vscode-langservers-extracted"
@@ -22,7 +19,6 @@ lsp_npm:
 
 lsp_cargo: ["stylua", "emmylua_ls", "tree-sitter-cli"]
 lsp_go:
-  - "github.com/mattn/efm-langserver"
   - "mvdan.cc/sh/v3/cmd/shfmt"
   - "golang.org/x/tools/gopls"
   - "github.com/golangci/golangci-lint/cmd/golangci-lint"
