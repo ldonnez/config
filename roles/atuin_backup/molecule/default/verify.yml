@@ -1,0 +1,71 @@
+---
+- name: Verify
+  hosts: all
+  vars:
+    atuin_backup_test_dir: /tmp/atuin_backup_test
+    atuin_backup_db_path: "{{ atuin_backup_test_dir }}/.atuin/data/history.db"
+    atuin_backup_dir: "{{ atuin_backup_test_dir }}/backup"
+    atuin_backup_path: "{{ atuin_backup_dir }}/history.db.gpg"
+    atuin_backup_latest_backup_symlink: "{{ atuin_backup_dir }}/latest"
+  tasks:
+    - name: Stat encrypted backup
+      ansible.builtin.stat:
+        path: "{{ atuin_backup_path }}"
+      register: atuin_backup_file
+
+    - name: Stat latest backup symlink
+      ansible.builtin.stat:
+        path: "{{ atuin_backup_latest_backup_symlink }}"
+        follow: false
+      register: atuin_backup_latest
+
+    - name: Assert backup artifacts exist
+      ansible.builtin.assert:
+        that:
+          - atuin_backup_file.stat.exists
+          - atuin_backup_file.stat.isreg
+          - atuin_backup_latest.stat.exists
+          - atuin_backup_latest.stat.islnk
+          - (atuin_backup_latest.stat.lnk_source | basename) == 'history.db.gpg'
+
+    - name: Check backup is GPG encrypted
+      ansible.builtin.command:
+        argv:
+          - gpg
+          - --batch
+          - --list-packets
+          - "{{ atuin_backup_path }}"
+      register: atuin_backup_packets
+      changed_when: false
+      failed_when: false
+
+    - name: Assert backup is encrypted
+      ansible.builtin.assert:
+        that:
+          - atuin_backup_packets.rc == 0
+          - (atuin_backup_packets.stdout ~ atuin_backup_packets.stderr) is search('encrypted|public key encrypted|symmetrically encrypted')
+
+    - name: Stat restored history database
+      ansible.builtin.stat:
+        path: "{{ atuin_backup_db_path }}"
+      register: atuin_backup_restored_db
+
+    - name: Assert restored database exists
+      ansible.builtin.assert:
+        that:
+          - atuin_backup_restored_db.stat.exists
+          - atuin_backup_restored_db.stat.isreg
+
+    - name: Query restored history database
+      ansible.builtin.command:
+        argv:
+          - sqlite3
+          - "{{ atuin_backup_db_path }}"
+          - "SELECT command FROM history WHERE id='1';"
+      register: atuin_backup_query
+      changed_when: false
+
+    - name: Assert restored history content matches backup
+      ansible.builtin.assert:
+        that:
+          - atuin_backup_query.stdout == 'echo atuin-backup-test'

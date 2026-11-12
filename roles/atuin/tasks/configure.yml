@@ -1,3 +1,11 @@
+- name: Ensure atuin config directory
+  ansible.builtin.file:
+    path: "{{ atuin_config_dir }}"
+    state: directory
+    mode: "0755"
+  tags:
+    - install
+
 - name: "Symlink atuin config"
   ansible.builtin.file:
     src: "{{ atuin_dotfiles_path }}/config.toml"

@@ -1,0 +1,18 @@
+---
+galaxy_info:
+  role_name: pipx
+  author: ldonnez
+  description: Install and manage Python applications with pipx
+  license: MIT
+  min_ansible_version: "2.10"
+
+  platforms:
+    - name: Ubuntu
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
+    - name: macOS
+      versions:
+        - all

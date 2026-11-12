@@ -1,0 +1,50 @@
+---
+- name: Prepare
+  hosts: all
+  vars:
+    synchronize_test_dir: /tmp/synchronize_test
+  tasks:
+    - name: Install rsync
+      become: true
+      ansible.builtin.apt:
+        name: rsync
+        state: present
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Create test directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: "0755"
+      loop:
+        - "{{ synchronize_test_dir }}/recursive/src/nested"
+        - "{{ synchronize_test_dir }}/delete/src"
+        - "{{ synchronize_test_dir }}/delete/dest/src"
+        - "{{ synchronize_test_dir }}/no_delete/src"
+        - "{{ synchronize_test_dir }}/no_delete/dest/src"
+        - "{{ synchronize_test_dir }}/subdirectories/src/project-a/nested"
+        - "{{ synchronize_test_dir }}/subdirectories/src/project-b"
+        - "{{ synchronize_test_dir }}/subdirectories/dest/project-a"
+        - "{{ synchronize_test_dir }}/subdirectories/dest/obsolete"
+
+    - name: Create test files
+      ansible.builtin.copy:
+        dest: "{{ item.path }}"
+        content: "{{ item.content }}"
+        mode: "0644"
+      loop:
+        - { path: "{{ synchronize_test_dir }}/recursive/src/top.txt", content: "top" }
+        - { path: "{{ synchronize_test_dir }}/recursive/src/nested/deep.txt", content: "deep" }
+        - { path: "{{ synchronize_test_dir }}/delete/src/keep.txt", content: "keep" }
+        - { path: "{{ synchronize_test_dir }}/delete/dest/src/stale.txt", content: "stale" }
+        - { path: "{{ synchronize_test_dir }}/no_delete/src/keep.txt", content: "keep" }
+        - { path: "{{ synchronize_test_dir }}/no_delete/dest/src/stale.txt", content: "stale" }
+        - { path: "{{ synchronize_test_dir }}/subdirectories/src/project-a/a.txt", content: "a" }
+        - { path: "{{ synchronize_test_dir }}/subdirectories/src/project-a/nested/a-nested.txt", content: "a-nested" }
+        - { path: "{{ synchronize_test_dir }}/subdirectories/src/project-b/b.txt", content: "b" }
+        - { path: "{{ synchronize_test_dir }}/subdirectories/src/root.txt", content: "root" }
+        - { path: "{{ synchronize_test_dir }}/subdirectories/dest/project-a/stale.txt", content: "stale" }
+        - { path: "{{ synchronize_test_dir }}/subdirectories/dest/obsolete/old.txt", content: "old" }
+      loop_control:
+        label: "{{ item.path }}"

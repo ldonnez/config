@@ -50,6 +50,8 @@
         name: fonts-hack-ttf
         state: present
 
+        update_cache: true
+        cache_valid_time: 3600
     - name: Update font cache
       ansible.builtin.command: "fc-cache -f -v"
       changed_when: false

@@ -1,0 +1,103 @@
+---
+- name: Verify
+  hosts: all
+  vars_files:
+    - ../../../../roles/atuin/defaults/main.yml
+    - ../../../../roles/dotfiles/defaults/main.yml
+  tasks:
+    - name: Check atuin binary
+      ansible.builtin.stat:
+        path: "{{ ansible_facts.user_dir }}/.atuin/bin/atuin"
+      register: atuin_binary
+
+    - name: Read atuin version
+      ansible.builtin.command:
+        cmd: "{{ ansible_facts.user_dir }}/.atuin/bin/atuin --version"
+      register: atuin_version
+      changed_when: false
+      environment:
+        PATH: "{{ ansible_facts.user_dir }}/.atuin/bin:{{ ansible_facts.env.PATH }}"
+
+    - name: Assert atuin is installed
+      ansible.builtin.assert:
+        that:
+          - atuin_binary.stat.exists
+          - atuin_binary.stat.executable
+          - atuin_version.rc == 0
+          - atuin_version.stdout is search('atuin')
+        fail_msg: "Atuin is not installed correctly"
+        success_msg: "Atuin binary is installed"
+
+    - name: Check atuin config directory
+      ansible.builtin.stat:
+        path: "{{ atuin_config_dir }}"
+      register: atuin_config_directory
+
+    - name: Check atuin config symlink
+      ansible.builtin.stat:
+        path: "{{ atuin_config_dir }}/config.toml"
+        follow: false
+      register: atuin_config_file
+
+    - name: Check atuin themes symlink
+      ansible.builtin.stat:
+        path: "{{ atuin_config_dir }}/themes"
+        follow: false
+      register: atuin_themes
+
+    - name: Check atuin dotfiles sources
+      ansible.builtin.stat:
+        path: "{{ item }}"
+      loop:
+        - "{{ atuin_dotfiles_path }}/config.toml"
+        - "{{ atuin_dotfiles_path }}/themes"
+      register: atuin_dotfiles_sources
+
+    - name: Assert atuin is configured
+      ansible.builtin.assert:
+        that:
+          - atuin_config_directory.stat.exists
+          - atuin_config_directory.stat.isdir
+          - atuin_config_file.stat.exists
+          - atuin_config_file.stat.islnk
+          - atuin_config_file.stat.lnk_source == atuin_dotfiles_path ~ '/config.toml'
+          - atuin_themes.stat.exists
+          - atuin_themes.stat.islnk
+          - atuin_themes.stat.lnk_source == atuin_dotfiles_path ~ '/themes'
+          - atuin_dotfiles_sources.results | selectattr('stat.exists') | list | length == 2
+        fail_msg: "Atuin configuration symlinks are not set correctly"
+        success_msg: "Atuin is configured correctly"
+
+    - name: Check atuin zsh completion in system directory
+      ansible.builtin.stat:
+        path: /usr/local/share/zsh/site-functions/_atuin
+      register: atuin_system_zsh_completion
+
+    - name: Check atuin zsh completion in user directory
+      ansible.builtin.stat:
+        path: "{{ ansible_facts.user_dir }}/.local/share/zsh/site-functions/_atuin"
+      register: atuin_user_zsh_completion
+
+    - name: Assert atuin zsh completion is installed
+      ansible.builtin.assert:
+        that:
+          - atuin_system_zsh_completion.stat.exists or atuin_user_zsh_completion.stat.exists
+        fail_msg: "Atuin zsh completion was not installed"
+        success_msg: "Atuin zsh completion is installed"
+
+    - name: Search imported zsh history in atuin
+      ansible.builtin.command:
+        cmd: atuin search --cmd-only echo atuin-import-test
+      register: atuin_imported_history
+      changed_when: false
+      environment:
+        PATH: "{{ ansible_facts.user_dir }}/.atuin/bin:{{ ansible_facts.env.PATH }}"
+        ATUIN_SESSION: "018f1a1a-1a1a-7a1a-9a1a-1a1a1a1a1a1a"
+
+    - name: Assert existing zsh history was imported
+      ansible.builtin.assert:
+        that:
+          - atuin_imported_history.rc == 0
+          - "'echo atuin-import-test' in atuin_imported_history.stdout"
+        fail_msg: "Expected existing .zsh_history entry to be imported into atuin"
+        success_msg: "Existing .zsh_history entry was imported into atuin"

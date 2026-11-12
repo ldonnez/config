@@ -1,4 +1,15 @@
 ---
+- name: Install curl with apt
+  become: true
+  when: ansible_facts.os_family == "Debian"
+  ansible.builtin.apt:
+    name: curl
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+  tags:
+    - install
+
 - name: Install rustup noninteractive with curl
   when: ansible_facts.os_family == "Debian"
   ansible.builtin.shell: |
@@ -10,23 +21,87 @@
   tags:
     - install
 
+- name: Install rust with homebrew
+  when:
+    - ansible_facts.os_family == "Darwin"
+  community.general.homebrew:
+    name: rust
+    state: present
+  tags:
+    - install
+
 - name: Upgrade rust
   when: ansible_facts.os_family == "Debian"
   ansible.builtin.command: rustup update
   environment:
     PATH: "{{ ansible_facts.user_dir }}/.cargo/bin:{{ ansible_facts.env.PATH }}"
+  register: rust_update
+  changed_when: "' updated - ' in rust_update.stdout"
   tags:
     - update
 
-- name: Install/Update packages with cargo
-  community.general.cargo:
-    name: "{{ item }}"
-    state: latest
-    locked: true
-  loop: "{{ cargo_packages }}"
-  when: cargo_packages is defined
+- name: Install cargo-binstall with homebrew
+  when:
+    - ansible_facts.os_family == "Darwin"
+    - rust_cargo_packages | length > 0
+  community.general.homebrew:
+    name: cargo-binstall
+    state: present
+  tags:
+    - install
+
+- name: Install cargo-binstall
+  when:
+    - ansible_facts.os_family == "Debian"
+    - rust_cargo_packages | length > 0
+  ansible.builtin.shell: |
+    set -o pipefail
+    curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
+  args:
+    creates: "{{ ansible_facts.user_dir }}/.cargo/bin/cargo-binstall"
+    executable: /bin/bash
+  tags:
+    - install
+
+- name: Install cargo packages with cargo-binstall
+  when: rust_cargo_packages | length > 0
+  ansible.builtin.command:
+    cmd: "cargo binstall -y --locked {{ item }}"
+  loop: "{{ rust_cargo_packages }}"
   environment:
     PATH: "{{ ansible_facts.user_dir }}/.cargo/bin:{{ ansible_facts.env.PATH }}"
+  register: rust_cargo_binstall
+  changed_when: >-
+    'Installing' in rust_cargo_binstall.stdout or
+    'Installing' in rust_cargo_binstall.stderr
+  tags:
+    - install
+
+- name: Update cargo-binstall
+  when:
+    - ansible_facts.os_family == "Debian"
+    - rust_cargo_packages | length > 0
+  ansible.builtin.command:
+    cmd: "cargo binstall -y --locked cargo-binstall"
+  environment:
+    PATH: "{{ ansible_facts.user_dir }}/.cargo/bin:{{ ansible_facts.env.PATH }}"
+  register: rust_update_cargo_binstall
+  changed_when: >-
+    'Installing' in rust_update_cargo_binstall.stdout or
+    'Installing' in rust_update_cargo_binstall.stderr
   tags:
     - update
-    - install
+
+- name: Update cargo packages with cargo-binstall
+  when: rust_cargo_packages | length > 0
+  ansible.builtin.command:
+    cmd: "cargo binstall -y --locked {{ item }}"
+  loop: "{{ rust_cargo_packages }}"
+  environment:
+    PATH: "{{ ansible_facts.user_dir }}/.cargo/bin:{{ ansible_facts.env.PATH }}"
+  register: rust_cargo_binstall_update
+  changed_when: >-
+    'Installing' in rust_cargo_binstall_update.stdout or
+    'Installing' in rust_cargo_binstall_update.stderr
+  tags:
+    - update

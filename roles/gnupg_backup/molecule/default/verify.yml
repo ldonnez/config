@@ -1,0 +1,66 @@
+---
+- name: Verify
+  hosts: all
+  vars:
+    gnupg_backup_dir: /tmp/gnupg_backup_test/backup
+    gnupg_backup_test_dir: /tmp/gnupg_backup_test
+    gnupg_backup_key_passphrase: molecule-secret
+  tasks:
+    - name: Stat encrypted GPG backup
+      ansible.builtin.stat:
+        path: "{{ gnupg_backup_dir }}/molecule@example.com.asc.vault"
+      register: gnupg_backup_vault
+
+    - name: Assert encrypted GPG backup exists
+      ansible.builtin.assert:
+        that:
+          - gnupg_backup_vault.stat.exists
+          - gnupg_backup_vault.stat.isreg
+
+    - name: Read encrypted backup header
+      ansible.builtin.slurp:
+        src: "{{ gnupg_backup_dir }}/molecule@example.com.asc.vault"
+      register: gnupg_backup_vault_content
+
+    - name: Assert backup is Ansible Vault encrypted
+      ansible.builtin.assert:
+        that:
+          - (gnupg_backup_vault_content.content | b64decode).startswith('$ANSIBLE_VAULT;')
+
+    - name: Check restored secret key is present
+      ansible.builtin.command:
+        argv:
+          - gpg
+          - --batch
+          - --list-secret-keys
+          - --with-colons
+          - molecule@example.com
+      register: gnupg_backup_secret_key
+      changed_when: false
+
+    - name: Assert secret key restored
+      ansible.builtin.assert:
+        that:
+          - gnupg_backup_secret_key.rc == 0
+          - "'sec:' in gnupg_backup_secret_key.stdout"
+
+    - name: Read expected key fingerprint
+      ansible.builtin.slurp:
+        src: "{{ gnupg_backup_test_dir }}/expected_fingerprint"
+      register: gnupg_backup_expected_fpr_file
+
+    - name: Get restored key fingerprint
+      ansible.builtin.command:
+        argv:
+          - gpg
+          - --batch
+          - --with-colons
+          - --fingerprint
+          - molecule@example.com
+      register: gnupg_backup_restored_fpr
+      changed_when: false
+
+    - name: Assert restored key fingerprint matches backup
+      ansible.builtin.assert:
+        that:
+          - (gnupg_backup_restored_fpr.stdout | regex_findall('fpr:{9}([A-F0-9]+):'))[0] == (gnupg_backup_expected_fpr_file.content | b64decode | trim)

@@ -1,4 +1,15 @@
 ---
+- name: Install curl with apt
+  become: true
+  when: ansible_facts.os_family == "Debian"
+  ansible.builtin.apt:
+    name: curl
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+  tags:
+    - install
+
 - name: Install copilot cli noninteractive with curl
   when: ansible_facts.os_family == "Debian"
   ansible.builtin.shell: |
@@ -15,6 +26,8 @@
   ansible.builtin.command: copilot update
   environment:
     PATH: "{{ ansible_facts.user_dir }}/.local/bin:{{ ansible_facts.env.PATH }}"
+  register: copilot_cli_update
+  changed_when: "'Update available' in (copilot_cli_update.stdout + copilot_cli_update.stderr)"
   tags:
     - update
 

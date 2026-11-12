@@ -1,0 +1,59 @@
+---
+- name: Verify
+  hosts: all
+  vars:
+    go_bin: /usr/local/go/bin/go
+    go_user_bin: "{{ ansible_facts.user_dir }}/go/bin"
+  tasks:
+    - name: Check that the Go binary exists
+      ansible.builtin.stat:
+        path: "{{ go_bin }}"
+      register: golang_go_binary
+
+    - name: Read the Go version
+      ansible.builtin.command:
+        cmd: "{{ go_bin }} version"
+      register: golang_go_version
+      changed_when: false
+
+    - name: Read the Go root
+      ansible.builtin.command:
+        cmd: "{{ go_bin }} env GOROOT"
+      register: golang_go_root
+      changed_when: false
+
+    - name: Check managed Go package
+      ansible.builtin.command:
+        cmd: "{{ go_user_bin }}/shfmt --version"
+      register: golang_shfmt_version
+      changed_when: false
+
+    - name: Write a small Go program
+      ansible.builtin.copy:
+        content: |
+          package main
+
+          import "fmt"
+
+          func main() {
+              fmt.Println("hello from go")
+          }
+        dest: /tmp/hello.go
+        mode: "0644"
+
+    - name: Run the Go program
+      ansible.builtin.command:
+        cmd: "{{ go_bin }} run /tmp/hello.go"
+      register: golang_go_run
+      changed_when: false
+
+    - name: Assert the golang role installed a working Go toolchain and packages
+      ansible.builtin.assert:
+        that:
+          - golang_go_binary.stat.exists
+          - golang_go_version.stdout is search('go1[.]')
+          - golang_go_root.stdout == '/usr/local/go'
+          - golang_shfmt_version.rc == 0
+          - golang_go_run.stdout == 'hello from go'
+        fail_msg: "The golang role did not install a working Go toolchain or managed packages"
+        success_msg: "The golang role installed a working Go toolchain and managed packages"

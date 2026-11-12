@@ -4,6 +4,8 @@
   ansible.builtin.apt:
     name: ["i3", "i3status", "i3blocks"]
     state: present
+    update_cache: true
+    cache_valid_time: 3600
   when: ansible_facts.os_family == "Debian"
   tags:
     - install
@@ -13,6 +15,8 @@
   ansible.builtin.apt:
     name: lightdm # simple display manager (login screen)
     state: present
+    update_cache: true
+    cache_valid_time: 3600
   when: ansible_facts.os_family == "Debian"
   tags:
     - install
@@ -22,6 +26,8 @@
   ansible.builtin.apt:
     name: xss-lock # Utility to listen for XScreenSaver (XSS) and login manager events and call out to an external screen locker in order to lock the screen. (~/.config/i3/config)
     state: present
+    update_cache: true
+    cache_valid_time: 3600
   when: ansible_facts.os_family == "Debian"
   tags:
     - install
@@ -31,6 +37,8 @@
   ansible.builtin.apt:
     name: ["network-manager", "network-manager-applet"] # network manger with included system tray icon
     state: present
+    update_cache: true
+    cache_valid_time: 3600
   when: ansible_facts.os_family == "Debian"
   tags:
     - install
@@ -40,6 +48,8 @@
   ansible.builtin.apt:
     name: ["thunar", "thunar-volman", "thunar-archive-plugin"]
     state: present
+    update_cache: true
+    cache_valid_time: 3600
   when: ansible_facts.os_family == "Debian"
   tags:
     - install
@@ -49,6 +59,8 @@
   ansible.builtin.apt:
     name: ["dunst", "libnotify-bin"]
     state: present
+    update_cache: true
+    cache_valid_time: 3600
   when: ansible_facts.os_family == "Debian"
   tags:
     - install
@@ -58,6 +70,8 @@
   ansible.builtin.apt:
     name: feh # feh is a lightweight image viewer aimed mainly at users of command line interfaces. This is necessary to configure a desktop wallpaper in ~/.config/i3/scripts/autostart.sh.
     state: present
+    update_cache: true
+    cache_valid_time: 3600
   when: ansible_facts.os_family == "Debian"
   tags:
     - install
@@ -67,6 +81,8 @@
   ansible.builtin.apt:
     name: ["breeze-gtk-theme", "papirus-icon-theme"]
     state: present
+    update_cache: true
+    cache_valid_time: 3600
   when: ansible_facts.os_family == "Debian"
   tags:
     - install
@@ -94,6 +110,8 @@
         "gstreamer1.0-gtk3",
       ]
     state: present
+    update_cache: true
+    cache_valid_time: 3600
   when: ansible_facts.os_family == "Debian"
   tags:
     - install
@@ -110,6 +128,8 @@
         "gstreamer1.0-pipewire",
       ]
     state: present
+    update_cache: true
+    cache_valid_time: 3600
   when: ansible_facts.os_family == "Debian"
   tags:
     - install
@@ -119,6 +139,8 @@
   ansible.builtin.apt:
     name: ["xprintidle", "playerctl"] # necessary to check if system is idle in ~/.config/i3/scripts/idle-check.sh
     state: present
+    update_cache: true
+    cache_valid_time: 3600
   when: ansible_facts.os_family == "Debian"
   tags:
     - install
@@ -134,6 +156,16 @@
       ansible.builtin.apt:
         name: i3lock
         state: absent
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Install git with apt
+      become: true
+      ansible.builtin.apt:
+        name: git
+        state: present
+        update_cache: true
+        cache_valid_time: 3600
 
     - name: Install build dependencies
       ansible.builtin.apt:
@@ -159,7 +191,8 @@
           - "libjpeg-dev"
           - "libgif-dev"
         state: present
-      when: ansible_facts.os_family == "Debian"
+        update_cache: true
+        cache_valid_time: 3600
 
     - name: Git clone i3lock-color repository
       ansible.builtin.git:

@@ -1,0 +1,65 @@
+---
+- name: Prepare
+  hosts: all
+  become: true
+  vars:
+    atuin_backup_test_dir: /tmp/atuin_backup_test
+  tasks:
+    - name: Install test dependencies
+      ansible.builtin.apt:
+        name:
+          - gnupg
+          - sqlite3
+        state: present
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Ensure test directories exist
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0777"
+      loop:
+        - "{{ atuin_backup_test_dir }}"
+        - "{{ atuin_backup_test_dir }}/.atuin/data"
+        - "{{ atuin_backup_test_dir }}/backup"
+
+    - name: Create GPG key batch file
+      become: false
+      ansible.builtin.copy:
+        dest: "{{ atuin_backup_test_dir }}/key.batch"
+        mode: "0600"
+        content: |
+          %no-protection
+          Key-Type: RSA
+          Key-Length: 2048
+          Name-Real: Molecule Test
+          Name-Email: molecule@example.com
+          Expire-Date: 0
+          %commit
+
+    - name: Check for existing secret key
+      become: false
+      ansible.builtin.command:
+        cmd: gpg --list-secret-keys molecule@example.com
+      register: atuin_backup_key_check
+      changed_when: false
+      failed_when: false
+
+    - name: Generate test GPG key
+      become: false
+      ansible.builtin.command:
+        cmd: "gpg --batch --generate-key {{ atuin_backup_test_dir }}/key.batch"
+      when: atuin_backup_key_check.rc != 0
+      changed_when: true
+
+    - name: Create sample atuin history database
+      become: false
+      ansible.builtin.command:
+        argv:
+          - sqlite3
+          - "{{ atuin_backup_test_dir }}/.atuin/data/history.db"
+          - "CREATE TABLE IF NOT EXISTS history(id TEXT, command TEXT); DELETE FROM history; INSERT INTO history VALUES('1','echo atuin-backup-test');"
+      changed_when: true

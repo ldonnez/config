@@ -1,0 +1,16 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Check copilot binary
+      ansible.builtin.stat:
+        path: "{{ ansible_facts.user_dir }}/.local/bin/copilot"
+      register: copilot_cli_binary
+
+    - name: Assert Copilot CLI is installed
+      ansible.builtin.assert:
+        that:
+          - copilot_cli_binary.stat.exists
+          - copilot_cli_binary.stat.executable
+        fail_msg: "Copilot CLI is not installed"
+        success_msg: "Copilot CLI is installed"

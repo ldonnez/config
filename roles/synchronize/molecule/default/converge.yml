@@ -1,0 +1,52 @@
+---
+- name: Converge
+  hosts: all
+  vars:
+    synchronize_test_dir: /tmp/synchronize_test
+  tasks:
+    - name: Synchronize a directory recursively
+      ansible.builtin.include_role:
+        name: synchronize
+        apply:
+          delegate_to: "{{ inventory_hostname }}"
+      vars:
+        synchronize_directories:
+          - name: recursive
+            src: "{{ synchronize_test_dir }}/recursive/src"
+            dest: "{{ synchronize_test_dir }}/recursive/dest"
+
+    - name: Synchronize with delete enabled
+      ansible.builtin.include_role:
+        name: synchronize
+        apply:
+          delegate_to: "{{ inventory_hostname }}"
+      vars:
+        synchronize_directories:
+          - name: delete
+            src: "{{ synchronize_test_dir }}/delete/src"
+            dest: "{{ synchronize_test_dir }}/delete/dest"
+            delete: true
+
+    - name: Synchronize without delete
+      ansible.builtin.include_role:
+        name: synchronize
+        apply:
+          delegate_to: "{{ inventory_hostname }}"
+      vars:
+        synchronize_directories:
+          - name: no_delete
+            src: "{{ synchronize_test_dir }}/no_delete/src"
+            dest: "{{ synchronize_test_dir }}/no_delete/dest"
+
+    - name: Synchronize subdirectories
+      ansible.builtin.include_role:
+        name: synchronize
+        apply:
+          delegate_to: "{{ inventory_hostname }}"
+      vars:
+        synchronize_directories:
+          - name: subdirectories
+            src: "{{ synchronize_test_dir }}/subdirectories/src"
+            dest: "{{ synchronize_test_dir }}/subdirectories/dest"
+            subdirectories: true
+            delete: true

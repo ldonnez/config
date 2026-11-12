@@ -1,0 +1,67 @@
+---
+- name: Verify
+  hosts: all
+  vars:
+    synchronize_test_dir: /tmp/synchronize_test
+  tasks:
+    - name: Stat synchronized paths
+      ansible.builtin.stat:
+        path: "{{ item.path }}"
+      register: synchronize_stats
+      loop:
+        - { path: "{{ synchronize_test_dir }}/recursive/dest/src/top.txt", exists: true }
+        - { path: "{{ synchronize_test_dir }}/recursive/dest/src/nested/deep.txt", exists: true }
+        - { path: "{{ synchronize_test_dir }}/delete/dest/src/keep.txt", exists: true }
+        - { path: "{{ synchronize_test_dir }}/delete/dest/src/stale.txt", exists: false }
+        - { path: "{{ synchronize_test_dir }}/no_delete/dest/src/keep.txt", exists: true }
+        - { path: "{{ synchronize_test_dir }}/no_delete/dest/src/stale.txt", exists: true }
+        - { path: "{{ synchronize_test_dir }}/subdirectories/dest", exists: true }
+        - { path: "{{ synchronize_test_dir }}/subdirectories/dest/project-a/a.txt", exists: true }
+        - { path: "{{ synchronize_test_dir }}/subdirectories/dest/project-a/nested/a-nested.txt", exists: true }
+        - { path: "{{ synchronize_test_dir }}/subdirectories/dest/project-b/b.txt", exists: true }
+        - { path: "{{ synchronize_test_dir }}/subdirectories/dest/project-a/stale.txt", exists: false }
+        - { path: "{{ synchronize_test_dir }}/subdirectories/dest/root.txt", exists: false }
+        - { path: "{{ synchronize_test_dir }}/subdirectories/dest/obsolete/old.txt", exists: true }
+      loop_control:
+        label: "{{ item.path }}"
+
+    - name: Assert synchronized paths
+      ansible.builtin.assert:
+        that:
+          - item.stat.exists == item.item.exists
+        fail_msg: "Unexpected presence for {{ item.item.path }}"
+      loop: "{{ synchronize_stats.results }}"
+      loop_control:
+        label: "{{ item.item.path }}"
+
+    - name: Stat subdirectories destination directory
+      ansible.builtin.stat:
+        path: "{{ synchronize_test_dir }}/subdirectories/dest"
+      register: synchronize_subdirectories_dest
+
+    - name: Assert subdirectories destination is created with expected mode
+      ansible.builtin.assert:
+        that:
+          - synchronize_subdirectories_dest.stat.isdir
+          - synchronize_subdirectories_dest.stat.mode == "0755"
+        fail_msg: "The synchronize role did not create the destination directory correctly"
+
+    - name: Read synchronized file contents
+      ansible.builtin.slurp:
+        src: "{{ item.path }}"
+      register: synchronize_contents
+      loop:
+        - { path: "{{ synchronize_test_dir }}/recursive/dest/src/nested/deep.txt", content: "deep" }
+        - { path: "{{ synchronize_test_dir }}/subdirectories/dest/project-a/nested/a-nested.txt", content: "a-nested" }
+        - { path: "{{ synchronize_test_dir }}/subdirectories/dest/project-b/b.txt", content: "b" }
+      loop_control:
+        label: "{{ item.path }}"
+
+    - name: Assert synchronized content matches
+      ansible.builtin.assert:
+        that:
+          - (item.content | b64decode) == item.item.content
+        fail_msg: "Unexpected content for {{ item.item.path }}"
+      loop: "{{ synchronize_contents.results }}"
+      loop_control:
+        label: "{{ item.item.path }}"

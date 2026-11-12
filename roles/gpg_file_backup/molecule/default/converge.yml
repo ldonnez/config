@@ -1,0 +1,21 @@
+---
+- name: Converge
+  hosts: all
+  vars:
+    gpg_file_backup_test_dir: /tmp/gpg_file_backup_test
+  tasks:
+    - name: Encrypt backup using gpg_file_backup role
+      ansible.builtin.include_role:
+        name: gpg_file_backup
+        tasks_from: encrypt.yml
+      vars:
+        gpg_file_backup_source: "{{ gpg_file_backup_test_dir }}/encrypt-source.txt"
+        gpg_file_backup_destination: "{{ gpg_file_backup_test_dir }}/encrypt-destination.gpg"
+
+    - name: Decrypt backup using gpg_file_backup role
+      ansible.builtin.include_role:
+        name: gpg_file_backup
+        tasks_from: decrypt.yml
+      vars:
+        gpg_file_backup_source: "{{ gpg_file_backup_test_dir }}/decrypt-source.gpg"
+        gpg_file_backup_destination: "{{ gpg_file_backup_test_dir }}/decrypt-destination.txt"

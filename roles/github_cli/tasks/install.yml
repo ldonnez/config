@@ -5,6 +5,26 @@
   tags:
     - install
 
+## Secure storage of github_cli credentials
+- name: Install gnome-keyring, libsecret and seahorse
+  when:
+    - ansible_facts.os_family == "Debian"
+    - not github_cli_bin.stat.exists
+  become: true
+  tags:
+    - install
+  ansible.builtin.apt:
+    name:
+      - libsecret-1-0
+      - libsecret-common
+      - libsecret-tools
+      - gnome-keyring
+      - gnome-keyring-pkcs11
+      - seahorse
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
 - name: Install GitHub CLI with apt
   when:
     - ansible_facts.os_family == "Debian"
@@ -17,6 +37,8 @@
       ansible.builtin.apt:
         name: python3-debian
         state: present
+        update_cache: true
+        cache_valid_time: 3600
 
     - name: Get system architecture (e.g. amd64)
       ansible.builtin.command: dpkg --print-architecture

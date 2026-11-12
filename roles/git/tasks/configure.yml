@@ -3,6 +3,7 @@
   ansible.builtin.copy:
     src: "{{ git_dotfiles_path }}/.gitconfig"
     dest: "{{ git_config_dir }}/.gitconfig"
+    remote_src: true
     mode: "0755"
     force: false
   tags:

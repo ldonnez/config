@@ -1,0 +1,72 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Stat keep=2 scenario files
+      ansible.builtin.stat:
+        path: "{{ item.path }}"
+      register: backup_retention_keep2_stats
+      loop:
+        - { path: /tmp/backup_retention_keep2/20240101-backup.bak, exists: false }
+        - { path: /tmp/backup_retention_keep2/20240102-backup.bak, exists: false }
+        - { path: /tmp/backup_retention_keep2/20240103-backup.bak, exists: true }
+        - { path: /tmp/backup_retention_keep2/20240104-backup.bak, exists: true }
+        - { path: /tmp/backup_retention_keep2/note.txt, exists: true }
+      loop_control:
+        label: "{{ item.path | basename }}"
+
+    - name: Assert keep=2 scenario retention behavior
+      ansible.builtin.assert:
+        that:
+          - item.stat.exists == item.item.exists
+        fail_msg: "Unexpected state for {{ item.item.path }}"
+      loop: "{{ backup_retention_keep2_stats.results }}"
+      loop_control:
+        label: "{{ item.item.path | basename }}"
+
+    - name: Stat keep=0 scenario files
+      ansible.builtin.stat:
+        path: "{{ item }}"
+      register: backup_retention_keep0_stats
+      loop:
+        - /tmp/backup_retention_keep0/20240101-backup.bak
+        - /tmp/backup_retention_keep0/20240102-backup.bak
+
+    - name: Assert keep=0 scenario does not prune backups
+      ansible.builtin.assert:
+        that:
+          - backup_retention_keep0_stats.results[0].stat.exists
+          - backup_retention_keep0_stats.results[1].stat.exists
+        fail_msg: "keep=0 should not remove backups"
+
+    - name: Stat fewer-than-keep backup files
+      ansible.builtin.stat:
+        path: "{{ item }}"
+      register: backup_retention_fewer_stats
+      loop:
+        - /tmp/backup_retention_fewer/20240101-backup.bak
+        - /tmp/backup_retention_fewer/20240102-backup.bak
+
+    - name: Assert fewer-than-keep backups are retained
+      ansible.builtin.assert:
+        that:
+          - backup_retention_fewer_stats.results[0].stat.exists
+          - backup_retention_fewer_stats.results[1].stat.exists
+        fail_msg: "Retention should not remove backups when fewer than keep exist"
+
+    - name: Stat exactly-keep backup files
+      ansible.builtin.stat:
+        path: "{{ item }}"
+      register: backup_retention_exact_stats
+      loop:
+        - /tmp/backup_retention_exact/20240101-backup.bak
+        - /tmp/backup_retention_exact/20240102-backup.bak
+        - /tmp/backup_retention_exact/20240103-backup.bak
+
+    - name: Assert exactly-keep backups are retained
+      ansible.builtin.assert:
+        that:
+          - backup_retention_exact_stats.results[0].stat.exists
+          - backup_retention_exact_stats.results[1].stat.exists
+          - backup_retention_exact_stats.results[2].stat.exists
+        fail_msg: "Retention should not remove backups when exactly keep exist"

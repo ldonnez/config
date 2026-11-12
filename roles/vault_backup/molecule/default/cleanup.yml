@@ -1,0 +1,9 @@
+---
+- name: Cleanup
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Remove controller-side Vault test fixtures
+      ansible.builtin.file:
+        path: "{{ playbook_dir }}/.tmp"
+        state: absent

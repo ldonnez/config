@@ -1,0 +1,8 @@
+---
+- name: Converge
+  hosts: all
+  vars:
+    pipx_packages:
+      - pycowsay
+  roles:
+    - role: pipx
