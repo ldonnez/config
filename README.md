@@ -146,3 +146,47 @@ To restore secrets locally without cloning/updating the repository, run:
 ```zsh
 make restore-secrets-local
 ```
+
+## Testing
+
+Testing uses [Molecule](https://ansible.readthedocs.io/projects/molecule/) with the Docker driver. You’ll need Docker available locally.
+
+Install test dependencies (ansible-core, ansible-lint, molecule, and the Docker plugin via pipx):
+
+```zsh
+make molecule
+```
+
+Build the local test images and run Molecule tests for all roles that have a `molecule/default/molecule.yml`:
+
+```zsh
+make test-roles
+```
+
+Run tests for specific role(s):
+
+```zsh
+make test-roles ROLE=dotfiles
+# or
+make test-roles ROLES="dotfiles vault_backup"
+```
+
+Run standalone Molecule scenarios from `molecule/` (e.g. `wsl_ubuntu`):
+
+```zsh
+make test-scenarios
+# or
+make test-scenarios SCENARIO=wsl_ubuntu
+```
+
+Run linting:
+
+```zsh
+make lint
+```
+
+Notes:
+
+- `make test-roles` run per-role scenarios under `roles/<role>/molecule/default`.
+- `make test-scenarios` runs scenarios under `molecule/<scenario>`.
+- Test container images are built from `molecule/Dockerfile` (base images include Debian 13 and Ubuntu 22.04/24.04/26.04). Individual scenarios/platforms define which images they use.

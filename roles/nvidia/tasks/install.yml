@@ -1,4 +1,14 @@
 ---
+- name: Install pciutils with apt
+  become: true
+  ansible.builtin.apt:
+    name: pciutils
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+  tags:
+    - install
+
 - name: Detect NVIDIA graphics adapter
   ansible.builtin.shell: |
     set -o pipefail
@@ -22,9 +32,13 @@
           - nvidia-driver
           - firmware-misc-nonfree
           - mesa-utils
+        update_cache: true
+        cache_valid_time: 3600
 
     # Prevents Nvidia Optimus from working. More info -> https://wiki.debian.org/NVIDIA%20Optimus
     - name: Remove the outdated xserver-xorg-video-intel package if present
       ansible.builtin.apt:
         name: xserver-xorg-video-intel
         state: absent
+        update_cache: true
+        cache_valid_time: 3600

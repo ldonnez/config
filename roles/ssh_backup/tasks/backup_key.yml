@@ -49,3 +49,4 @@
     src: "{{ item.public_key_path }}"
     dest: "{{ ssh_backup_dir }}/{{ item.name }}.pub"
     mode: "0600"
+    remote_src: true

@@ -9,6 +9,8 @@
       ansible.builtin.apt:
         name: python3-debian
         state: present
+        update_cache: true
+        cache_valid_time: 3600
 
     - name: Add mozilla to sources list
       ansible.builtin.deb822_repository:

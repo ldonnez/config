@@ -28,6 +28,8 @@
           ansible.builtin.apt:
             name: golang-go
             state: absent
+            update_cache: true
+            cache_valid_time: 3600
 
         - name: Download latest Go
           ansible.builtin.get_url:
@@ -46,9 +48,36 @@
           ansible.builtin.unarchive:
             src: "/tmp/go.tar.gz"
             dest: /usr/local
+            remote_src: true
 
       always:
         - name: Remove /tmp/go.tar.gz
           ansible.builtin.file:
             path: /tmp/go.tar.gz
             state: absent
+
+- name: Install Go packages
+  when: golang_packages | length > 0
+  ansible.builtin.command:
+    cmd: "go install {{ item }}"
+  loop: "{{ golang_packages }}"
+  environment:
+    PATH: "/usr/local/go/bin:{{ ansible_facts.env.HOME }}/go/bin:{{ ansible_facts.env.PATH }}"
+    GOPATH: "{{ ansible_facts.env.HOME }}/go"
+  register: golang_install_packages
+  changed_when: golang_install_packages.stdout != '' or golang_install_packages.stderr != ''
+  tags:
+    - install
+
+- name: Update Go packages
+  when: golang_packages | length > 0
+  ansible.builtin.command:
+    cmd: "go install {{ item }}"
+  loop: "{{ golang_packages }}"
+  environment:
+    PATH: "/usr/local/go/bin:{{ ansible_facts.env.HOME }}/go/bin:{{ ansible_facts.env.PATH }}"
+    GOPATH: "{{ ansible_facts.env.HOME }}/go"
+  register: golang_update_packages
+  changed_when: golang_update_packages.stdout != '' or golang_update_packages.stderr != ''
+  tags:
+    - update

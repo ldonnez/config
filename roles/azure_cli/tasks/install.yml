@@ -18,6 +18,8 @@
       ansible.builtin.apt:
         name: python3-debian
         state: present
+        update_cache: true
+        cache_valid_time: 3600
 
     - name: Get system architecture (e.g. amd64)
       ansible.builtin.command: dpkg --print-architecture
@@ -34,7 +36,7 @@
         name: azure-cli
         types: deb
         uris: https://packages.microsoft.com/repos/azure-cli/
-        suites: "{{ ansible_facts.lsb.codename }}"
+        suites: "{{ ansible_facts.distribution_release }}"
         components: main
         architectures: "{{ azure_cli_system_arch.stdout }}"
         signed_by: https://packages.microsoft.com/keys/microsoft.asc

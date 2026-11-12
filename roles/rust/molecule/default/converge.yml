@@ -1,0 +1,8 @@
+---
+- name: Converge
+  hosts: all
+  vars:
+    rust_cargo_packages:
+      - stylua
+  roles:
+    - role: rust

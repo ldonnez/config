@@ -1,0 +1,9 @@
+---
+- name: Cleanup
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Remove controller-side GnuPG backup fixtures
+      ansible.builtin.file:
+        path: /tmp/gnupg_backup_test/controller_backup
+        state: absent

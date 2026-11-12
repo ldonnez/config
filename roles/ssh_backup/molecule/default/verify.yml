@@ -1,0 +1,81 @@
+---
+- name: Verify
+  hosts: all
+  vars:
+    ssh_backup_test_dir: /tmp/ssh_backup_test
+  tasks:
+    - name: Stat backup artifacts
+      ansible.builtin.stat:
+        path: "{{ item.path }}"
+      register: ssh_backup_artifacts
+      loop:
+        - { path: "{{ ssh_backup_test_dir }}/backup/.ssh/id_rsa.vault", mode: "0600" }
+        - { path: "{{ ssh_backup_test_dir }}/backup/.ssh/id_rsa.pub", mode: "0600" }
+        - { path: "{{ ssh_backup_test_dir }}/backup/.ssh/config.vault", mode: "0600" }
+      loop_control:
+        label: "{{ item.path | basename }}"
+
+    - name: Assert backup artifacts exist
+      ansible.builtin.assert:
+        that:
+          - item.stat.exists
+          - item.stat.isreg
+      loop: "{{ ssh_backup_artifacts.results }}"
+      loop_control:
+        label: "{{ item.item.path | basename }}"
+
+    - name: Read vaulted backup headers
+      ansible.builtin.slurp:
+        src: "{{ item }}"
+      register: ssh_backup_vault_headers
+      loop:
+        - "{{ ssh_backup_test_dir }}/backup/.ssh/id_rsa.vault"
+        - "{{ ssh_backup_test_dir }}/backup/.ssh/config.vault"
+
+    - name: Assert backups are Ansible Vault encrypted
+      ansible.builtin.assert:
+        that:
+          - (item.content | b64decode).startswith('$ANSIBLE_VAULT;')
+      loop: "{{ ssh_backup_vault_headers.results }}"
+      loop_control:
+        label: "{{ item.item | basename }}"
+
+    - name: Stat restored files
+      ansible.builtin.stat:
+        path: "{{ item.path }}"
+      register: ssh_backup_restored
+      loop:
+        - { path: "{{ ssh_backup_test_dir }}/src/.ssh/id_rsa", mode: "0600" }
+        - { path: "{{ ssh_backup_test_dir }}/src/.ssh/id_rsa.pub", mode: "0644" }
+        - { path: "{{ ssh_backup_test_dir }}/src/.ssh/config", mode: "0600" }
+      loop_control:
+        label: "{{ item.path | basename }}"
+
+    - name: Assert restored files exist with expected modes
+      ansible.builtin.assert:
+        that:
+          - item.stat.exists
+          - item.stat.isreg
+          - item.stat.mode == item.item.mode
+      loop: "{{ ssh_backup_restored.results }}"
+      loop_control:
+        label: "{{ item.item.path | basename }}"
+
+    - name: Read restored file contents
+      ansible.builtin.slurp:
+        src: "{{ item.path }}"
+      register: ssh_backup_contents
+      loop:
+        - { path: "{{ ssh_backup_test_dir }}/src/.ssh/id_rsa", content: "dummy-private-key" }
+        - { path: "{{ ssh_backup_test_dir }}/src/.ssh/id_rsa.pub", content: "ssh-rsa AAAATEST dummy" }
+        - { path: "{{ ssh_backup_test_dir }}/src/.ssh/config", content: "Host example\nHostName example.com\n" }
+      loop_control:
+        label: "{{ item.path | basename }}"
+
+    - name: Assert restored content matches
+      ansible.builtin.assert:
+        that:
+          - (item.content | b64decode) == item.item.content
+      loop: "{{ ssh_backup_contents.results }}"
+      loop_control:
+        label: "{{ item.item.path | basename }}"

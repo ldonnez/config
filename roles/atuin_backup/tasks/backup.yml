@@ -23,26 +23,40 @@
         state: directory
         recurse: true
 
-    - name: Create temporary database backup
-      ansible.builtin.tempfile:
-        state: file
-        suffix: .db
-      register: atuin_backup_tmp
+    - name: Check existing encrypted backup
+      ansible.builtin.stat:
+        path: "{{ atuin_backup_path }}"
+      register: atuin_backup_existing
 
-    - name: Create SQLite backup
-      ansible.builtin.command:
-        argv:
-          - sqlite3
-          - "{{ atuin_backup_db_path }}"
-          - ".backup {{ atuin_backup_tmp.path }}"
+    - name: Create and encrypt atuin backup
+      when: not atuin_backup_existing.stat.exists
+      block:
+        - name: Create temporary database backup
+          ansible.builtin.tempfile:
+            state: file
+            suffix: .db
+          register: atuin_backup_tmp
 
-    - name: Encrypt backup
-      ansible.builtin.import_role:
-        name: gpg_file_backup
-        tasks_from: encrypt.yml
-      vars:
-        gpg_file_backup_source: "{{ atuin_backup_tmp.path }}"
-        gpg_file_backup_destination: "{{ atuin_backup_path }}"
+        - name: Create SQLite backup
+          ansible.builtin.command:
+            argv:
+              - sqlite3
+              - "{{ atuin_backup_db_path }}"
+              - ".backup {{ atuin_backup_tmp.path }}"
+
+        - name: Encrypt backup
+          ansible.builtin.import_role:
+            name: gpg_file_backup
+            tasks_from: encrypt.yml
+          vars:
+            gpg_file_backup_source: "{{ atuin_backup_tmp.path }}"
+            gpg_file_backup_destination: "{{ atuin_backup_path }}"
+      always:
+        - name: Remove temporary database backup
+          ansible.builtin.file:
+            path: "{{ atuin_backup_tmp.path }}"
+            state: absent
+          when: atuin_backup_tmp.path is defined
 
     - name: Update latest backup symlink
       ansible.builtin.file:
@@ -58,10 +72,3 @@
         backup_retention_dir: "{{ atuin_backup_dir }}"
         backup_retention_pattern: "*-atuin-history.db.gpg"
         backup_retention_keep: "{{ atuin_backup_keep }}"
-
-  always:
-    - name: Remove temporary database backup
-      ansible.builtin.file:
-        path: "{{ atuin_backup_tmp.path }}"
-        state: absent
-      when: atuin_backup_tmp.path is defined
