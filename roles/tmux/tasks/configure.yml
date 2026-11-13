@@ -126,6 +126,12 @@
         dest: "{{ ansible_facts.user_dir }}/.config/systemd/user/tmux-resurrect.timer"
         mode: "0600"
 
+    - name: Check user systemd availability
+      ansible.builtin.command: systemctl --user show-environment
+      register: tmux_user_systemd
+      changed_when: false
+      failed_when: false
+
     - name: Enable and start tmux-resurrect.timer
       ansible.builtin.systemd:
         name: tmux-resurrect.timer
@@ -133,3 +139,4 @@
         scope: user
         enabled: true
         daemon_reload: true
+      when: tmux_user_systemd.rc == 0
