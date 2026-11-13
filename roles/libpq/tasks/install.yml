@@ -17,9 +17,9 @@
       ansible.builtin.apt:
         name: ["postgresql-common", "python3-debian"]
         state: present
-
         update_cache: true
         cache_valid_time: 3600
+
     - name: Get system architecture (e.g. amd64)
       ansible.builtin.command: dpkg --print-architecture
       register: libpq_system_arch
@@ -41,4 +41,3 @@
         name: postgresql-client
         state: present
         update_cache: true
-        cache_valid_time: 3600
