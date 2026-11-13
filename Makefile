@@ -9,7 +9,7 @@ export PATH := $(HOME)/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:$(PATH)
 DOCKER_HOST ?= $(shell docker context inspect --format '{{.Endpoints.docker.Host}}' 2>/dev/null || echo unix:///var/run/docker.sock)
 export DOCKER_HOST
 
-.PHONY: collections molecule setup-macos setup-debian setup-wsl-ubuntu update-macos update-debian update-wsl-ubuntu backup lint test backup-secrets backup-secrets-local restore-secrets restore-secrets-local
+.PHONY: collections molecule setup-macos setup-debian setup-wsl-ubuntu update-macos update-debian update-wsl-ubuntu backup lint test backup-secrets backup-secrets-local restore-secrets restore-secrets-local test molecule-images
 
 collections:
 	ansible-galaxy collection install -r requirements.yml --upgrade
@@ -80,5 +80,10 @@ restore-secrets-local: collections
 lint:
 	ansible-lint
 
-test: collections
+molecule-images:
+	docker build --build-arg BASE_IMAGE=debian:13 -t molecule:debian13 -f molecule/Dockerfile .
+	docker build --build-arg BASE_IMAGE=ubuntu:24.04 -t molecule:ubuntu2404 -f molecule/Dockerfile .
+	docker build --build-arg BASE_IMAGE=ubuntu:26.04 -t molecule:ubuntu2604 -f molecule/Dockerfile .
+
+test: collections molecule-images
 	molecule test $(if $(ROLE),-s $(ROLE),--all --exclude default)

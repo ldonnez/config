@@ -3,12 +3,14 @@
   hosts: all
   tasks:
     - name: Create fake Windows Git Credential Manager path for WSL test
+      become: true
       ansible.builtin.file:
         path: /mnt/c/Program Files/Git/ucrt64/bin
         state: directory
         mode: "0755"
 
     - name: Create fake git-credential-manager.exe
+      become: true
       ansible.builtin.copy:
         dest: /mnt/c/Program Files/Git/ucrt64/bin/git-credential-manager.exe
         content: ""
