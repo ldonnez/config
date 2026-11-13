@@ -1,0 +1,64 @@
+---
+- name: Verify
+  hosts: all
+  vars:
+    vault_backup_test_dir: /tmp/vault_backup_test
+  tasks:
+    - name: Stat encrypted destination
+      ansible.builtin.stat:
+        path: "{{ vault_backup_test_dir }}/encrypt-destination.vault"
+      register: vault_backup_encrypted
+
+    - name: Assert encrypted destination exists
+      ansible.builtin.assert:
+        that:
+          - vault_backup_encrypted.stat.exists
+          - vault_backup_encrypted.stat.isreg
+
+    - name: Read encrypted destination
+      ansible.builtin.slurp:
+        src: "{{ vault_backup_test_dir }}/encrypt-destination.vault"
+      register: vault_backup_encrypted_content
+
+    - name: Assert encrypted content is Ansible Vault format
+      ansible.builtin.assert:
+        that:
+          - (vault_backup_encrypted_content.content | b64decode).startswith('$ANSIBLE_VAULT;')
+
+    - name: Decrypt encrypted destination to verify content
+      ansible.builtin.command:
+        argv:
+          - ansible-vault
+          - view
+          - --vault-password-file
+          - "{{ vault_backup_test_dir }}/.vault-pass"
+          - "{{ vault_backup_test_dir }}/encrypt-destination.vault"
+      register: vault_backup_encrypt_view
+      changed_when: false
+
+    - name: Assert encrypt round-trip content
+      ansible.builtin.assert:
+        that:
+          - vault_backup_encrypt_view.stdout == "vault-backup-encrypt"
+
+    - name: Stat decrypted destination
+      ansible.builtin.stat:
+        path: "{{ vault_backup_test_dir }}/decrypt-destination.txt"
+      register: vault_backup_decrypted
+
+    - name: Assert decrypted destination exists with requested mode
+      ansible.builtin.assert:
+        that:
+          - vault_backup_decrypted.stat.exists
+          - vault_backup_decrypted.stat.isreg
+          - vault_backup_decrypted.stat.mode == "0640"
+
+    - name: Read decrypted destination
+      ansible.builtin.slurp:
+        src: "{{ vault_backup_test_dir }}/decrypt-destination.txt"
+      register: vault_backup_decrypted_content
+
+    - name: Assert decrypted content matches fixture
+      ansible.builtin.assert:
+        that:
+          - (vault_backup_decrypted_content.content | b64decode) == "vault-backup-decrypt"

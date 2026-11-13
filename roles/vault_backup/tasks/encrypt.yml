@@ -12,4 +12,5 @@
       - "{{ vault_backup_source }}"
     stdin: "{{ lookup('ansible.builtin.unvault', vault_backup_password_file) | string | trim }}"
     stdin_add_newline: true
+    creates: "{{ vault_backup_destination }}"
   no_log: true

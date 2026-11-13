@@ -1,0 +1,42 @@
+---
+- name: Prepare
+  hosts: all
+  become: true
+  vars:
+    vault_backup_test_dir: /tmp/vault_backup_test
+    vault_backup_test_password: molecule-secret
+  tasks:
+    - name: Install ansible-core for vault operations
+      ansible.builtin.apt:
+        name: ansible-core
+        state: present
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Ensure test directory exists
+      ansible.builtin.file:
+        path: "{{ vault_backup_test_dir }}"
+        state: directory
+        mode: "0777"
+
+    - name: Write test files
+      ansible.builtin.copy:
+        dest: "{{ item.path }}"
+        content: "{{ item.content }}"
+        mode: "{{ item.mode }}"
+      loop:
+        - { path: "{{ vault_backup_test_dir }}/.vault-pass", content: "{{ vault_backup_test_password }}\n", mode: "0644" }
+        - { path: "{{ vault_backup_test_dir }}/encrypt-source.txt", content: "vault-backup-encrypt", mode: "0644" }
+        - { path: "{{ vault_backup_test_dir }}/decrypt-plain.txt", content: "vault-backup-decrypt", mode: "0644" }
+
+    - name: Create encrypted fixture for decrypt test
+      ansible.builtin.command:
+        argv:
+          - ansible-vault
+          - encrypt
+          - --vault-password-file
+          - "{{ vault_backup_test_dir }}/.vault-pass"
+          - --output
+          - "{{ vault_backup_test_dir }}/decrypt-source.vault"
+          - "{{ vault_backup_test_dir }}/decrypt-plain.txt"
+        creates: "{{ vault_backup_test_dir }}/decrypt-source.vault"
