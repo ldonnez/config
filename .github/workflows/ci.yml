@@ -22,22 +22,63 @@ jobs:
       - name: Run syntax check
         run: ansible-playbook --syntax-check backup.yml backup_secrets.yml restore_secrets.yml setup_debian.yml setup_macos.yml setup_wsl_ubuntu.yml
 
-  molecule:
+  changes:
     needs: ansible-lint
+    name: detect-changes
+    runs-on: ubuntu-latest
+    outputs:
+      roles: ${{ steps.result.outputs.roles }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Detect changed paths
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          list-files: json
+          filters: |
+            roles:
+              - 'roles/**'
+
+      - name: Determine changed roles
+        id: result
+        shell: bash
+        env:
+          ROLE_FILES: ${{ steps.filter.outputs.roles_files }}
+        run: |
+          roles=$(
+            jq -r '.[] | select(startswith("roles/")) | split("/")[1]' <<< "$ROLE_FILES" |
+            sort -u |
+            while IFS= read -r role; do
+              [[ -f "roles/$role/molecule/default/molecule.yml" ]] && echo "$role"
+            done |
+            xargs
+          )
+
+          echo "roles=$roles" >> "$GITHUB_OUTPUT"
+
+  molecule:
+    needs: changes
+    if: needs.changes.outputs.roles != ''
     name: molecule
     runs-on: ubuntu-latest
     env:
       DOCKER_TIMEOUT: 300
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-python@v7
+
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
-      - uses: docker/setup-buildx-action@v4
+
+      - uses: docker/setup-buildx-action@v3
+
       - name: Install test dependencies
         run: |
           python -m pip install --upgrade pip
           pip install ansible-core molecule "molecule-plugins[docker]"
 
       - name: Run Molecule tests
-        run: make test
+        env:
+          ROLES: ${{ needs.changes.outputs.roles }}
+        run: make test-roles ROLES="$ROLES"
