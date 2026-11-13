@@ -63,6 +63,8 @@
         name: inotify-tools # Better file watching backend: check :LspInfo and ensure File watch backend is inotify
         state: present
 
+        update_cache: true
+        cache_valid_time: 3600
     - name: Git clone neovim repository
       ansible.builtin.git:
         repo: https://github.com/neovim/neovim

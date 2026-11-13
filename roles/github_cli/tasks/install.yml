@@ -47,6 +47,7 @@
         state: present
         update_cache: true
 
+        cache_valid_time: 3600
 - name: Install gh with homebrew
   when: ansible_facts.os_family == "Darwin"
   community.general.homebrew:

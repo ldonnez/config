@@ -14,6 +14,8 @@
           - python3
         state: present
 
+        update_cache: true
+        cache_valid_time: 3600
     - name: Install language servers & linters with npm
       when: lsp_npm | length > 0
       community.general.npm:
@@ -92,6 +94,8 @@
         name: "{{ lsp_apt }}"
         state: present
 
+        update_cache: true
+        cache_valid_time: 3600
     - name: Get pipx binary location
       when: lsp_pip | length > 0
       ansible.builtin.command: which pipx

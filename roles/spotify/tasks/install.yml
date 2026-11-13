@@ -19,6 +19,8 @@
         name: python3-debian
         state: present
 
+        update_cache: true
+        cache_valid_time: 3600
     - name: Add spotify to sources list
       ansible.builtin.deb822_repository:
         name: spotify
@@ -34,3 +36,4 @@
         name: "spotify-client"
         state: present
         update_cache: true
+        cache_valid_time: 3600

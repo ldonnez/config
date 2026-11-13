@@ -65,7 +65,10 @@
         state: present
         update_cache: true
 
+        cache_valid_time: 3600
     - name: Install terraform-ls with apt
       ansible.builtin.apt:
         name: terraform-ls
         state: present
+        update_cache: true
+        cache_valid_time: 3600

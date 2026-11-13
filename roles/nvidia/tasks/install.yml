@@ -40,3 +40,5 @@
       ansible.builtin.apt:
         name: xserver-xorg-video-intel
         state: absent
+        update_cache: true
+        cache_valid_time: 3600
