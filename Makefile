@@ -8,7 +8,7 @@ export PATH := $(HOME)/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:$(PATH)
 # used by molecule only honors DOCKER_HOST, so default it to the active context's endpoint.
 DOCKER_HOST ?= $(shell docker context inspect --format '{{.Endpoints.docker.Host}}' 2>/dev/null || echo unix:///var/run/docker.sock)
 export DOCKER_HOST
-
+MOLECULE_CACHE = $(if $(CI),--cache-from type=gha --cache-to type=gha,mode=max)
 .PHONY: collections molecule setup-macos setup-debian setup-wsl-ubuntu update-macos update-debian update-wsl-ubuntu backup lint test test-roles backup-secrets backup-secrets-local restore-secrets restore-secrets-local molecule-images
 
 collections:
@@ -81,10 +81,9 @@ lint:
 	ansible-lint
 
 molecule-images:
-	docker build --build-arg BASE_IMAGE=debian:13 -t molecule:debian13 -f molecule/Dockerfile .
-	docker build --build-arg BASE_IMAGE=ubuntu:24.04 -t molecule:ubuntu2404 -f molecule/Dockerfile .
-	docker build --build-arg BASE_IMAGE=ubuntu:26.04 -t molecule:ubuntu2604 -f molecule/Dockerfile .
-
+	docker buildx build --build-arg BASE_IMAGE=debian:13 --tag molecule:debian13 --file molecule/Dockerfile $(MOLECULE_CACHE) --load .
+	docker buildx build --build-arg BASE_IMAGE=ubuntu:24.04 --tag molecule:ubuntu2404 --file molecule/Dockerfile $(MOLECULE_CACHE) --load .
+	docker buildx build --build-arg BASE_IMAGE=ubuntu:26.04 --tag molecule:ubuntu2604 --file molecule/Dockerfile $(MOLECULE_CACHE) --load .
 
 test-roles: collections molecule-images
 	@set -e; \
