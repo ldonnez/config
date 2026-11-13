@@ -222,12 +222,6 @@
       tags:
         - neovim
 
-    - name: Configure opencode
-      ansible.builtin.import_role:
-        name: opencode
-      tags:
-        - opencode
-
     - name: Configure copilot cli
       ansible.builtin.import_role:
         name: copilot_cli
