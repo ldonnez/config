@@ -1,24 +1,30 @@
 ---
-- name: Install memo
+- name: Install gnupg with apt
+  ansible.builtin.apt:
+    name: gnupg
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+  when: ansible_facts.os_family == "Debian"
   tags:
     - install
-  block:
-    - name: Download memo installation script
-      ansible.builtin.get_url:
-        url: https://raw.githubusercontent.com/ldonnez/memo/main/install.sh
-        dest: /tmp/install_memo.sh
-        mode: "0755"
 
-    - name: Run memo installation script
-      ansible.builtin.command: /tmp/install_memo.sh
-      args:
-        creates: "{{ ansible_facts.user_dir }}/.local/bin/memo"
+- name: Install gnupg with homebrew
+  community.general.homebrew:
+    name: gnupg
+    state: present
+  when: ansible_facts.os_family == "Darwin"
+  tags:
+    - install
 
-  always:
-    - name: Cleanup installation script
-      ansible.builtin.file:
-        path: /tmp/install_memo.sh
-        state: absent
+- name: Install memo
+  ansible.builtin.shell: |
+    set -o pipefail
+    curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/ldonnez/memo/main/install.sh | bash
+  args:
+    creates: "{{ ansible_facts.user_dir }}/.local/bin/memo"
+    executable: /bin/bash
 
 - name: Upgrade memo
   ansible.builtin.command: memo upgrade --force
