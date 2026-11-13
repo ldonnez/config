@@ -8,7 +8,11 @@ export PATH := $(HOME)/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:$(PATH)
 # used by molecule only honors DOCKER_HOST, so default it to the active context's endpoint.
 DOCKER_HOST ?= $(shell docker context inspect --format '{{.Endpoints.docker.Host}}' 2>/dev/null || echo unix:///var/run/docker.sock)
 export DOCKER_HOST
-MOLECULE_CACHE = $(if $(CI),--cache-from type=gha --cache-to type=gha,mode=max)
+
+ifeq ($(CI),true)
+MOLECULE_CACHE = --cache-from=type=gha --cache-to=type=gha\,mode=max
+endif
+
 .PHONY: collections molecule setup-macos setup-debian setup-wsl-ubuntu update-macos update-debian update-wsl-ubuntu backup lint test test-roles backup-secrets backup-secrets-local restore-secrets restore-secrets-local molecule-images
 
 collections:
