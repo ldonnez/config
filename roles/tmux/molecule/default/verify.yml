@@ -1,0 +1,56 @@
+---
+- name: Verify
+  hosts: all
+  vars_files:
+    - ../../../../roles/dotfiles/defaults/main.yml
+  tasks:
+    - name: Check tmux binary
+      ansible.builtin.command:
+        cmd: tmux -V
+      register: tmux_version
+      changed_when: false
+
+    - name: Assert tmux is installed
+      ansible.builtin.assert:
+        that:
+          - tmux_version.rc == 0
+          - tmux_version.stdout is search('tmux')
+        fail_msg: "tmux is not installed"
+        success_msg: "tmux is installed"
+
+    - name: Check tmux config symlink
+      ansible.builtin.stat:
+        path: "{{ ansible_facts.user_dir }}/.tmux.conf"
+        follow: false
+      register: tmux_conf
+
+    - name: Check TPM directory
+      ansible.builtin.stat:
+        path: "{{ ansible_facts.user_dir }}/.tmux/plugins/tpm"
+      register: tmux_tpm
+
+    - name: Check auto-restore symlink
+      ansible.builtin.stat:
+        path: "{{ ansible_facts.user_dir }}/.tmux/auto-restore.sh"
+        follow: false
+      register: tmux_auto_restore
+
+    - name: Check resurrect directory
+      ansible.builtin.stat:
+        path: "{{ ansible_facts.user_dir }}/.tmux/resurrect"
+      register: tmux_resurrect
+
+    - name: Assert tmux is configured
+      ansible.builtin.assert:
+        that:
+          - tmux_conf.stat.exists
+          - tmux_conf.stat.islnk
+          - tmux_conf.stat.lnk_source == dotfiles_directory_path ~ '/.tmux.conf'
+          - tmux_tpm.stat.exists
+          - tmux_tpm.stat.isdir
+          - tmux_auto_restore.stat.exists
+          - tmux_auto_restore.stat.islnk
+          - tmux_resurrect.stat.exists
+          - tmux_resurrect.stat.isdir
+        fail_msg: "tmux is not configured correctly"
+        success_msg: "tmux is configured correctly"

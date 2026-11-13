@@ -26,6 +26,8 @@
   ansible.builtin.command: copilot update
   environment:
     PATH: "{{ ansible_facts.user_dir }}/.local/bin:{{ ansible_facts.env.PATH }}"
+  register: copilot_cli_update
+  changed_when: "'Update available' in (copilot_cli_update.stdout + copilot_cli_update.stderr)"
   tags:
     - update
 

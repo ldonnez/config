@@ -1,0 +1,16 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Assert gnome keyring packages are installed
+      ansible.builtin.assert:
+        that:
+          - "'gnome-keyring' in ansible_facts.packages"
+          - "'libsecret-tools' in ansible_facts.packages"
+          - "'seahorse' in ansible_facts.packages"
+        fail_msg: "gnome-keyring packages are not installed"
+        success_msg: "gnome-keyring packages are installed"

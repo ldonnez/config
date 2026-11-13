@@ -1,0 +1,35 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Check az binary
+      ansible.builtin.stat:
+        path: /usr/bin/az
+      register: azure_cli_binary
+
+    - name: Read az version
+      ansible.builtin.command:
+        cmd: az --version
+      register: azure_cli_version
+      changed_when: false
+      failed_when: false
+      when: azure_cli_binary.stat.exists
+
+    - name: Assert Azure CLI is installed on Ubuntu
+      ansible.builtin.assert:
+        that:
+          - azure_cli_binary.stat.exists
+          - azure_cli_version.rc == 0
+        fail_msg: "Expected Azure CLI to be installed on Ubuntu"
+        success_msg: "Azure CLI is installed on Ubuntu"
+      when: ansible_facts.distribution == "Ubuntu"
+
+    - name: Assert Azure CLI install is skipped on Debian Trixie
+      ansible.builtin.assert:
+        that:
+          - not azure_cli_binary.stat.exists
+        fail_msg: "Expected Azure CLI install to be skipped on Debian Trixie test image"
+        success_msg: "Azure CLI install correctly skipped on Debian Trixie test image"
+      when:
+        - ansible_facts.distribution == "Debian"
+        - ansible_facts.distribution_release == "trixie"

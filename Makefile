@@ -82,6 +82,8 @@ lint:
 
 molecule-images:
 	docker build --build-arg BASE_IMAGE=debian:13 -t molecule:debian13 -f molecule/Dockerfile .
+	docker build --build-arg BASE_IMAGE=ubuntu:24.04 -t molecule:ubuntu2404 -f molecule/Dockerfile .
+	docker build --build-arg BASE_IMAGE=ubuntu:26.04 -t molecule:ubuntu2604 -f molecule/Dockerfile .
 
 
 test-roles: collections molecule-images

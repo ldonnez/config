@@ -1,0 +1,17 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Check gh binary
+      ansible.builtin.command:
+        cmd: gh --version
+      register: github_cli_version
+      changed_when: false
+
+    - name: Assert GitHub CLI is installed
+      ansible.builtin.assert:
+        that:
+          - github_cli_version.rc == 0
+          - github_cli_version.stdout is search('gh version')
+        fail_msg: "GitHub CLI is not installed"
+        success_msg: "GitHub CLI is installed"

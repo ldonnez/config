@@ -53,7 +53,7 @@
         name: hashicorp
         types: deb
         uris: https://apt.releases.hashicorp.com
-        suites: "{{ ansible_facts.lsb.codename }}"
+        suites: "{{ ansible_facts.distribution_release }}"
         components: main
         architectures: "{{ terraform_system_arch.stdout }}"
         signed_by: https://apt.releases.hashicorp.com/gpg

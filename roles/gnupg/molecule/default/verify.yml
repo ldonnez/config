@@ -1,0 +1,42 @@
+---
+- name: Verify
+  hosts: all
+  vars_files:
+    - ../../../../roles/dotfiles/defaults/main.yml
+  tasks:
+    - name: Check gnupg is installed
+      ansible.builtin.command:
+        cmd: gpg --version
+      register: gnupg_version
+      changed_when: false
+
+    - name: Assert gnupg reports a version
+      ansible.builtin.assert:
+        that:
+          - gnupg_version.rc == 0
+          - gnupg_version.stdout is search('gpg')
+        fail_msg: "gnupg is not installed"
+        success_msg: "gnupg is installed"
+
+    - name: Check .gnupg directory
+      ansible.builtin.stat:
+        path: "{{ ansible_facts.user_dir }}/.gnupg"
+      register: gnupg_dir
+
+    - name: Check gpg-agent.conf symlink
+      ansible.builtin.stat:
+        path: "{{ ansible_facts.user_dir }}/.gnupg/gpg-agent.conf"
+        follow: false
+      register: gnupg_agent_conf
+
+    - name: Assert gnupg is configured
+      ansible.builtin.assert:
+        that:
+          - gnupg_dir.stat.exists
+          - gnupg_dir.stat.isdir
+          - gnupg_dir.stat.mode == '0700'
+          - gnupg_agent_conf.stat.exists
+          - gnupg_agent_conf.stat.islnk
+          - gnupg_agent_conf.stat.lnk_source == dotfiles_directory_path ~ '/.gnupg/gpg-agent.conf'
+        fail_msg: "gnupg is not configured correctly"
+        success_msg: "gnupg is configured correctly"

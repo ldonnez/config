@@ -1,0 +1,42 @@
+---
+- name: Verify
+  hosts: all
+  vars_files:
+    - ../../../../roles/fd/defaults/main.yml
+    - ../../../../roles/dotfiles/defaults/main.yml
+  tasks:
+    - name: Check fd binary
+      ansible.builtin.command:
+        cmd: "{{ ansible_facts.user_dir }}/.local/bin/fd --version"
+      register: fd_version
+      changed_when: false
+
+    - name: Assert fd is installed
+      ansible.builtin.assert:
+        that:
+          - fd_version.rc == 0
+          - fd_version.stdout is search('fd')
+        fail_msg: "fd is not installed"
+        success_msg: "fd is installed"
+
+    - name: Check fd config directory
+      ansible.builtin.stat:
+        path: "{{ fd_config_dir }}"
+      register: fd_config
+
+    - name: Check fd ignore symlink
+      ansible.builtin.stat:
+        path: "{{ fd_config_dir }}/ignore"
+        follow: false
+      register: fd_ignore
+
+    - name: Assert fd is configured
+      ansible.builtin.assert:
+        that:
+          - fd_config.stat.exists
+          - fd_config.stat.isdir
+          - fd_ignore.stat.exists
+          - fd_ignore.stat.islnk
+          - fd_ignore.stat.lnk_source == dotfiles_directory_path ~ '/.agignore'
+        fail_msg: "fd is not configured correctly"
+        success_msg: "fd is configured correctly"
