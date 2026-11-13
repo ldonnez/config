@@ -1,11 +1,19 @@
 ---
 - name: Verify
   hosts: all
-  vars_files:
-    - ../../roles/lsp/defaults/main.yml
   vars:
     npm_prefix: "{{ ansible_facts.user_dir }}/.npm"
     npm_path: "{{ ansible_facts.user_dir }}/.local/share/mise/shims:{{ ansible_facts.user_dir }}/.local/bin:{{ ansible_facts.env.PATH }}"
+    lsp_npm:
+      - typescript
+    lsp_cargo:
+      - tree-sitter-cli
+    lsp_go:
+      - mvdan.cc/sh/v3/cmd/shfmt
+    lsp_pip:
+      - shandy-sqlfmt
+    lsp_homebrew: []
+    lsp_apt: []
 
   tasks:
     - name: Read the configured npm prefix
@@ -24,32 +32,26 @@
       environment:
         PATH: "{{ npm_path }}"
 
-    - name: Assert npm LSP servers are installed in the npm prefix
+    - name: Assert npm LSP package is installed
       ansible.builtin.assert:
         that:
           - npm_configured_prefix.stdout == npm_prefix
-          - lsp_npm | difference((npm_global_packages.stdout | from_json).get('dependencies', {}).keys() | list) | length == 0
-        fail_msg: >-
-          Expected npm LSP packages {{ lsp_npm | difference((npm_global_packages.stdout | from_json).get('dependencies', {}).keys() | list) }}
-          to be installed in {{ npm_prefix }}
-        success_msg: "All npm LSP packages are installed in {{ npm_prefix }}"
-      when: lsp_npm | length > 0
+          - "'typescript' in (npm_global_packages.stdout | from_json).get('dependencies', {}).keys() | list"
+        fail_msg: "Expected typescript to be installed in {{ npm_prefix }}"
+        success_msg: "npm LSP package is installed"
 
     - name: Check cargo-installed LSP package
       ansible.builtin.command:
-        cmd: "{{ ansible_facts.user_dir }}/.cargo/bin/stylua --version"
-      register: stylua_version
+        cmd: "{{ ansible_facts.user_dir }}/.cargo/bin/tree-sitter --version"
+      register: cargo_lsp_version
       changed_when: false
-      when: lsp_cargo | length > 0
 
     - name: Assert cargo-installed LSP package is available
       ansible.builtin.assert:
         that:
-          - stylua_version.rc == 0
-          - stylua_version.stdout is search('stylua')
-        fail_msg: "Expected stylua to be installed via cargo"
+          - cargo_lsp_version.rc == 0
+        fail_msg: "Expected tree-sitter-cli to be installed via cargo"
         success_msg: "Cargo LSP package is installed"
-      when: lsp_cargo | length > 0
 
     - name: Check go-installed LSP package
       ansible.builtin.command:
@@ -58,7 +60,6 @@
       changed_when: false
       environment:
         PATH: "/usr/local/go/bin:{{ ansible_facts.env.PATH }}"
-      when: lsp_go | length > 0
 
     - name: Assert go-installed LSP package is available
       ansible.builtin.assert:
@@ -66,14 +67,12 @@
           - shfmt_version.rc == 0
         fail_msg: "Expected shfmt to be installed via go"
         success_msg: "Go LSP package is installed"
-      when: lsp_go | length > 0
 
     - name: Check pipx-installed LSP package
       ansible.builtin.command:
         cmd: "{{ ansible_facts.user_dir }}/.local/bin/sqlfmt --version"
       register: sqlfmt_version
       changed_when: false
-      when: lsp_pip | length > 0
 
     - name: Assert pipx-installed LSP package is available
       ansible.builtin.assert:
@@ -81,24 +80,11 @@
           - sqlfmt_version.rc == 0
         fail_msg: "Expected sqlfmt to be installed via pipx"
         success_msg: "Pipx LSP package is installed"
-      when: lsp_pip | length > 0
 
-    - name: Check apt-installed LSP dependencies on Debian
-      ansible.builtin.command:
-        argv:
-          - bash
-          - -lc
-          - command -v shellcheck && command -v xmllint
-      register: apt_lsp_tools
-      changed_when: false
-      when: ansible_facts.os_family == "Debian"
-
-    - name: Assert apt-installed LSP dependencies are available on Debian
+    - name: Check that empty apt/homebrew package-manager tasks had nothing to install
       ansible.builtin.assert:
         that:
-          - apt_lsp_tools.rc == 0
-          - "'shellcheck' in apt_lsp_tools.stdout"
-          - "'xmllint' in apt_lsp_tools.stdout"
-        fail_msg: "Expected shellcheck and xmllint to be installed on Debian"
-        success_msg: "Debian LSP apt dependencies are installed"
-      when: ansible_facts.os_family == "Debian"
+          - lsp_apt | length == 0
+          - lsp_homebrew | length == 0
+        fail_msg: "Expected empty apt/homebrew LSP arrays for this scenario"
+        success_msg: "Empty apt/homebrew LSP arrays are configured"

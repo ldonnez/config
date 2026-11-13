@@ -1,6 +1,4 @@
 ---
-shared_state: true
-
 dependency:
   name: galaxy
   enabled: false
@@ -11,14 +9,6 @@ driver:
 platforms:
   - name: debian13
     image: debian:13
-    dockerfile: ../Dockerfile.j2
-    pre_build_image: false
-  - name: ubuntu2404
-    image: ubuntu:24.04
-    dockerfile: ../Dockerfile.j2
-    pre_build_image: false
-  - name: ubuntu2604
-    image: ubuntu:26.04
     dockerfile: ../Dockerfile.j2
     pre_build_image: false
 

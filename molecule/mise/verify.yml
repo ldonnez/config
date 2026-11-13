@@ -43,17 +43,18 @@
       environment:
         PATH: "{{ mise_shims }}:{{ ansible_facts.user_dir }}/.local/bin:{{ ansible_facts.env.PATH }}"
 
-    - name: Assert the mise role installed mise, usage, node and zsh completions
+    - name: Assert the mise role installed mise, usage, node and zsh completions without ruby
       ansible.builtin.assert:
         that:
           - mise_binary.stat.exists
           - mise_version.stdout is search('[0-9]+[.][0-9]+')
           - mise_tool_list.stdout is search('usage')
           - mise_tool_list.stdout is search('node')
+          - mise_tool_list.stdout is not search('ruby')
           - mise_completions.results | selectattr('stat.exists') | list | length > 0
           - mise_node_shim.stat.exists
           - mise_node_shim.stat.executable
           - mise_node_version.rc == 0
           - mise_node_version.stdout is search('^v[0-9]+')
-        fail_msg: "The mise role did not install mise, usage, node or zsh completions"
-        success_msg: "The mise role installed mise, usage, node and zsh completions"
+        fail_msg: "The mise role did not install mise/usage/node correctly or installed ruby"
+        success_msg: "The mise role installed mise, usage, node and zsh completions without ruby"

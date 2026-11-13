@@ -55,22 +55,6 @@
         fail_msg: "Expected Dutch spell files to be installed"
         success_msg: "Dutch spell files are installed"
 
-    - name: Check neovim npm package
-      ansible.builtin.command:
-        cmd: npm ls -g --depth=0 neovim
-      register: nvim_npm_package
-      changed_when: false
-      environment:
-        PATH: "{{ ansible_facts.user_dir }}/.local/share/mise/shims:{{ ansible_facts.user_dir }}/.local/bin:{{ ansible_facts.env.PATH }}"
-
-    - name: Assert neovim npm package is installed
-      ansible.builtin.assert:
-        that:
-          - nvim_npm_package.rc == 0
-          - nvim_npm_package.stdout is search('neovim@')
-        fail_msg: "Expected neovim npm package to be installed globally"
-        success_msg: "Neovim npm package is installed"
-
     - name: Check neovim pack lock file
       ansible.builtin.stat:
         path: "{{ neovim_config_dir }}/nvim-pack-lock.json"

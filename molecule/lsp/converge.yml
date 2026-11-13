@@ -1,13 +1,29 @@
 ---
 - name: Converge
   hosts: all
+  serial: 1
   vars:
     mise_tools:
       - name: nodejs
-        apt_dependencies: [libatomic1]
+        apt_dependencies:
+          - libatomic1
         homebrew_dependencies: []
         versions:
           - latest
         global_version: latest
+    lsp_npm:
+      - typescript
+    lsp_cargo:
+      - tree-sitter-cli
+    lsp_go:
+      - mvdan.cc/sh/v3/cmd/shfmt
+    lsp_pip:
+      - shandy-sqlfmt
+    lsp_homebrew: []
+    lsp_apt: []
   roles:
+    - role: npm
+    - role: rust
+    - role: golang
+    - role: pip
     - role: lsp

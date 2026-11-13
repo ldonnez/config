@@ -1,6 +1,4 @@
 ---
-shared_state: true
-
 dependency:
   name: galaxy
   enabled: false

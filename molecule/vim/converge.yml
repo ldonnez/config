@@ -4,7 +4,8 @@
   vars:
     mise_tools:
       - name: nodejs
-        apt_dependencies: [libatomic1]
+        apt_dependencies:
+          - libatomic1
         homebrew_dependencies: []
         versions:
           - latest

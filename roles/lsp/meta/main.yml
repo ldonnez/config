@@ -17,8 +17,4 @@ galaxy_info:
       versions:
         - all
 
-dependencies:
-  - role: npm
-  - role: pip
-  - role: rust
-  - role: golang
+dependencies: []

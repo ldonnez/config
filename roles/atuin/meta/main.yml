@@ -19,3 +19,4 @@ galaxy_info:
 
 dependencies:
   - role: zsh
+  - role: dotfiles

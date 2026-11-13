@@ -18,6 +18,6 @@ galaxy_info:
         - all
 
 dependencies:
-  - role: fzf
-  - role: vifm
+  - role: dotfiles
   - role: mise
+  - role: fzf
