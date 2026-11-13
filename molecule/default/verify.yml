@@ -1,3 +1,0 @@
----
-- name: Verify
-  import_playbook: ../dotfiles/verify.yml
