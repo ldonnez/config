@@ -13,7 +13,7 @@ ifeq ($(CI),true)
 MOLECULE_CACHE = --cache-from=type=gha --cache-to=type=gha\,mode=max
 endif
 
-.PHONY: collections molecule setup-macos setup-debian setup-wsl-ubuntu update-macos update-debian update-wsl-ubuntu backup lint test test-roles backup-secrets backup-secrets-local restore-secrets restore-secrets-local molecule-images
+.PHONY: collections molecule setup-macos setup-debian setup-wsl-ubuntu update-macos update-debian update-wsl-ubuntu backup lint test test-roles test-scenarios backup-secrets backup-secrets-local restore-secrets restore-secrets-local molecule-images
 
 collections:
 	ansible-galaxy collection install -r requirements.yml --upgrade
@@ -86,6 +86,7 @@ lint:
 
 molecule-images:
 	docker buildx build --build-arg BASE_IMAGE=debian:13 --tag molecule:debian13 --file molecule/Dockerfile $(MOLECULE_CACHE) --load .
+	docker buildx build --build-arg BASE_IMAGE=ubuntu:22.04 --tag molecule:ubuntu2204 --file molecule/Dockerfile $(MOLECULE_CACHE) --load .
 	docker buildx build --build-arg BASE_IMAGE=ubuntu:24.04 --tag molecule:ubuntu2404 --file molecule/Dockerfile $(MOLECULE_CACHE) --load .
 	docker buildx build --build-arg BASE_IMAGE=ubuntu:26.04 --tag molecule:ubuntu2604 --file molecule/Dockerfile $(MOLECULE_CACHE) --load .
 
@@ -103,6 +104,22 @@ test-roles: collections molecule-images
 		test -f "$$scenario" || { echo "No molecule scenario for role: $$role"; exit 1; }; \
 		echo "==> molecule test: $$role"; \
 		(cd "roles/$$role" && molecule test); \
+	done
+
+test-scenarios: collections molecule-images
+	@set -e; \
+	if [ -n "$(SCENARIOS)" ]; then \
+		scenarios="$(SCENARIOS)"; \
+	elif [ -n "$(SCENARIO)" ]; then \
+		scenarios="$(SCENARIO)"; \
+	else \
+		scenarios=$$(find molecule -mindepth 2 -maxdepth 2 -name molecule.yml | sed 's|^molecule/||; s|/molecule.yml$$||' | sort); \
+	fi; \
+	if [ -z "$$scenarios" ]; then echo "No molecule scenarios found"; exit 1; fi; \
+	for scenario in $$scenarios; do \
+		test -f "molecule/$$scenario/molecule.yml" || { echo "No molecule scenario: $$scenario"; exit 1; }; \
+		echo "==> molecule test scenario: $$scenario"; \
+		molecule test -s "$$scenario"; \
 	done
 
 test: test-roles

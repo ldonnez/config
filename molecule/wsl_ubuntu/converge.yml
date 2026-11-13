@@ -1,0 +1,6 @@
+---
+- name: Converge
+  ansible.builtin.import_playbook: ../../setup_wsl_ubuntu.yml
+  vars:
+    target_hosts: all
+    target_connection: docker

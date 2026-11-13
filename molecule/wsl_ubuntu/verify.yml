@@ -1,0 +1,8 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Verify setup_wsl_ubuntu convergence completed
+      ansible.builtin.debug:
+        msg: "setup_wsl_ubuntu playbook converged successfully"

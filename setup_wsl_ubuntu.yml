@@ -1,7 +1,7 @@
 ---
 - name: Setup WSL Ubuntu
-  hosts: localhost
-  connection: local
+  hosts: "{{ target_hosts | default('localhost') }}"
+  connection: "{{ target_connection | default('local') }}"
 
   vars:
     dotfiles_repo: "https://github.com/ldonnez/dotfiles.git"
