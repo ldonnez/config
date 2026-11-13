@@ -121,5 +121,3 @@ test-scenarios: collections molecule-images
 		echo "==> molecule test scenario: $$scenario"; \
 		molecule test -s "$$scenario"; \
 	done
-
-test: test-roles

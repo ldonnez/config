@@ -54,3 +54,29 @@
           - tmux_resurrect.stat.isdir
         fail_msg: "tmux is not configured correctly"
         success_msg: "tmux is configured correctly"
+
+    - name: Check tmux-resurrect service unit
+      ansible.builtin.stat:
+        path: "{{ ansible_facts.user_dir }}/.config/systemd/user/tmux-resurrect.service"
+      register: tmux_resurrect_service
+
+    - name: Check tmux-resurrect timer unit
+      ansible.builtin.stat:
+        path: "{{ ansible_facts.user_dir }}/.config/systemd/user/tmux-resurrect.timer"
+      register: tmux_resurrect_timer
+
+    - name: Get tmux-resurrect timer state
+      ansible.builtin.systemd:
+        name: tmux-resurrect.timer
+        scope: user
+      register: tmux_resurrect_timer_state
+
+    - name: Assert tmux-resurrect systemd units are installed and enabled
+      ansible.builtin.assert:
+        that:
+          - tmux_resurrect_service.stat.exists
+          - tmux_resurrect_timer.stat.exists
+          - tmux_resurrect_timer_state.status.UnitFileState == 'enabled'
+          - tmux_resurrect_timer_state.status.ActiveState == 'active'
+        fail_msg: "tmux-resurrect systemd timer is not installed/enabled/active"
+        success_msg: "tmux-resurrect systemd timer is installed and active"

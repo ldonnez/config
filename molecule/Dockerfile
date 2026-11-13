@@ -10,7 +10,9 @@ RUN apt-get update \
         ca-certificates \
         curl \
         dbus \
+        dbus-user-session \
         git \
+        libpam-systemd \
         python3 \
         python3-apt \
         python3-setuptools \
@@ -19,7 +21,9 @@ RUN apt-get update \
         systemd-sysv \
     && rm -rf /var/lib/apt/lists/*
 
-RUN useradd --create-home --shell /bin/bash molecule
+RUN useradd --create-home --shell /bin/bash molecule \
+    && install -d /var/lib/systemd/linger \
+    && touch /var/lib/systemd/linger/molecule
 
 RUN usermod --append --groups sudo molecule
 

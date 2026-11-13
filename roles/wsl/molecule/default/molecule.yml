@@ -11,20 +11,18 @@ platforms:
     image: molecule:ubuntu2404
     pre_build_image: true
     privileged: true
+    override_command: false
     tmpfs:
       - /run
       - /run/lock
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:rw
   - name: ubuntu2604
     image: molecule:ubuntu2604
     pre_build_image: true
     privileged: true
+    override_command: false
     tmpfs:
       - /run
       - /run/lock
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:rw
 
 provisioner:
   name: ansible

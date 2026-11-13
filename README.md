@@ -8,28 +8,6 @@ This is mostly for my own usage.
 
 Ansible playbooks **setup_macos.yml** and **setup_debian.yml** includes the **secrets** role which installs vault encrypted (`ansible-vault encrypt <filename>`) files from a repository cloned to `~/.secrets`. The `make setup-macos` and `make setup-debian` targets prompt for both the vault and become passwords automatically (`--ask-vault-pass -K`).
 
-## Testing
-
-Molecule scenarios live in `molecule/`. Install ansible-core, ansible-lint, molecule and the Docker plugin with pipx:
-
-```zsh
-make molecule
-```
-
-Then run every scenario on Debian 13, Ubuntu 24.04 and Ubuntu 26.04:
-
-```zsh
-make test
-```
-
-To run a single role's scenario, pass its name with `ROLE`:
-
-```zsh
-make test ROLE=dotfiles
-```
-
-All scenarios share the container image definition in `molecule/Dockerfile.j2`.
-
 ## Setup macOS
 
 - When running from fresh install run `xcode-select --install` to install minimal tools like git etc
@@ -168,3 +146,47 @@ To restore secrets locally without cloning/updating the repository, run:
 ```zsh
 make restore-secrets-local
 ```
+
+## Testing
+
+Testing uses [Molecule](https://ansible.readthedocs.io/projects/molecule/) with the Docker driver. You’ll need Docker available locally.
+
+Install test dependencies (ansible-core, ansible-lint, molecule, and the Docker plugin via pipx):
+
+```zsh
+make molecule
+```
+
+Build the local test images and run Molecule tests for all roles that have a `molecule/default/molecule.yml`:
+
+```zsh
+make test-roles
+```
+
+Run tests for specific role(s):
+
+```zsh
+make test-roles ROLE=dotfiles
+# or
+make test-roles ROLES="dotfiles vault_backup"
+```
+
+Run standalone Molecule scenarios from `molecule/` (e.g. `wsl_ubuntu`):
+
+```zsh
+make test-scenarios
+# or
+make test-scenarios SCENARIO=wsl_ubuntu
+```
+
+Run linting:
+
+```zsh
+make lint
+```
+
+Notes:
+
+- `make test-roles` run per-role scenarios under `roles/<role>/molecule/default`.
+- `make test-scenarios` runs scenarios under `molecule/<scenario>`.
+- Test container images are built from `molecule/Dockerfile` (base images include Debian 13 and Ubuntu 22.04/24.04/26.04). Individual scenarios/platforms define which images they use.
