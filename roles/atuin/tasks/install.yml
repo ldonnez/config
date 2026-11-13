@@ -33,6 +33,7 @@
   ansible.builtin.command: atuin import zsh
   environment:
     PATH: "{{ ansible_facts.user_dir }}/.atuin/bin:{{ ansible_facts.env.PATH }}"
+  changed_when: false
   tags:
     - install
 
@@ -77,5 +78,7 @@
   ansible.builtin.command: atuin update
   environment:
     PATH: "{{ ansible_facts.user_dir }}/.atuin/bin:{{ ansible_facts.env.PATH }}"
+  register: atuin_update
+  changed_when: "'Updated atuin' in (atuin_update.stdout + atuin_update.stderr)"
   tags:
     - update
