@@ -57,10 +57,10 @@ jobs:
 
           echo "roles=$roles" >> "$GITHUB_OUTPUT"
 
-  molecule:
+  molecule-role-tests:
     needs: changes
     if: needs.changes.outputs.roles != ''
-    name: molecule
+    name: molecule role tests
     runs-on: ubuntu-latest
     env:
       DOCKER_TIMEOUT: 300
