@@ -1,0 +1,45 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Check curl binary
+      ansible.builtin.stat:
+        path: /usr/bin/curl
+      register: packages_curl_binary
+
+    - name: Assert curl is installed
+      ansible.builtin.assert:
+        that:
+          - packages_curl_binary.stat.exists
+          - packages_curl_binary.stat.executable
+        fail_msg: "curl is not installed"
+        success_msg: "curl is installed"
+
+    - name: Read apt sources list
+      ansible.builtin.slurp:
+        src: /etc/apt/sources.list
+      register: packages_sources_list
+
+    - name: Set decoded sources list content
+      ansible.builtin.set_fact:
+        packages_sources_content: "{{ packages_sources_list.content | b64decode }}"
+
+    - name: Assert Debian sources list is configured correctly
+      ansible.builtin.assert:
+        that:
+          - packages_sources_content is search('deb http://deb.debian.org/debian .* main contrib non-free non-free-firmware')
+          - packages_sources_content is search('deb-src http://deb.debian.org/debian .* main contrib non-free non-free-firmware')
+          - packages_sources_content is search('deb http://security.debian.org/debian-security .* main contrib non-free non-free-firmware')
+          - packages_sources_content is search('deb http://deb.debian.org/debian .*backports main contrib non-free non-free-firmware')
+        fail_msg: "Debian /etc/apt/sources.list is not configured as expected"
+        success_msg: "Debian /etc/apt/sources.list is configured correctly"
+      when: ansible_facts.distribution == 'Debian'
+
+    - name: Assert Ubuntu sources list is not managed as Debian sources
+      ansible.builtin.assert:
+        that:
+          - packages_sources_content is not search('non-free-firmware')
+          - packages_sources_content is not search('deb-src http://deb.debian.org/debian')
+        fail_msg: "Ubuntu /etc/apt/sources.list was unexpectedly configured with Debian sources"
+        success_msg: "Ubuntu /etc/apt/sources.list was not modified by Debian sources template"
+      when: ansible_facts.distribution == 'Ubuntu'
