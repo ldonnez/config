@@ -38,3 +38,35 @@
           - backup_retention_keep0_stats.results[0].stat.exists
           - backup_retention_keep0_stats.results[1].stat.exists
         fail_msg: "keep=0 should not remove backups"
+
+    - name: Stat fewer-than-keep backup files
+      ansible.builtin.stat:
+        path: "{{ item }}"
+      register: backup_retention_fewer_stats
+      loop:
+        - /tmp/backup_retention_fewer/20240101-backup.bak
+        - /tmp/backup_retention_fewer/20240102-backup.bak
+
+    - name: Assert fewer-than-keep backups are retained
+      ansible.builtin.assert:
+        that:
+          - backup_retention_fewer_stats.results[0].stat.exists
+          - backup_retention_fewer_stats.results[1].stat.exists
+        fail_msg: "Retention should not remove backups when fewer than keep exist"
+
+    - name: Stat exactly-keep backup files
+      ansible.builtin.stat:
+        path: "{{ item }}"
+      register: backup_retention_exact_stats
+      loop:
+        - /tmp/backup_retention_exact/20240101-backup.bak
+        - /tmp/backup_retention_exact/20240102-backup.bak
+        - /tmp/backup_retention_exact/20240103-backup.bak
+
+    - name: Assert exactly-keep backups are retained
+      ansible.builtin.assert:
+        that:
+          - backup_retention_exact_stats.results[0].stat.exists
+          - backup_retention_exact_stats.results[1].stat.exists
+          - backup_retention_exact_stats.results[2].stat.exists
+        fail_msg: "Retention should not remove backups when exactly keep exist"
