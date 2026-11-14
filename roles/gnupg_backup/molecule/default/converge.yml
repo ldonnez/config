@@ -1,0 +1,84 @@
+---
+- name: Converge
+  hosts: all
+  vars:
+    gnupg_backup_remote_dir: /tmp/gnupg_backup_test/backup
+    gnupg_backup_controller_dir: /tmp/gnupg_backup_test/controller_backup
+    gnupg_backup_gpg_keys:
+      - id: molecule@example.com
+        gpg_key_password_file: "{{ playbook_dir }}/files/gpg_key_password_file.vault"
+    gnupg_backup_gpg_key_ids:
+      - molecule@example.com
+  tasks:
+    - name: Run gnupg_backup role (backup)
+      ansible.builtin.include_role:
+        name: gnupg_backup
+        tasks_from: backup.yml
+      vars:
+        gnupg_backup_dir: "{{ gnupg_backup_remote_dir }}"
+
+    - name: Check restore test marker
+      ansible.builtin.stat:
+        path: /tmp/gnupg_backup_restore_test_done
+      register: gnupg_backup_restore_marker
+
+    - name: Test restore path
+      when: not gnupg_backup_restore_marker.stat.exists
+      block:
+        - name: Ensure controller backup directory exists
+          ansible.builtin.file:
+            path: "{{ gnupg_backup_controller_dir }}"
+            state: directory
+            mode: "0755"
+          delegate_to: localhost
+          become: false
+
+        - name: Fetch encrypted backup to controller
+          ansible.builtin.fetch:
+            src: "{{ gnupg_backup_remote_dir }}/molecule@example.com.asc.vault"
+            dest: "{{ gnupg_backup_controller_dir }}/"
+            flat: true
+
+        - name: Get secret key fingerprint
+          ansible.builtin.command:
+            argv:
+              - gpg
+              - --batch
+              - --with-colons
+              - --fingerprint
+              - molecule@example.com
+          register: gnupg_backup_fpr
+          changed_when: false
+
+        - name: Set secret key fingerprint fact
+          ansible.builtin.set_fact:
+            gnupg_backup_secret_fpr: "{{ (gnupg_backup_fpr.stdout | regex_findall('fpr:{9}([A-F0-9]+):'))[0] }}"
+
+        - name: Save expected key fingerprint
+          ansible.builtin.copy:
+            dest: /tmp/gnupg_backup_test/expected_fingerprint
+            content: "{{ gnupg_backup_secret_fpr }}\n"
+            mode: "0644"
+
+        - name: Remove secret key to simulate restore target
+          ansible.builtin.command:
+            argv:
+              - gpg
+              - --batch
+              - --yes
+              - --delete-secret-keys
+              - "{{ gnupg_backup_secret_fpr }}"
+          changed_when: true
+
+        - name: Run gnupg_backup role (restore)
+          ansible.builtin.include_role:
+            name: gnupg_backup
+            tasks_from: restore.yml
+          vars:
+            gnupg_backup_dir: "{{ gnupg_backup_controller_dir }}"
+
+        - name: Mark restore test done
+          ansible.builtin.file:
+            path: /tmp/gnupg_backup_restore_test_done
+            state: touch
+            mode: "0644"
