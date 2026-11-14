@@ -156,9 +156,17 @@
       ansible.builtin.apt:
         name: i3lock
         state: absent
-
         update_cache: true
         cache_valid_time: 3600
+
+    - name: Install git with apt
+      become: true
+      ansible.builtin.apt:
+        name: git
+        state: present
+        update_cache: true
+        cache_valid_time: 3600
+
     - name: Install build dependencies
       ansible.builtin.apt:
         name:
@@ -185,7 +193,6 @@
         state: present
         update_cache: true
         cache_valid_time: 3600
-      when: ansible_facts.os_family == "Debian"
 
     - name: Git clone i3lock-color repository
       ansible.builtin.git:
