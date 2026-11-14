@@ -1,0 +1,4 @@
+---
+# defaults file for neomutt
+
+neomutt_configure_with_cron: false
