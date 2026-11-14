@@ -10,6 +10,8 @@
       loop:
         - /tmp/backup_retention_keep2
         - /tmp/backup_retention_keep0
+        - /tmp/backup_retention_fewer
+        - /tmp/backup_retention_exact
 
     - name: Create backup files for keep=2 scenario
       ansible.builtin.copy:
@@ -36,3 +38,22 @@
       loop:
         - /tmp/backup_retention_keep0/20240101-backup.bak
         - /tmp/backup_retention_keep0/20240102-backup.bak
+
+    - name: Create fewer-than-keep backup files
+      ansible.builtin.copy:
+        dest: "{{ item }}"
+        content: "backup"
+        mode: "0644"
+      loop:
+        - /tmp/backup_retention_fewer/20240101-backup.bak
+        - /tmp/backup_retention_fewer/20240102-backup.bak
+
+    - name: Create exactly-keep backup files
+      ansible.builtin.copy:
+        dest: "{{ item }}"
+        content: "backup"
+        mode: "0644"
+      loop:
+        - /tmp/backup_retention_exact/20240101-backup.bak
+        - /tmp/backup_retention_exact/20240102-backup.bak
+        - /tmp/backup_retention_exact/20240103-backup.bak
