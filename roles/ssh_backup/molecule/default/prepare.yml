@@ -1,0 +1,45 @@
+---
+- name: Prepare
+  hosts: all
+  become: true
+  vars:
+    ssh_backup_test_dir: /tmp/ssh_backup_test
+  tasks:
+    - name: Install test dependencies
+      ansible.builtin.apt:
+        name:
+          - ansible-core
+        state: present
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Ensure test directories exist
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0700"
+      loop:
+        - "{{ ssh_backup_test_dir }}"
+        - "{{ ssh_backup_test_dir }}/src/.ssh"
+        - "{{ ssh_backup_test_dir }}/backup/.ssh"
+
+    - name: Create SSH key and config fixtures
+      become: false
+      ansible.builtin.copy:
+        dest: "{{ item.path }}"
+        content: "{{ item.content }}"
+        mode: "{{ item.mode }}"
+      loop:
+        - path: "{{ ssh_backup_test_dir }}/src/.ssh/id_rsa"
+          content: "dummy-private-key"
+          mode: "0600"
+        - path: "{{ ssh_backup_test_dir }}/src/.ssh/id_rsa.pub"
+          content: "ssh-rsa AAAATEST dummy"
+          mode: "0644"
+        - path: "{{ ssh_backup_test_dir }}/src/.ssh/config"
+          content: |
+            Host example
+            HostName example.com
+          mode: "0600"
