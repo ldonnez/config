@@ -17,3 +17,19 @@
         backup_retention_dir: /tmp/backup_retention_keep0
         backup_retention_pattern: "*.bak"
         backup_retention_keep: 0
+
+    - name: Run retention with fewer backups than keep
+      ansible.builtin.include_role:
+        name: backup_retention
+      vars:
+        backup_retention_dir: /tmp/backup_retention_fewer
+        backup_retention_pattern: "*.bak"
+        backup_retention_keep: 3
+
+    - name: Run retention with exactly keep backups
+      ansible.builtin.include_role:
+        name: backup_retention
+      vars:
+        backup_retention_dir: /tmp/backup_retention_exact
+        backup_retention_pattern: "*.bak"
+        backup_retention_keep: 3
