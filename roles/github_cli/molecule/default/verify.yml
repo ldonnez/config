@@ -15,3 +15,18 @@
           - github_cli_version.stdout is search('gh version')
         fail_msg: "GitHub CLI is not installed"
         success_msg: "GitHub CLI is installed"
+
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+      when: ansible_facts.os_family == "Debian"
+
+    - name: Assert credential storage packages are installed
+      ansible.builtin.assert:
+        that:
+          - "'libsecret-1-0' in ansible_facts.packages"
+          - "'libsecret-tools' in ansible_facts.packages"
+          - "'gnome-keyring' in ansible_facts.packages"
+          - "'seahorse' in ansible_facts.packages"
+        fail_msg: "GitHub CLI credential storage packages are not installed"
+      when: ansible_facts.os_family == "Debian"

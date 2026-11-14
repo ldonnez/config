@@ -180,12 +180,6 @@
       tags:
         - rg
 
-    - name: Configure gnome keyring
-      ansible.builtin.import_role:
-        name: gnome_keyring
-      tags:
-        - gnome_keyring
-
     - name: Configure memo
       ansible.builtin.import_role:
         name: memo
