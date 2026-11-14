@@ -11,4 +11,3 @@
       - --output
       - "{{ gpg_file_backup_destination }}"
       - "{{ gpg_file_backup_source }}"
-    creates: "{{ gpg_file_backup_destination }}"
