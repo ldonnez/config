@@ -1,0 +1,69 @@
+---
+- name: Verify
+  hosts: all
+  vars:
+    gpg_file_backup_test_dir: /tmp/gpg_file_backup_test
+  tasks:
+    - name: Stat encrypted destination
+      ansible.builtin.stat:
+        path: "{{ gpg_file_backup_test_dir }}/encrypt-destination.gpg"
+      register: gpg_file_backup_encrypted
+
+    - name: Assert encrypted destination exists
+      ansible.builtin.assert:
+        that:
+          - gpg_file_backup_encrypted.stat.exists
+          - gpg_file_backup_encrypted.stat.isreg
+
+    - name: Read encrypted destination header
+      ansible.builtin.command:
+        argv:
+          - gpg
+          - --batch
+          - --list-packets
+          - "{{ gpg_file_backup_test_dir }}/encrypt-destination.gpg"
+      register: gpg_file_backup_packets
+      changed_when: false
+      failed_when: false
+
+    - name: Assert encrypted output is GPG data
+      ansible.builtin.assert:
+        that:
+          - gpg_file_backup_packets.rc == 0
+          - (gpg_file_backup_packets.stdout ~ gpg_file_backup_packets.stderr) is search('encrypted|public key encrypted|symmetrically encrypted')
+
+    - name: Decrypt encrypted destination to verify content
+      ansible.builtin.command:
+        argv:
+          - gpg
+          - --batch
+          - --decrypt
+          - "{{ gpg_file_backup_test_dir }}/encrypt-destination.gpg"
+      register: gpg_file_backup_encrypt_view
+      changed_when: false
+
+    - name: Assert encrypt round-trip content
+      ansible.builtin.assert:
+        that:
+          - gpg_file_backup_encrypt_view.stdout == "gpg-backup-encrypt"
+
+    - name: Stat decrypted destination
+      ansible.builtin.stat:
+        path: "{{ gpg_file_backup_test_dir }}/decrypt-destination.txt"
+      register: gpg_file_backup_decrypted
+
+    - name: Assert decrypted destination exists
+      ansible.builtin.assert:
+        that:
+          - gpg_file_backup_decrypted.stat.exists
+          - gpg_file_backup_decrypted.stat.isreg
+
+    - name: Read decrypted destination
+      ansible.builtin.slurp:
+        src: "{{ gpg_file_backup_test_dir }}/decrypt-destination.txt"
+      register: gpg_file_backup_decrypted_content
+
+    - name: Assert decrypted content matches fixture
+      ansible.builtin.assert:
+        that:
+          - (gpg_file_backup_decrypted_content.content | b64decode) == "gpg-backup-decrypt"

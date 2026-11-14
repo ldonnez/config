@@ -1,4 +1,15 @@
 ---
+- name: Install curl with apt
+  become: true
+  when: ansible_facts.os_family == "Debian"
+  ansible.builtin.apt:
+    name: curl
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+  tags:
+    - install
+
 - name: Install atuin noninteractive with curl
   ansible.builtin.shell: |
     set -o pipefail
@@ -22,6 +33,7 @@
   ansible.builtin.command: atuin import zsh
   environment:
     PATH: "{{ ansible_facts.user_dir }}/.atuin/bin:{{ ansible_facts.env.PATH }}"
+  changed_when: false
   tags:
     - install
 
@@ -66,5 +78,7 @@
   ansible.builtin.command: atuin update
   environment:
     PATH: "{{ ansible_facts.user_dir }}/.atuin/bin:{{ ansible_facts.env.PATH }}"
+  register: atuin_update
+  changed_when: "'Updated atuin' in (atuin_update.stdout + atuin_update.stderr)"
   tags:
     - update

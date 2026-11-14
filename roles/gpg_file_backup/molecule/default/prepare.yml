@@ -1,0 +1,72 @@
+---
+- name: Prepare
+  hosts: all
+  become: true
+  vars:
+    gpg_file_backup_test_dir: /tmp/gpg_file_backup_test
+  tasks:
+    - name: Install GnuPG
+      ansible.builtin.apt:
+        name: gnupg
+        state: present
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Ensure test directory exists
+      ansible.builtin.file:
+        path: "{{ gpg_file_backup_test_dir }}"
+        state: directory
+        mode: "0777"
+
+    - name: Create GPG key batch file
+      become: false
+      ansible.builtin.copy:
+        dest: "{{ gpg_file_backup_test_dir }}/key.batch"
+        mode: "0600"
+        content: |
+          %no-protection
+          Key-Type: RSA
+          Key-Length: 2048
+          Name-Real: Molecule Test
+          Name-Email: molecule@example.com
+          Expire-Date: 0
+          %commit
+
+    - name: Check for existing secret key
+      become: false
+      ansible.builtin.command:
+        cmd: gpg --list-secret-keys molecule@example.com
+      register: gpg_file_backup_key_check
+      changed_when: false
+      failed_when: false
+
+    - name: Generate test GPG key
+      become: false
+      ansible.builtin.command:
+        cmd: "gpg --batch --generate-key {{ gpg_file_backup_test_dir }}/key.batch"
+      when: gpg_file_backup_key_check.rc != 0
+      changed_when: true
+
+    - name: Write plain source files
+      become: false
+      ansible.builtin.copy:
+        dest: "{{ item.path }}"
+        content: "{{ item.content }}"
+        mode: "0644"
+      loop:
+        - { path: "{{ gpg_file_backup_test_dir }}/encrypt-source.txt", content: "gpg-backup-encrypt" }
+        - { path: "{{ gpg_file_backup_test_dir }}/decrypt-plain.txt", content: "gpg-backup-decrypt" }
+
+    - name: Create encrypted fixture for decrypt test
+      become: false
+      ansible.builtin.command:
+        argv:
+          - gpg
+          - --batch
+          - --yes
+          - --encrypt
+          - --default-recipient-self
+          - --output
+          - "{{ gpg_file_backup_test_dir }}/decrypt-source.gpg"
+          - "{{ gpg_file_backup_test_dir }}/decrypt-plain.txt"
+        creates: "{{ gpg_file_backup_test_dir }}/decrypt-source.gpg"

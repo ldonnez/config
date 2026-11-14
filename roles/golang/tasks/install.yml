@@ -28,6 +28,8 @@
           ansible.builtin.apt:
             name: golang-go
             state: absent
+            update_cache: true
+            cache_valid_time: 3600
 
         - name: Download latest Go
           ansible.builtin.get_url:
@@ -46,6 +48,7 @@
           ansible.builtin.unarchive:
             src: "/tmp/go.tar.gz"
             dest: /usr/local
+            remote_src: true
 
       always:
         - name: Remove /tmp/go.tar.gz

@@ -2,74 +2,194 @@
 - name: Install language servers
   tags:
     - install
-
   block:
+    - name: Install build dependencies for npm native modules
+      when:
+        - ansible_facts.os_family == "Debian"
+        - lsp_npm | length > 0
+      become: true
+      ansible.builtin.apt:
+        name:
+          - build-essential
+          - python3
+        state: present
+
+        update_cache: true
+        cache_valid_time: 3600
     - name: Install language servers & linters with npm
+      when: lsp_npm | length > 0
       community.general.npm:
         name: "{{ item }}"
         global: true
+        state: latest
       loop: "{{ lsp_npm }}"
       environment:
         PATH: "{{ ansible_facts.user_dir }}/.local/share/mise/shims:{{ ansible_facts.user_dir }}/.local/bin:{{ ansible_facts.env.PATH }}"
 
-    - name: Install/Update language servers & linters with cargo
-      community.general.cargo:
-        name: "{{ item }}"
-        state: latest
-        locked: true
+    - name: Install cargo-binstall with homebrew
+      when:
+        - ansible_facts.os_family == "Darwin"
+        - lsp_cargo | length > 0
+      community.general.homebrew:
+        name: cargo-binstall
+        state: present
+
+    - name: Install curl
+      when:
+        - ansible_facts.os_family == "Debian"
+        - lsp_cargo | length > 0
+      become: true
+      ansible.builtin.apt:
+        name: curl
+        state: present
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Install cargo-binstall
+      when:
+        - ansible_facts.os_family == "Debian"
+        - lsp_cargo | length > 0
+      ansible.builtin.shell: |
+        set -o pipefail
+        curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
+      args:
+        creates: "{{ ansible_facts.user_dir }}/.cargo/bin/cargo-binstall"
+        executable: /bin/bash
+
+    - name: Install language servers & linters with cargo-binstall
+      when: lsp_cargo | length > 0
+      ansible.builtin.command:
+        cmd: "cargo binstall -y --locked {{ item }}"
       loop: "{{ lsp_cargo }}"
-      tags:
-        - update
       environment:
         PATH: "{{ ansible_facts.user_dir }}/.cargo/bin:{{ ansible_facts.env.PATH }}"
+      register: lsp_cargo_binstall
+      changed_when: >-
+        'Installing' in lsp_cargo_binstall.stdout or
+        'Installing' in lsp_cargo_binstall.stderr
 
-    - name: Install/Update language servers & linters with go
+    - name: Install language servers & linters with Go
+      when: lsp_go | length > 0
       community.general.golang_package:
         name: "{{ item }}"
         state: latest
       loop: "{{ lsp_go }}"
-      tags:
-        - update
       environment:
         PATH: "/usr/local/go/bin:{{ ansible_facts.env.PATH }}"
 
-    - name: Install/Update language servers & linters with homebrew
-      when: ansible_facts.os_family == "Darwin"
+    - name: Install language servers & linters with Homebrew
+      when:
+        - ansible_facts.os_family == "Darwin"
+        - lsp_homebrew | length > 0
       community.general.homebrew:
         name: "{{ lsp_homebrew }}"
         state: present
-      tags:
-        - update
 
-    - name: Install/Update language servers & linters with apt
-      when: ansible_facts.os_family == "Debian"
+    - name: Install language servers & linters with apt
+      when:
+        - ansible_facts.os_family == "Debian"
+        - lsp_apt | length > 0
+      become: true
       ansible.builtin.apt:
         name: "{{ lsp_apt }}"
         state: present
-      become: true
-      tags:
-        - update
 
-    - name: Getting pipx binary location
+        update_cache: true
+        cache_valid_time: 3600
+    - name: Get pipx binary location
+      when: lsp_pip | length > 0
       ansible.builtin.command: which pipx
       register: lsp_pipx_binary
       changed_when: false
       environment:
         PATH: "{{ ansible_facts.user_dir }}/.local/bin:{{ ansible_facts.env.PATH }}"
-      tags:
-        - update
 
     - name: Install language servers & linters with pipx
+      when: lsp_pip | length > 0
       community.general.pipx:
         name: "{{ item }}"
         executable: "{{ lsp_pipx_binary.stdout }}"
       loop: "{{ lsp_pip }}"
 
+- name: Update language servers
+  tags:
+    - update
+  block:
+    - name: Update language servers & linters with npm
+      when: lsp_npm | length > 0
+      community.general.npm:
+        name: "{{ item }}"
+        global: true
+        state: latest
+      loop: "{{ lsp_npm }}"
+      environment:
+        PATH: "{{ ansible_facts.user_dir }}/.local/share/mise/shims:{{ ansible_facts.user_dir }}/.local/bin:{{ ansible_facts.env.PATH }}"
+
+    - name: Update cargo-binstall
+      when:
+        - ansible_facts.os_family == "Debian"
+        - lsp_cargo | length > 0
+      ansible.builtin.command:
+        cmd: "cargo binstall -y --locked cargo-binstall"
+      environment:
+        PATH: "{{ ansible_facts.user_dir }}/.cargo/bin:{{ ansible_facts.env.PATH }}"
+      register: lsp_update_cargo_binstall
+      changed_when: >-
+        'Installing' in lsp_update_cargo_binstall.stdout or
+        'Installing' in lsp_update_cargo_binstall.stderr
+
+    - name: Update language servers & linters with cargo-binstall
+      when: lsp_cargo | length > 0
+      ansible.builtin.command:
+        cmd: "cargo binstall -y --locked {{ item }}"
+      loop: "{{ lsp_cargo }}"
+      environment:
+        PATH: "{{ ansible_facts.user_dir }}/.cargo/bin:{{ ansible_facts.env.PATH }}"
+      register: lsp_cargo_binstall
+      changed_when: >-
+        'Installing' in lsp_cargo_binstall.stdout or
+        'Installing' in lsp_cargo_binstall.stderr
+
+    - name: Update language servers & linters with Go
+      when: lsp_go | length > 0
+      community.general.golang_package:
+        name: "{{ item }}"
+        state: latest
+      loop: "{{ lsp_go }}"
+      environment:
+        PATH: "/usr/local/go/bin:{{ ansible_facts.env.PATH }}"
+
+    - name: Update language servers & linters with Homebrew
+      when:
+        - ansible_facts.os_family == "Darwin"
+        - lsp_homebrew | length > 0
+      community.general.homebrew:
+        name: "{{ lsp_homebrew }}"
+        state: latest
+
+    - name: Update language servers & linters with apt
+      when:
+        - ansible_facts.os_family == "Debian"
+        - lsp_apt | length > 0
+      become: true
+      ansible.builtin.apt:
+        name: "{{ lsp_apt }}"
+        state: present
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Get pipx binary location
+      when: lsp_pip | length > 0
+      ansible.builtin.command: which pipx
+      register: lsp_pipx_binary
+      changed_when: false
+      environment:
+        PATH: "{{ ansible_facts.user_dir }}/.local/bin:{{ ansible_facts.env.PATH }}"
+
     - name: Update language servers & linters with pipx
+      when: lsp_pip | length > 0
       community.general.pipx:
         name: "{{ item }}"
         state: upgrade
         executable: "{{ lsp_pipx_binary.stdout }}"
       loop: "{{ lsp_pip }}"
-      tags:
-        - update

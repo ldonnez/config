@@ -1,0 +1,23 @@
+---
+- name: Converge
+  hosts: all
+  vars:
+    vault_backup_test_dir: /tmp/vault_backup_test
+  tasks:
+    - name: Encrypt backup using vault_backup role
+      ansible.builtin.include_role:
+        name: vault_backup
+        tasks_from: encrypt.yml
+      vars:
+        vault_backup_password_file: "{{ playbook_dir }}/files/password_file.vault"
+        vault_backup_source: "{{ vault_backup_test_dir }}/encrypt-source.txt"
+        vault_backup_destination: "{{ vault_backup_test_dir }}/encrypt-destination.vault"
+
+    - name: Decrypt backup using vault_backup role
+      ansible.builtin.include_role:
+        name: vault_backup
+        tasks_from: decrypt.yml
+      vars:
+        vault_backup_source: "{{ playbook_dir }}/.tmp/decrypt-source.vault"
+        vault_backup_destination: "{{ vault_backup_test_dir }}/decrypt-destination.txt"
+        vault_backup_mode: "0640"

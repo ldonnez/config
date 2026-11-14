@@ -1,0 +1,42 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Check xdg-open script
+      ansible.builtin.stat:
+        path: "{{ ansible_facts.user_dir }}/.local/bin/xdg-open"
+      register: wsl_xdg_open
+
+    - name: Check open symlink
+      ansible.builtin.stat:
+        path: "{{ ansible_facts.user_dir }}/.local/bin/open"
+        follow: false
+      register: wsl_open
+
+    - name: Read wsl.conf
+      become: true
+      ansible.builtin.slurp:
+        src: /etc/wsl.conf
+      register: wsl_conf
+
+    - name: Read locale configuration
+      become: true
+      ansible.builtin.slurp:
+        src: /etc/default/locale
+      register: wsl_locale
+
+    - name: Assert WSL role configuration
+      ansible.builtin.assert:
+        that:
+          - wsl_xdg_open.stat.exists
+          - wsl_xdg_open.stat.isreg
+          - wsl_xdg_open.stat.mode == '0700'
+          - wsl_open.stat.exists
+          - wsl_open.stat.islnk
+          - wsl_open.stat.lnk_source == ansible_facts.user_dir ~ '/.local/bin/xdg-open'
+          - "'[boot]' in (wsl_conf.content | b64decode)"
+          - "'systemd=true' in (wsl_conf.content | b64decode)"
+          - "'default=' ~ ansible_facts.user_id in (wsl_conf.content | b64decode)"
+          - "'LANG=en_US.UTF-8' in (wsl_locale.content | b64decode)"
+        fail_msg: "WSL role did not configure the system as expected"
+        success_msg: "WSL role configured the system correctly"

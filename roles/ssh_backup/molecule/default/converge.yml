@@ -1,0 +1,50 @@
+---
+- name: Converge
+  hosts: all
+  vars:
+    ssh_backup_test_dir: /tmp/ssh_backup_test
+    ssh_backup_dir: "{{ ssh_backup_test_dir }}/backup/.ssh"
+    ssh_backup_vault_password_file_path: "{{ playbook_dir }}/files/password_file.vault"
+    ssh_backup_config_path: "{{ ssh_backup_test_dir }}/src/.ssh/config"
+    ssh_backup_config_backup_path: "{{ ssh_backup_dir }}/config.vault"
+    ssh_backup_keys:
+      - name: id_rsa
+        private_key_path: "{{ ssh_backup_test_dir }}/src/.ssh/id_rsa"
+        public_key_path: "{{ ssh_backup_test_dir }}/src/.ssh/id_rsa.pub"
+  tasks:
+    - name: Run ssh_backup role (backup)
+      ansible.builtin.include_role:
+        name: ssh_backup
+        tasks_from: backup.yml
+
+    - name: Ensure controller backup directory exists
+      ansible.builtin.file:
+        path: "{{ ssh_backup_dir }}"
+        state: directory
+        mode: "0755"
+      delegate_to: localhost
+      become: false
+
+    - name: Fetch backups to controller for restore
+      ansible.builtin.fetch:
+        src: "{{ item }}"
+        dest: "{{ ssh_backup_dir }}/"
+        flat: true
+      loop:
+        - "{{ ssh_backup_dir }}/id_rsa.vault"
+        - "{{ ssh_backup_dir }}/id_rsa.pub"
+        - "{{ ssh_backup_dir }}/config.vault"
+
+    - name: Remove source files to simulate restore target
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "{{ ssh_backup_test_dir }}/src/.ssh/id_rsa"
+        - "{{ ssh_backup_test_dir }}/src/.ssh/id_rsa.pub"
+        - "{{ ssh_backup_test_dir }}/src/.ssh/config"
+
+    - name: Run ssh_backup role (restore)
+      ansible.builtin.include_role:
+        name: ssh_backup
+        tasks_from: restore.yml

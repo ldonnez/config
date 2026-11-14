@@ -16,4 +16,4 @@ galaxy_info:
         - all
 
 dependencies:
-  - role: gnome_keyring # Ensures gpg key passwords are stored securely.
+  - role: dotfiles

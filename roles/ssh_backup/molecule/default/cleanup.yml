@@ -1,0 +1,9 @@
+---
+- name: Cleanup
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Remove controller-side backup fixtures
+      ansible.builtin.file:
+        path: /tmp/ssh_backup_test/backup/.ssh
+        state: absent

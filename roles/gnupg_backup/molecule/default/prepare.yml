@@ -1,0 +1,52 @@
+---
+- name: Prepare
+  hosts: all
+  become: true
+  vars:
+    gnupg_backup_test_dir: /tmp/gnupg_backup_test
+    gnupg_backup_key_id: TESTKEY1234
+    gnupg_backup_key_passphrase: molecule-secret
+  tasks:
+    - name: Install packages for GPG backup test
+      ansible.builtin.apt:
+        name:
+          - gnupg
+          - ansible-core
+        state: present
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Ensure test directory exists
+      ansible.builtin.file:
+        path: "{{ gnupg_backup_test_dir }}"
+        state: directory
+        mode: "0777"
+
+    - name: Create GPG key batch file
+      become: false
+      ansible.builtin.copy:
+        dest: "{{ gnupg_backup_test_dir }}/key.batch"
+        mode: "0600"
+        content: |
+          Key-Type: RSA
+          Key-Length: 2048
+          Name-Real: Molecule Test
+          Name-Email: molecule@example.com
+          Expire-Date: 0
+          Passphrase: {{ gnupg_backup_key_passphrase }}
+          %commit
+
+    - name: Check for existing secret key
+      become: false
+      ansible.builtin.command:
+        cmd: gpg --list-secret-keys molecule@example.com
+      register: gnupg_backup_key_check
+      changed_when: false
+      failed_when: false
+
+    - name: Generate test GPG key
+      become: false
+      ansible.builtin.command:
+        cmd: "gpg --batch --generate-key {{ gnupg_backup_test_dir }}/key.batch"
+      when: gnupg_backup_key_check.rc != 0
+      changed_when: true

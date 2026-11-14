@@ -18,6 +18,4 @@ galaxy_info:
         - all
 
 dependencies:
-  - role: lsp
-  - role: fd
-  - role: rg
+  - role: dotfiles

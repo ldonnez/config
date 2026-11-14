@@ -1,0 +1,35 @@
+---
+- name: Verify
+  hosts: all
+  vars_files:
+    - ../../../../roles/bat/defaults/main.yml
+    - ../../../../roles/dotfiles/defaults/main.yml
+  tasks:
+    - name: Check bat binary
+      ansible.builtin.command:
+        cmd: "{{ ansible_facts.user_dir }}/.local/bin/bat --version"
+      register: bat_version
+      changed_when: false
+
+    - name: Assert bat is installed
+      ansible.builtin.assert:
+        that:
+          - bat_version.rc == 0
+          - bat_version.stdout is search('bat')
+        fail_msg: "bat is not installed"
+        success_msg: "bat is installed"
+
+    - name: Check bat config symlink
+      ansible.builtin.stat:
+        path: "{{ bat_config_dir }}/config"
+        follow: false
+      register: bat_config
+
+    - name: Assert bat is configured
+      ansible.builtin.assert:
+        that:
+          - bat_config.stat.exists
+          - bat_config.stat.islnk
+          - bat_config.stat.lnk_source == bat_dotfiles_path ~ '/config'
+        fail_msg: "bat is not configured correctly"
+        success_msg: "bat is configured correctly"

@@ -1,0 +1,67 @@
+---
+- name: Prepare
+  hosts: all
+  become: true
+  vars:
+    vault_backup_test_dir: /tmp/vault_backup_test
+  tasks:
+    - name: Install ansible-core for vault operations
+      ansible.builtin.apt:
+        name: ansible-core
+        state: present
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Ensure test directory exists
+      ansible.builtin.file:
+        path: "{{ vault_backup_test_dir }}"
+        state: directory
+        mode: "0777"
+
+    - name: Write test files
+      ansible.builtin.copy:
+        dest: "{{ item.path }}"
+        content: "{{ item.content }}"
+        mode: "{{ item.mode }}"
+      loop:
+        - { path: "{{ vault_backup_test_dir }}/.vault-pass", content: "molecule-secret\n", mode: "0644" }
+        - { path: "{{ vault_backup_test_dir }}/encrypt-source.txt", content: "vault-backup-encrypt", mode: "0644" }
+
+    - name: Remove stale controller-side test fixtures
+      ansible.builtin.file:
+        path: "{{ playbook_dir }}/.tmp"
+        state: absent
+      delegate_to: localhost
+      become: false
+
+    - name: Ensure controller-side test directory exists
+      ansible.builtin.file:
+        path: "{{ playbook_dir }}/.tmp"
+        state: directory
+        mode: "0700"
+      delegate_to: localhost
+      become: false
+
+    - name: Write plaintext fixture on controller
+      ansible.builtin.copy:
+        dest: "{{ playbook_dir }}/.tmp/decrypt-plain.txt"
+        content: "vault-backup-decrypt"
+        mode: "0600"
+      delegate_to: localhost
+      become: false
+
+    - name: Create encrypted fixture on controller
+      ansible.builtin.command:
+        argv:
+          - ansible-vault
+          - encrypt
+          - --vault-id
+          - "molecule@{{ playbook_dir }}/.vault-pass"
+          - --encrypt-vault-id
+          - molecule
+          - --output
+          - "{{ playbook_dir }}/.tmp/decrypt-source.vault"
+          - "{{ playbook_dir }}/.tmp/decrypt-plain.txt"
+        creates: "{{ playbook_dir }}/.tmp/decrypt-source.vault"
+      delegate_to: localhost
+      become: false

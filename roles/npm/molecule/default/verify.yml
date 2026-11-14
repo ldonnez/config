@@ -1,0 +1,47 @@
+---
+- name: Verify
+  hosts: all
+  vars:
+    npm_prefix: "{{ ansible_facts.user_dir }}/.npm"
+  tasks:
+    - name: Check that the npm prefix directory and config exist
+      ansible.builtin.stat:
+        path: "{{ item }}"
+      loop:
+        - "{{ npm_prefix }}"
+        - "{{ ansible_facts.user_dir }}/.npmrc"
+      register: npm_paths
+
+    - name: Read the npm version
+      ansible.builtin.command:
+        cmd: npm --version
+      register: npm_version
+      changed_when: false
+      environment:
+        PATH: "{{ ansible_facts.user_dir }}/.local/share/mise/shims:{{ ansible_facts.user_dir }}/.local/bin:{{ ansible_facts.env.PATH }}"
+
+    - name: Read the configured npm prefix
+      ansible.builtin.command:
+        cmd: npm config get prefix
+      register: npm_configured_prefix
+      changed_when: false
+      environment:
+        PATH: "{{ ansible_facts.user_dir }}/.local/share/mise/shims:{{ ansible_facts.user_dir }}/.local/bin:{{ ansible_facts.env.PATH }}"
+
+    - name: Read the global npm root
+      ansible.builtin.command:
+        cmd: npm root -g
+      register: npm_global_root
+      changed_when: false
+      environment:
+        PATH: "{{ ansible_facts.user_dir }}/.local/share/mise/shims:{{ ansible_facts.user_dir }}/.local/bin:{{ ansible_facts.env.PATH }}"
+
+    - name: Assert the npm role configured the global prefix
+      ansible.builtin.assert:
+        that:
+          - npm_paths.results | selectattr('stat.exists') | list | length == 2
+          - npm_version.stdout | length > 0
+          - npm_configured_prefix.stdout == npm_prefix
+          - npm_global_root.stdout == npm_prefix ~ '/lib/node_modules'
+        fail_msg: "The npm role did not configure the global prefix in {{ npm_prefix }}"
+        success_msg: "The npm role configured the global prefix in {{ npm_prefix }}"

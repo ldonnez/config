@@ -22,7 +22,11 @@
   ansible.builtin.uri:
     url: "https://api.github.com/repos/neovim/neovim/releases/latest"
     return_content: true
+    status_code:
+      - 200
+      - 403
   register: neovim_latest_release
+  failed_when: neovim_latest_release.status not in [200, 403]
   when: ansible_facts.os_family == "Debian"
   tags:
     - install
@@ -32,6 +36,7 @@
   become: true
   when:
     - ansible_facts.os_family == "Debian"
+    - neovim_latest_release.status == 200
     - not neovim_bin.stat.exists or neovim_latest_release.json.tag_name != neovim_current_version.stdout_lines[0].split()[1]
   tags:
     - install
@@ -47,14 +52,27 @@
             "unzip",
             "curl",
             "build-essential",
+            "file",
           ]
         state: present
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Install git with apt
+      become: true
+      ansible.builtin.apt:
+        name: git
+        state: present
+        update_cache: true
+        cache_valid_time: 3600
 
     - name: Install inotify-tools
       ansible.builtin.apt:
         name: inotify-tools # Better file watching backend: check :LspInfo and ensure File watch backend is inotify
         state: present
 
+        update_cache: true
+        cache_valid_time: 3600
     - name: Git clone neovim repository
       ansible.builtin.git:
         repo: https://github.com/neovim/neovim

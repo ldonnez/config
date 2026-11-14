@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  vars:
+    cargo_packages: []
+  roles:
+    - role: rust

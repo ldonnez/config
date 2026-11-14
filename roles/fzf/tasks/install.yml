@@ -1,24 +1,61 @@
 ---
-- name: "Clone fzf"
-  ansible.builtin.git:
-    repo: https://github.com/junegunn/fzf.git
-    dest: "{{ ansible_facts.user_dir }}/.fzf"
-    depth: 1
-    version: master
+- name: Install git with apt
+  become: true
+  ansible.builtin.apt:
+    name: git
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+  when: ansible_facts.os_family == "Debian"
   tags:
     - install
 
-- name: Update fzf
+- name: Get latest fzf release
+  ansible.builtin.uri:
+    url: https://api.github.com/repos/junegunn/fzf/releases/latest
+    return_content: true
+    status_code: 200
+  register: fzf_latest_release
+  tags:
+    - install
+    - update
+
+- name: Validate latest fzf release
+  ansible.builtin.assert:
+    that:
+      - fzf_latest_release.json is defined
+      - fzf_latest_release.json.tag_name is defined
+      - fzf_latest_release.json.tag_name | length > 0
+    fail_msg: "Could not determine the latest fzf release tag from GitHub."
+  tags:
+    - install
+    - update
+
+- name: Check fzf binary
+  ansible.builtin.stat:
+    path: "{{ ansible_facts.user_dir }}/.fzf/bin/fzf"
+  register: fzf_bin
+  tags:
+    - install
+    - update
+
+- name: Clone or update fzf repository
   ansible.builtin.git:
     repo: https://github.com/junegunn/fzf.git
     dest: "{{ ansible_facts.user_dir }}/.fzf"
-    version: master
-    update: true
+    version: "{{ fzf_latest_release.json.tag_name }}"
+  register: fzf_repo
   tags:
+    - install
     - update
 
-- name: Install fzf
-  ansible.builtin.command: "{{ ansible_facts.user_dir }}/.fzf/install"
+- name: Install fzf binary
+  ansible.builtin.command:
+    argv:
+      - "{{ ansible_facts.user_dir }}/.fzf/install"
+      - --bin
+  when: fzf_repo is changed or not fzf_bin.stat.exists
+  changed_when: true
   tags:
-    - update
     - install
+    - update
