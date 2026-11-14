@@ -91,6 +91,13 @@
       tags:
         - dotfiles
 
+    ## Secure storage of github_cli credentials
+    - name: Configure gnome keyring
+      ansible.builtin.import_role:
+        name: gnome_keyring
+      tags:
+        - gnome_keyring
+
     - name: Configure github cli
       ansible.builtin.import_role:
         name: github_cli
@@ -211,12 +218,6 @@
       tags:
         - fd
 
-    - name: Configure gnome keyring
-      ansible.builtin.import_role:
-        name: gnome_keyring
-      tags:
-        - gnome_keyring
-
     - name: Configure rg
       ansible.builtin.import_role:
         name: rg
@@ -256,6 +257,12 @@
     - name: Configure ag
       ansible.builtin.import_role:
         name: ag
+      tags:
+        - ag
+
+    - name: Configure tmux
+      ansible.builtin.import_role:
+        name: tmux
       tags:
         - tmux
 
