@@ -8,10 +8,8 @@ ENV container=docker
 RUN apt-get update \
     && apt-get install --yes --no-install-recommends \
         ca-certificates \
-        curl \
         dbus \
         dbus-user-session \
-        git \
         libpam-systemd \
         python3 \
         python3-apt \
