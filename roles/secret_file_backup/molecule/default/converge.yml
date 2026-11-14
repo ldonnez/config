@@ -16,61 +16,34 @@
         method: vault
         mode: "0640"
   tasks:
-    - name: Check backup test marker
-      ansible.builtin.stat:
-        path: "{{ secret_file_backup_test_dir }}/backup_done"
-      register: secret_file_backup_backup_marker
-
     - name: Run secret_file_backup role (backup)
-      when: not secret_file_backup_backup_marker.stat.exists
       ansible.builtin.include_role:
         name: secret_file_backup
         tasks_from: backup.yml
 
-    - name: Mark backup test done
+    - name: Ensure controller vault backup directory exists
       ansible.builtin.file:
-        path: "{{ secret_file_backup_test_dir }}/backup_done"
-        state: touch
-        mode: "0644"
-      when: not secret_file_backup_backup_marker.stat.exists
+        path: "{{ secret_file_backup_test_dir }}/backup/vault"
+        state: directory
+        mode: "0755"
+      delegate_to: localhost
+      become: false
 
-    - name: Check restore test marker
-      ansible.builtin.stat:
-        path: "{{ secret_file_backup_test_dir }}/restore_done"
-      register: secret_file_backup_restore_marker
+    - name: Fetch vault backup to controller for decrypt
+      ansible.builtin.fetch:
+        src: "{{ secret_file_backup_test_dir }}/backup/vault/latest"
+        dest: "{{ secret_file_backup_test_dir }}/backup/vault/"
+        flat: true
 
-    - name: Test restore path
-      when: not secret_file_backup_restore_marker.stat.exists
-      block:
-        - name: Ensure controller vault backup directory exists
-          ansible.builtin.file:
-            path: "{{ secret_file_backup_test_dir }}/backup/vault"
-            state: directory
-            mode: "0755"
-          delegate_to: localhost
-          become: false
+    - name: Remove source files to simulate restore target
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "{{ secret_file_backup_test_dir }}/src/gpg-secret.txt"
+        - "{{ secret_file_backup_test_dir }}/src/vault-secret.txt"
 
-        - name: Fetch vault backup to controller for decrypt
-          ansible.builtin.fetch:
-            src: "{{ secret_file_backup_test_dir }}/backup/vault/latest"
-            dest: "{{ secret_file_backup_test_dir }}/backup/vault/"
-            flat: true
-
-        - name: Remove source files to simulate restore target
-          ansible.builtin.file:
-            path: "{{ item }}"
-            state: absent
-          loop:
-            - "{{ secret_file_backup_test_dir }}/src/gpg-secret.txt"
-            - "{{ secret_file_backup_test_dir }}/src/vault-secret.txt"
-
-        - name: Run secret_file_backup role (restore)
-          ansible.builtin.include_role:
-            name: secret_file_backup
-            tasks_from: restore.yml
-
-        - name: Mark restore test done
-          ansible.builtin.file:
-            path: "{{ secret_file_backup_test_dir }}/restore_done"
-            state: touch
-            mode: "0644"
+    - name: Run secret_file_backup role (restore)
+      ansible.builtin.include_role:
+        name: secret_file_backup
+        tasks_from: restore.yml
