@@ -1,0 +1,38 @@
+---
+- name: Prepare
+  hosts: all
+  tasks:
+    - name: Create test directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: "0755"
+      loop:
+        - /tmp/backup_retention_keep2
+        - /tmp/backup_retention_keep0
+
+    - name: Create backup files for keep=2 scenario
+      ansible.builtin.copy:
+        dest: "{{ item }}"
+        content: "backup"
+        mode: "0644"
+      loop:
+        - /tmp/backup_retention_keep2/20240101-backup.bak
+        - /tmp/backup_retention_keep2/20240102-backup.bak
+        - /tmp/backup_retention_keep2/20240103-backup.bak
+        - /tmp/backup_retention_keep2/20240104-backup.bak
+
+    - name: Create non-matching file for keep=2 scenario
+      ansible.builtin.copy:
+        dest: /tmp/backup_retention_keep2/note.txt
+        content: "keep"
+        mode: "0644"
+
+    - name: Create backup files for keep=0 scenario
+      ansible.builtin.copy:
+        dest: "{{ item }}"
+        content: "backup"
+        mode: "0644"
+      loop:
+        - /tmp/backup_retention_keep0/20240101-backup.bak
+        - /tmp/backup_retention_keep0/20240102-backup.bak
