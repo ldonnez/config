@@ -5,11 +5,9 @@
   tags:
     - restore
   block:
-    - name: Create temporary restore database
-      ansible.builtin.tempfile:
-        state: file
-        suffix: .db
-      register: atuin_backup_restore_tmp
+    - name: Set temporary restore database path
+      ansible.builtin.set_fact:
+        atuin_backup_restore_tmp_path: "/tmp/atuin_backup_restore_{{ ansible_facts.date_time.iso8601_basic_short }}.db"
 
     - name: Check latest backup
       ansible.builtin.stat:
@@ -44,18 +42,18 @@
         tasks_from: decrypt.yml
       vars:
         gpg_file_backup_source: "{{ atuin_backup_source }}"
-        gpg_file_backup_destination: "{{ atuin_backup_restore_tmp.path }}"
+        gpg_file_backup_destination: "{{ atuin_backup_restore_tmp_path }}"
 
     - name: Restore SQLite backup
       ansible.builtin.command:
         argv:
           - sqlite3
           - "{{ atuin_backup_db_path }}"
-          - ".restore {{ atuin_backup_restore_tmp.path }}"
+          - ".restore {{ atuin_backup_restore_tmp_path }}"
 
   always:
     - name: Remove temporary restore database
       ansible.builtin.file:
-        path: "{{ atuin_backup_restore_tmp.path }}"
+        path: "{{ atuin_backup_restore_tmp_path }}"
         state: absent
-      when: atuin_backup_restore_tmp.path is defined
+      when: atuin_backup_restore_tmp_path is defined
