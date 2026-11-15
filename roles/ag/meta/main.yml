@@ -2,7 +2,7 @@
 galaxy_info:
   role_name: ag
   author: ldonnez
-  description: CLI fuzzy finder
+  description: CLI fuzzy finder test
   license: MIT
   min_ansible_version: "2.10"
 
