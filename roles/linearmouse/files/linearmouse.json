@@ -1,34 +1,34 @@
 {
-  "$schema" : "https:\/\/schema.linearmouse.app\/0.8.0",
-  "schemes" : [
+  "$schema": "https:\/\/schema.linearmouse.app\/0.8.0",
+  "schemes": [
     {
-      "pointer" : {
-        "disableAcceleration" : true
+      "pointer": {
+        "disableAcceleration": true
       },
-      "if" : {
-        "device" : {
-          "productName" : "Sensei Raw Gaming Mouse",
-          "productID" : "0x1369",
-          "category" : "mouse",
-          "vendorID" : "0x1038"
+      "if": {
+        "device": {
+          "productName": "Sensei Raw Gaming Mouse",
+          "productID": "0x1369",
+          "category": "mouse",
+          "vendorID": "0x1038"
         }
       }
     },
     {
-      "pointer" : {
-        "disableAcceleration" : true
+      "pointer": {
+        "disableAcceleration": true
       },
-      "if" : {
-        "device" : {
-          "productName" : "SteelSeries Sensei Ten",
-          "productID" : "0x1832",
-          "category" : "mouse",
-          "vendorID" : "0x1038"
+      "if": {
+        "device": {
+          "productName": "SteelSeries Sensei Ten",
+          "productID": "0x1832",
+          "category": "mouse",
+          "vendorID": "0x1038"
         }
       },
-      "scrolling" : {
-        "acceleration" : {
-          "vertical" : 1
+      "scrolling": {
+        "acceleration": {
+          "vertical": 1
         }
       }
     }

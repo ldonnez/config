@@ -57,7 +57,6 @@
       - dnsutils # nslookup
       - gridsite-clients # urlencode
 
-
     pipx_packages:
       - ansible-lint
       - "shandy-sqlfmt"
@@ -195,7 +194,6 @@
         name: azure_cli
       tags:
         - azure_cli
-
 
     - name: Configure terraform
       ansible.builtin.import_role:

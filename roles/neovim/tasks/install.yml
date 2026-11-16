@@ -43,16 +43,7 @@
   block:
     - name: Install build dependencies
       ansible.builtin.apt:
-        name:
-          [
-            "ninja-build",
-            "gettext",
-            "cmake",
-            "unzip",
-            "curl",
-            "build-essential",
-            "file",
-          ]
+        name: ["ninja-build", "gettext", "cmake", "unzip", "curl", "build-essential", "file"]
         state: present
         update_cache: true
         cache_valid_time: 3600

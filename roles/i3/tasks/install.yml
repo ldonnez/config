@@ -119,14 +119,7 @@
 - name: Install pipewire & dependencies with apt
   become: true
   ansible.builtin.apt:
-    name:
-      [
-        "pipewire",
-        "pipewire-audio",
-        "pipewire-pulse",
-        "wireplumber",
-        "gstreamer1.0-pipewire",
-      ]
+    name: ["pipewire", "pipewire-audio", "pipewire-pulse", "wireplumber", "gstreamer1.0-pipewire"]
     state: present
     update_cache: true
     cache_valid_time: 3600

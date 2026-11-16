@@ -10,7 +10,21 @@ on:
       - main
 
 jobs:
+  prettier:
+    name: prettier
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "lts/*"
+      - name: Install prettier
+        run: npm install --global prettier
+      - name: Check formatting
+        run: prettier --check .
+
   ansible-lint:
+    needs: prettier
     name: ansible-lint
     runs-on: ubuntu-latest
     steps:

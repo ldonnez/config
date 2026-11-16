@@ -77,7 +77,6 @@
       - com.plexamp.Plexamp
       - org.telegram.desktop
 
-
     pipx_packages:
       - ansible-lint
       - "shandy-sqlfmt"
@@ -220,7 +219,6 @@
         name: memo
       tags:
         - memo
-
 
     - name: Configure terraform
       ansible.builtin.import_role:
