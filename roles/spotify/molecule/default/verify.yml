@@ -1,0 +1,60 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+  tasks:
+    - name: Check spotify binary
+      ansible.builtin.stat:
+        path: /usr/bin/spotify
+      register: spotify_binary
+
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Check Spotify deb822 repository
+      ansible.builtin.stat:
+        path: /etc/apt/sources.list.d/spotify.sources
+      register: spotify_repository
+
+    - name: Read Spotify deb822 repository
+      ansible.builtin.slurp:
+        src: /etc/apt/sources.list.d/spotify.sources
+      register: spotify_repository_content
+      when: spotify_repository.stat.exists
+
+    - name: Check legacy Spotify sources list
+      ansible.builtin.stat:
+        path: /etc/apt/sources.list.d/spotify.list
+      register: spotify_legacy_repository
+
+    - name: Set decoded Spotify repository content
+      ansible.builtin.set_fact:
+        spotify_repository_config: "{{ spotify_repository_content.content | b64decode }}"
+      when: spotify_repository.stat.exists
+
+    - name: Assert Spotify client is installed
+      ansible.builtin.assert:
+        that:
+          - spotify_binary.stat.exists
+          - spotify_binary.stat.executable
+          - "'spotify-client' in ansible_facts.packages"
+        fail_msg: "Spotify client is not installed"
+        success_msg: "Spotify client is installed"
+
+    - name: Assert Spotify repository is configured
+      ansible.builtin.assert:
+        that:
+          - spotify_repository.stat.exists
+          - "'https://repository.spotify.com' in spotify_repository_config"
+          - "'Suites: stable' in spotify_repository_config"
+          - "'Components: non-free' in spotify_repository_config"
+        fail_msg: "Spotify repository is not configured as expected"
+        success_msg: "Spotify repository is configured correctly"
+
+    - name: Assert legacy Spotify sources list is removed
+      ansible.builtin.assert:
+        that:
+          - not spotify_legacy_repository.stat.exists
+        fail_msg: "Legacy /etc/apt/sources.list.d/spotify.list was not removed"
+        success_msg: "Legacy /etc/apt/sources.list.d/spotify.list was removed"

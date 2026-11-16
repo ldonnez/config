@@ -1,0 +1,11 @@
+---
+- name: Prepare
+  hosts: all
+  become: true
+  tasks:
+    - name: Create legacy Spotify sources list
+      ansible.builtin.copy:
+        dest: /etc/apt/sources.list.d/spotify.list
+        content: |
+          # legacy spotify source managed by molecule
+        mode: "0644"
