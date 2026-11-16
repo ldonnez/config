@@ -36,3 +36,8 @@
         name: "spotify-client"
         state: present
         update_cache: true
+
+    - name: Remove legacy /etc/apt/sources.list.d/spotify.list
+      ansible.builtin.file:
+        path: /etc/apt/sources.list.d/spotify.list
+        state: absent
