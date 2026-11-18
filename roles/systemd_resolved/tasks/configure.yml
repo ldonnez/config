@@ -1,45 +1,39 @@
 ---
-- name: Enable systemd-resolved service and ensure it is not masked
+- name: Ensure systemd-resolved is enabled and started
   become: true
   ansible.builtin.systemd_service:
     name: systemd-resolved
     enabled: true
     masked: false
+    state: started
   tags:
     - install
 
-- name: Ensure /etc/systemd/resolved.conf.d
+- name: Ensure systemd-resolved configuration directory exists
   become: true
   ansible.builtin.file:
     path: /etc/systemd/resolved.conf.d
     state: directory
-    recurse: true
+    mode: "0755"
   tags:
     - install
 
-- name: Copy dns-over-tls.conf to /etc/systemd/resolved.conf.d
+- name: Configure DNS-over-TLS
   become: true
   ansible.builtin.copy:
     src: dns-over-tls.conf
-    dest: /etc/systemd/resolved.conf.d/
+    dest: /etc/systemd/resolved.conf.d/dns-over-tls.conf
     mode: "0644"
+  notify: Restart systemd-resolved
   tags:
     - install
 
-- name: Symlink /run/systemd/resolve/stub-resolv.conf with /etc/resolv.conf
+- name: Ensure /etc/resolv.conf points to systemd-resolved
   become: true
   ansible.builtin.file:
     src: /run/systemd/resolve/stub-resolv.conf
     dest: /etc/resolv.conf
     state: link
     force: true
-  tags:
-    - install
-
-- name: Restart systemd-resolved service
-  become: true
-  ansible.builtin.systemd_service:
-    name: systemd-resolved
-    state: restarted
   tags:
     - install
