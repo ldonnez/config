@@ -1,11 +1,12 @@
 ---
-- name: Install i3, i3status & i3blocks with apt
+- name: Install i3, i3status, i3blocks & suckless-tools with apt
   become: true
   ansible.builtin.apt:
-    name: ["i3", "i3status", "i3blocks"]
+    name: ["i3", "i3status", "i3blocks", "suckless-tools"]
     state: present
     update_cache: true
     cache_valid_time: 3600
+    install_recommends: false # dont install recommends to prevent install i3lock. which we install with custom binary.
   when: ansible_facts.os_family == "Debian"
   tags:
     - install
@@ -143,65 +144,63 @@
   become: true
   tags:
     - install
-
   block:
-    - name: Ensure default i3lock is removed
-      ansible.builtin.apt:
-        name: i3lock
-        state: absent
-        update_cache: true
-        cache_valid_time: 3600
-
-    - name: Install git with apt
-      become: true
-      ansible.builtin.apt:
-        name: git
-        state: present
-        update_cache: true
-        cache_valid_time: 3600
-
-    - name: Install build dependencies
-      ansible.builtin.apt:
-        name:
-          - "autoconf"
-          - "gcc"
-          - "make"
-          - "pkg-config"
-          - "libpam0g-dev"
-          - "libcairo2-dev"
-          - "libfontconfig1-dev"
-          - "libxcb-composite0-dev"
-          - "libev-dev"
-          - "libx11-xcb-dev"
-          - "libxcb-xkb-dev"
-          - "libxcb-xinerama0-dev"
-          - "libxcb-randr0-dev"
-          - "libxcb-image0-dev"
-          - "libxcb-util0-dev"
-          - "libxcb-xrm-dev"
-          - "libxkbcommon-dev"
-          - "libxkbcommon-x11-dev"
-          - "libjpeg-dev"
-          - "libgif-dev"
-        state: present
-        update_cache: true
-        cache_valid_time: 3600
-
-    - name: Git clone i3lock-color repository
-      ansible.builtin.git:
-        repo: https://github.com/Raymo111/i3lock-color.git
-        depth: 1
-        version: "2.13.c.5"
-        dest: /tmp/i3lock-color
+    - name: Check if i3lock is installed
+      ansible.builtin.stat:
+        path: /usr/bin/i3lock
+      register: i3_i3lock_binary
 
     - name: Build and install i3lock-color
-      ansible.builtin.command: ./install-i3lock-color.sh
-      args:
-        chdir: /tmp/i3lock-color
-        creates: /usr/bin/i3lock-color
+      when: not i3_i3lock_binary.stat.exists
+      block:
+        - name: Ensure default i3lock is removed
+          ansible.builtin.apt:
+            name: i3lock
+            state: absent
 
-  always:
-    - name: Remove /tmp/i3lock-color
-      ansible.builtin.file:
-        path: /tmp/i3lock-color
-        state: absent
+        - name: Install git and build dependencies
+          ansible.builtin.apt:
+            name:
+              - git
+              - autoconf
+              - gcc
+              - make
+              - pkg-config
+              - libpam0g-dev
+              - libcairo2-dev
+              - libfontconfig1-dev
+              - libxcb-composite0-dev
+              - libev-dev
+              - libx11-xcb-dev
+              - libxcb-xkb-dev
+              - libxcb-xinerama0-dev
+              - libxcb-randr0-dev
+              - libxcb-image0-dev
+              - libxcb-util0-dev
+              - libxcb-xrm-dev
+              - libxkbcommon-dev
+              - libxkbcommon-x11-dev
+              - libjpeg-dev
+              - libgif-dev
+            state: present
+            update_cache: true
+            cache_valid_time: 3600
+
+        - name: Clone i3lock-color repository
+          ansible.builtin.git:
+            repo: https://github.com/Raymo111/i3lock-color.git
+            depth: 1
+            version: "2.13.c.5"
+            dest: /tmp/i3lock-color
+
+        - name: Build and install i3lock-color
+          ansible.builtin.command: ./install-i3lock-color.sh
+          args:
+            chdir: /tmp/i3lock-color
+            creates: /usr/bin/i3lock-color
+
+      always:
+        - name: Remove i3lock-color build directory
+          ansible.builtin.file:
+            path: /tmp/i3lock-color
+            state: absent
