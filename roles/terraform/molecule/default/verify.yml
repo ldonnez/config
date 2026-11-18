@@ -8,10 +8,17 @@
       register: terraform_version
       changed_when: false
 
-    - name: Assert terraform is installed
+    - name: Check terraform-ls binary
+      ansible.builtin.command:
+        cmd: terraform-ls version
+      register: terraform_ls_version
+      changed_when: false
+
+    - name: Assert terraform & terraform-ls is installed
       ansible.builtin.assert:
         that:
           - terraform_version.rc == 0
           - terraform_version.stdout is search('Terraform')
-        fail_msg: "terraform is not installed"
-        success_msg: "terraform is installed"
+          - terraform_ls_version.rc == 0
+        fail_msg: "terraform or terraform-ls is not installed"
+        success_msg: "terraform and terraform-ls is installed"
