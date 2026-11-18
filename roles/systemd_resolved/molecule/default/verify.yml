@@ -1,0 +1,42 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Gather service facts
+      ansible.builtin.service_facts:
+
+    - name: Read the DNS over TLS configuration
+      ansible.builtin.slurp:
+        src: /etc/systemd/resolved.conf.d/dns-over-tls.conf
+      register: systemd_resolved_config
+
+    - name: Check the resolv.conf symlink
+      ansible.builtin.stat:
+        path: /etc/resolv.conf
+        follow: false
+      register: systemd_resolved_resolv_conf
+
+    - name: Assert systemd-resolved is installed and configured
+      ansible.builtin.assert:
+        that:
+          - "'systemd-resolved' in ansible_facts.packages"
+          - "'DNS=1.1.1.1#cloudflare-dns.com' in (systemd_resolved_config.content | b64decode)"
+          - "'DNSOverTLS=yes' in (systemd_resolved_config.content | b64decode)"
+          - "'DNSSEC=true' in (systemd_resolved_config.content | b64decode)"
+          - systemd_resolved_resolv_conf.stat.exists
+          - systemd_resolved_resolv_conf.stat.islnk
+          - systemd_resolved_resolv_conf.stat.lnk_source == '/run/systemd/resolve/stub-resolv.conf'
+        fail_msg: "systemd-resolved is not installed or configured correctly"
+        success_msg: "systemd-resolved is installed and configured correctly"
+
+    - name: Assert systemd-resolved is enabled and running
+      ansible.builtin.assert:
+        that:
+          - ansible_facts.services['systemd-resolved.service'].status == 'enabled'
+          - ansible_facts.services['systemd-resolved.service'].state == 'running'
+        fail_msg: "systemd-resolved is not enabled and running"
+        success_msg: "systemd-resolved is enabled and running"

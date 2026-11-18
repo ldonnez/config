@@ -1,0 +1,28 @@
+---
+- name: Prepare
+  hosts: all
+  become: true
+  tasks:
+    - name: Read the current resolver configuration
+      ansible.builtin.slurp:
+        src: /etc/resolv.conf
+      register: systemd_resolved_resolv_conf
+
+    - name: Check whether /etc/resolv.conf is a mount point
+      ansible.builtin.command:
+        cmd: findmnt --noheadings /etc/resolv.conf
+      register: systemd_resolved_resolv_mount
+      changed_when: false
+      failed_when: false
+
+    - name: Unmount the container-managed /etc/resolv.conf
+      ansible.builtin.command:
+        cmd: umount /etc/resolv.conf
+      when: systemd_resolved_resolv_mount.stdout | length > 0
+
+    - name: Recreate /etc/resolv.conf as a regular file
+      ansible.builtin.copy:
+        content: "{{ systemd_resolved_resolv_conf.content | b64decode }}"
+        dest: /etc/resolv.conf
+        mode: "0644"
+        force: true

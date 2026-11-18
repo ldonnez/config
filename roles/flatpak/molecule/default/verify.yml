@@ -1,0 +1,35 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: List the user flatpak remotes
+      ansible.builtin.command:
+        cmd: flatpak remotes --user --columns=name
+      register: flatpak_remotes
+      changed_when: false
+
+    - name: Read the installed Builder metadata
+      ansible.builtin.command:
+        cmd: flatpak info --user org.flatpak.Builder
+      register: flatpak_builder
+      changed_when: false
+
+    - name: Assert flatpak and flathub are installed
+      ansible.builtin.assert:
+        that:
+          - "'flatpak' in ansible_facts.packages"
+          - "'flathub' in flatpak_remotes.stdout_lines | map('trim') | list"
+        fail_msg: "Flatpak or the Flathub user remote is not installed"
+        success_msg: "Flatpak and the Flathub user remote are installed"
+
+    - name: Assert the configured flatpak application is installed
+      ansible.builtin.assert:
+        that:
+          - flatpak_builder.rc == 0
+          - flatpak_builder.stdout is search('org.flatpak.Builder')
+        fail_msg: "The Builder Flatpak application is not installed"
+        success_msg: "The Builder Flatpak application is installed"

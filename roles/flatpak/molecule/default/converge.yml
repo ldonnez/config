@@ -1,0 +1,8 @@
+---
+- name: Converge
+  hosts: all
+  vars:
+    flatpak_apps:
+      - org.flatpak.Builder
+  roles:
+    - role: flatpak

@@ -1,0 +1,9 @@
+---
+- name: Cleanup
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Remove the controller-side secrets fixture
+      ansible.builtin.file:
+        path: /tmp/neomutt-secrets
+        state: absent

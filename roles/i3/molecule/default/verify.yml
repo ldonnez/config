@@ -1,0 +1,123 @@
+---
+- name: Verify
+  hosts: all
+  vars_files:
+    - ../../../../roles/i3/defaults/main.yml
+    - ../../../../roles/dotfiles/defaults/main.yml
+  tasks:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Check the i3lock binary
+      ansible.builtin.stat:
+        path: /usr/bin/i3lock
+      register: i3_i3lock_binary
+
+    - name: Check the i3 config symlinks
+      ansible.builtin.stat:
+        path: "{{ item.path }}"
+        follow: false
+      loop:
+        - { path: "{{ i3_config_dir }}", src: "{{ i3_dotfiles_path }}" }
+        - { path: "{{ i3_i3status_config_dir }}", src: "{{ i3_i3status_dotfiles_path }}" }
+        - { path: "{{ i3_i3blocks_config_dir }}", src: "{{ i3_i3blocks_dotfiles_path }}" }
+        - { path: "{{ i3_dunst_config_dir }}", src: "{{ i3_dunst_dotfiles_path }}" }
+        - { path: "{{ i3_gtk_config_dir }}", src: "{{ i3_gtk_dotfiles_path }}" }
+      register: i3_config_links
+
+    - name: Check the wallpaper
+      ansible.builtin.stat:
+        path: /usr/local/share/wallpapers/el-capitan-night.jpg
+      register: i3_wallpaper
+
+    - name: Read the LightDM greeter configuration
+      ansible.builtin.slurp:
+        src: /etc/lightdm/lightdm-gtk-greeter.conf
+      register: i3_lightdm_config
+
+    - name: Read the network interfaces configuration
+      ansible.builtin.slurp:
+        src: /etc/network/interfaces
+      register: i3_interfaces
+
+    - name: Check the idle-check service
+      ansible.builtin.stat:
+        path: "{{ ansible_facts.user_dir }}/.config/systemd/user/idle-check.service"
+      register: i3_idle_check_service
+
+    - name: Check the idle-check service state
+      ansible.builtin.systemd:
+        name: idle-check
+        scope: user
+      register: i3_idle_check_status
+      changed_when: false
+
+    - name: Check the PipeWire services state
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        scope: user
+      loop:
+        - pipewire
+        - pipewire-pulse
+        - wireplumber
+      register: i3_pipewire_status
+      changed_when: false
+
+    - name: Assert the i3 packages are installed
+      ansible.builtin.assert:
+        that:
+          - "'i3' in ansible_facts.packages"
+          - "'i3status' in ansible_facts.packages"
+          - "'i3blocks' in ansible_facts.packages"
+          - "'lightdm' in ansible_facts.packages"
+          - "'xss-lock' in ansible_facts.packages"
+          - "'network-manager' in ansible_facts.packages"
+          - "'thunar' in ansible_facts.packages"
+          - "'dunst' in ansible_facts.packages"
+          - "'feh' in ansible_facts.packages"
+          - "'breeze-gtk-theme' in ansible_facts.packages"
+          - "'papirus-icon-theme' in ansible_facts.packages"
+          - "'pipewire' in ansible_facts.packages"
+          - "'wireplumber' in ansible_facts.packages"
+          - "'xprintidle' in ansible_facts.packages"
+          - "'playerctl' in ansible_facts.packages"
+          - i3_i3lock_binary.stat.exists
+          - i3_i3lock_binary.stat.executable
+        fail_msg: "The i3 packages are not installed"
+        success_msg: "The i3 packages are installed"
+
+    - name: Assert i3 is configured
+      ansible.builtin.assert:
+        that:
+          - item.stat.exists
+          - item.stat.islnk
+          - item.stat.lnk_source == item.item.src
+        fail_msg: "Expected {{ item.item.path }} to symlink to {{ item.item.src }}"
+        success_msg: "i3 config symlink is correct"
+      loop: "{{ i3_config_links.results }}"
+      loop_control:
+        label: "{{ item.item.path }}"
+
+    - name: Assert the i3 system configuration is installed
+      ansible.builtin.assert:
+        that:
+          - i3_wallpaper.stat.exists
+          - "'background=/usr/local/share/wallpapers/el-capitan-night.jpg' in (i3_lightdm_config.content | b64decode)"
+          - "'auto lo' in (i3_interfaces.content | b64decode)"
+          - "'iface lo inet loopback' in (i3_interfaces.content | b64decode)"
+          - i3_idle_check_service.stat.exists
+          - i3_idle_check_status.status.UnitFileState == "enabled"
+          - i3_idle_check_status.status.ActiveState == "active"
+        fail_msg: "The i3 system configuration is not installed"
+        success_msg: "The i3 system configuration is installed"
+
+    - name: Assert the PipeWire services are enabled and running
+      ansible.builtin.assert:
+        that:
+          - item.status.UnitFileState == "enabled"
+          - item.status.ActiveState == "active"
+        fail_msg: "{{ item.item }} is not enabled and running"
+      loop: "{{ i3_pipewire_status.results }}"
+      loop_control:
+        label: "{{ item.item }}"

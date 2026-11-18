@@ -1,0 +1,46 @@
+---
+- name: Verify
+  hosts: all
+  vars_files:
+    - ../../../../roles/rofi/defaults/main.yml
+    - ../../../../roles/dotfiles/defaults/main.yml
+  tasks:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Check rofi binary
+      ansible.builtin.stat:
+        path: /usr/bin/rofi
+      register: rofi_binary
+
+    - name: Check rofi config symlink
+      ansible.builtin.stat:
+        path: "{{ rofi_config_dir }}"
+        follow: false
+      register: rofi_config
+
+    - name: Check rofi dotfiles source
+      ansible.builtin.stat:
+        path: "{{ rofi_dotfiles_path }}"
+      register: rofi_config_source
+
+    - name: Assert rofi is installed
+      ansible.builtin.assert:
+        that:
+          - "'rofi' in ansible_facts.packages"
+          - rofi_binary.stat.exists
+          - rofi_binary.stat.executable
+        fail_msg: "rofi is not installed"
+        success_msg: "rofi is installed"
+
+    - name: Assert rofi is configured
+      ansible.builtin.assert:
+        that:
+          - rofi_config.stat.exists
+          - rofi_config.stat.islnk
+          - rofi_config.stat.lnk_source == rofi_dotfiles_path
+          - rofi_config_source.stat.exists
+          - rofi_config_source.stat.isdir
+        fail_msg: "rofi is not configured correctly"
+        success_msg: "rofi is configured correctly"

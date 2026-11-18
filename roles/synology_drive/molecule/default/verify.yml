@@ -1,0 +1,39 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Check the Synology Drive blacklist
+      ansible.builtin.stat:
+        path: "{{ ansible_facts.user_dir }}/.SynologyDrive/data/session/1/conf/blacklist.filter"
+      register: synology_drive_blacklist
+
+    - name: Read the Synology Drive blacklist
+      ansible.builtin.slurp:
+        src: "{{ ansible_facts.user_dir }}/.SynologyDrive/data/session/1/conf/blacklist.filter"
+      register: synology_drive_blacklist_content
+      when: synology_drive_blacklist.stat.exists
+
+    - name: Check the Synology Drive autostart entry
+      ansible.builtin.stat:
+        path: "{{ ansible_facts.user_dir }}/.config/autostart/synology_drive.desktop"
+      register: synology_drive_autostart
+
+    - name: Read the Synology Drive autostart entry
+      ansible.builtin.slurp:
+        src: "{{ ansible_facts.user_dir }}/.config/autostart/synology_drive.desktop"
+      register: synology_drive_autostart_content
+      when: synology_drive_autostart.stat.exists
+
+    - name: Assert Synology Drive is configured
+      ansible.builtin.assert:
+        that:
+          - synology_drive_blacklist.stat.exists
+          - synology_drive_blacklist.stat.isreg
+          - (synology_drive_blacklist_content.content | b64decode) is search('\[Common\]')
+          - (synology_drive_blacklist_content.content | b64decode) is search('node_modules')
+          - synology_drive_autostart.stat.exists
+          - synology_drive_autostart.stat.isreg
+          - synology_drive_autostart.stat.mode == '0644'
+          - "'Exec=flatpak run com.synology.SynologyDrive' in (synology_drive_autostart_content.content | b64decode)"
+        fail_msg: "Synology Drive is not configured correctly"
+        success_msg: "Synology Drive is configured correctly"

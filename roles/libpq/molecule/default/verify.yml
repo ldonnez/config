@@ -1,0 +1,53 @@
+---
+- name: Verify
+  hosts: all
+  vars_files:
+    - ../../../../roles/dotfiles/defaults/main.yml
+  tasks:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Read the psql version
+      ansible.builtin.command:
+        cmd: psql --version
+      register: libpq_psql_version
+      changed_when: false
+
+    - name: Read the PostgreSQL repository configuration
+      ansible.builtin.slurp:
+        src: /etc/apt/sources.list.d/pgdg.sources
+      register: libpq_repository
+
+    - name: Check the psqlrc symlink
+      ansible.builtin.stat:
+        path: "{{ ansible_facts.user_dir }}/.psqlrc"
+        follow: false
+      register: libpq_psqlrc
+
+    - name: Assert the PostgreSQL client is installed
+      ansible.builtin.assert:
+        that:
+          - "'postgresql-client' in ansible_facts.packages"
+          - libpq_psql_version.rc == 0
+          - libpq_psql_version.stdout is search('psql')
+        fail_msg: "The PostgreSQL client is not installed"
+        success_msg: "The PostgreSQL client is installed"
+
+    - name: Assert the PGDG repository is configured
+      ansible.builtin.assert:
+        that:
+          - "'https://apt.postgresql.org/pub/repos/apt' in (libpq_repository.content | b64decode)"
+          - "'Suites: ' ~ ansible_facts.distribution_release ~ '-pgdg' in (libpq_repository.content | b64decode)"
+          - "'Components: main' in (libpq_repository.content | b64decode)"
+        fail_msg: "The PGDG repository is not configured correctly"
+        success_msg: "The PGDG repository is configured correctly"
+
+    - name: Assert psql is configured
+      ansible.builtin.assert:
+        that:
+          - libpq_psqlrc.stat.exists
+          - libpq_psqlrc.stat.islnk
+          - libpq_psqlrc.stat.lnk_source == dotfiles_directory_path ~ '/.psqlrc'
+        fail_msg: "The psqlrc symlink is not configured correctly"
+        success_msg: "psql is configured correctly"
