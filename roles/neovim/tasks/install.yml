@@ -21,9 +21,17 @@
 - name: Get latest neovim stable release
   ansible.builtin.uri:
     url: "https://api.github.com/repos/neovim/neovim/releases/latest"
-    return_content: true
     status_code:
       - 200
+    headers: >-
+      {{
+        {'Authorization': 'Bearer ' ~ github_token}
+        if github_token | length > 0 else {}
+      }}
+    return_content: true
+  vars:
+    github_token: "{{ lookup('ansible.builtin.env', 'GITHUB_TOKEN') }}"
+
   register: neovim_latest_release
   failed_when: neovim_latest_release.status not in [200]
   when: ansible_facts.os_family == "Debian"
