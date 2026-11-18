@@ -107,6 +107,7 @@
     - name: Start idle-check
       ansible.builtin.systemd:
         name: idle-check
+        enabled: true
         state: started
         daemon_reload: true
         scope: user
