@@ -1,0 +1,13 @@
+---
+galaxy_info:
+  role_name: docker
+  author: ldonnez
+  description: Docker is secure, out-of-the-box containerization software offering developers and teams a robust, hybrid toolkit to build, share, and
+    run applications anywhere.
+  license: MIT
+  min_ansible_version: "2.10"
+
+  platforms:
+    - name: Debian
+      versions:
+        - all

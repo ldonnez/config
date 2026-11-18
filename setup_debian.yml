@@ -262,11 +262,11 @@
       tags:
         - neomutt
 
-    - name: Install docker desktop
+    - name: Install docker
       ansible.builtin.import_role:
-        name: docker_desktop
+        name: docker
       tags:
-        - docker_desktop
+        - docker
 
     - name: Configure opencode
       ansible.builtin.import_role:
