@@ -1,0 +1,4 @@
+---
+# defaults file for docker_desktop
+
+docker_desktop_enabled: true
