@@ -2,6 +2,20 @@
 - name: Verify
   hosts: all
   tasks:
+    - name: Read the installed metadata
+      ansible.builtin.command:
+        cmd: flatpak info --user com.synology.SynologyDrive
+      register: synology_drive_flatpak_info
+      changed_when: false
+
+    - name: Assert the configured flatpak application is installed
+      ansible.builtin.assert:
+        that:
+          - synology_drive_flatpak_info.rc == 0
+          - synology_drive_flatpak_info.stdout is search('com.synology.SynologyDrive')
+        fail_msg: "The Synology Drive Flatpak application is not installed"
+        success_msg: "The Synology Drive Flatpak application is installed"
+
     - name: Check the Synology Drive blacklist
       ansible.builtin.stat:
         path: "{{ ansible_facts.user_dir }}/.SynologyDrive/data/session/1/conf/blacklist.filter"

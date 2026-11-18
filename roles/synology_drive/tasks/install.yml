@@ -29,3 +29,12 @@
     sudo_password: "{{ synology_drive_sudo_password.user_input }}"
   tags:
     - update
+
+- name: Install synology drive with flatpak
+  when: ansible_facts.os_family == "Debian"
+  community.general.flatpak:
+    name: "com.synology.SynologyDrive"
+    state: present
+    method: user
+  tags:
+    - install
