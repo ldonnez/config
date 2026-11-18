@@ -2,7 +2,18 @@
 - name: Install dependencies
   become: true
   ansible.builtin.apt:
-    name: ["libxcb-cursor0", "libopengl0"]
+    name:
+      - libegl1
+      - libfontconfig1
+      - libfreetype6
+      - libgl1
+      - libglx0
+      - libxcb-cursor0
+      - libxkbcommon-x11-0
+      - libxkbcommon0
+      - libopengl0
+      - wget
+      - xz-utils
     state: present
     update_cache: true
     cache_valid_time: 3600

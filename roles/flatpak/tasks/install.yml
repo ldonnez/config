@@ -1,4 +1,16 @@
 ---
+- name: Install dependencies
+  become: true
+  ansible.builtin.apt:
+    name:
+      - dbus
+      - fuse3
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+  tags:
+    - install
+
 - name: Install flatpak with apt
   become: true
   ansible.builtin.apt:

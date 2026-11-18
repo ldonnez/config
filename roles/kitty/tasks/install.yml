@@ -1,9 +1,11 @@
 ---
-- name: Install curl with apt
+- name: Install curl and xz-utils with apt
   become: true
   when: ansible_facts.os_family == "Debian"
   ansible.builtin.apt:
-    name: curl
+    name:
+      - curl
+      - xz-utils
     state: present
     update_cache: true
     cache_valid_time: 3600

@@ -26,6 +26,14 @@
     - install
 
   block:
+    - name: Install fontconfig
+      become: true
+      ansible.builtin.apt:
+        name: fontconfig
+        state: present
+        update_cache: true
+        cache_valid_time: 3600
+
     - name: "Ensure fonts directory"
       ansible.builtin.file:
         name: "{{ ansible_facts.user_dir }}/.local/share/fonts"
