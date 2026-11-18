@@ -5,3 +5,6 @@ Description=Idle monitor script for locking and suspending
 ExecStart=%h/.config/i3/scripts/idle-check.sh
 Restart=always
 RestartSec=5
+
+[Install]
+WantedBy=default.target
