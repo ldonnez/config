@@ -70,7 +70,6 @@
     flatpak_apps:
       - com.github.tchx84.Flatseal # Flatseal is a graphical utility to review and modify permissions from your Flatpak applications.
       - com.bitwarden.desktop
-      - com.synology.SynologyDrive
       - org.signal.Signal
       - com.slack.Slack
       - com.github.Matoking.protontricks # Run Winetricks commands for Steam Play/Proton games among other common Wine features, such as launching external Windows executables.
