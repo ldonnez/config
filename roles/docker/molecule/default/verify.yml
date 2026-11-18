@@ -1,0 +1,54 @@
+---
+- name: Verify
+  hosts: all
+  vars:
+    docker_desktop_enabled: false
+  tasks:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Read the Docker repository configuration
+      ansible.builtin.slurp:
+        src: /etc/apt/sources.list.d/docker.sources
+      register: docker_repository
+
+    - name: Read the current user groups
+      ansible.builtin.command:
+        cmd: id -nG {{ ansible_user }}
+      register: docker_desktop_user_groups
+      changed_when: false
+
+    - name: Assert the Docker packages are installed
+      ansible.builtin.assert:
+        that:
+          - "'docker-ce' in ansible_facts.packages"
+          - "'docker-ce-cli' in ansible_facts.packages"
+          - "'containerd.io' in ansible_facts.packages"
+          - "'docker-buildx-plugin' in ansible_facts.packages"
+          - "'docker-compose-plugin' in ansible_facts.packages"
+        fail_msg: "The Docker packages are not installed"
+        success_msg: "The Docker packages are installed"
+
+    - name: Assert the Docker-desktop packages is installed
+      when: docker_desktop_enabled
+      ansible.builtin.assert:
+        that:
+          - "'docker-desktop' in ansible_facts.packages"
+        fail_msg: "The docker desktop package is not installed"
+        success_msg: "The docker desktop packages is installed"
+
+    - name: Assert the Docker repository is configured
+      ansible.builtin.assert:
+        that:
+          - "'https://download.docker.com/linux/debian' in (docker_repository.content | b64decode)"
+          - "'Components: stable' in (docker_repository.content | b64decode)"
+        fail_msg: "The Docker repository is not configured correctly"
+        success_msg: "The Docker repository is configured correctly"
+
+    - name: Assert the user can manage Docker
+      ansible.builtin.assert:
+        that:
+          - "'docker' in docker_desktop_user_groups.stdout.split()"
+        fail_msg: "The user is not a member of the docker group"
+        success_msg: "The user is a member of the docker group"
