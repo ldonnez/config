@@ -34,6 +34,7 @@
       ansible.builtin.unarchive:
         src: /tmp/awscli-exe-linux-x86_64.zip
         dest: /tmp
+        remote_src: true
 
     - name: Run aws install
       become: true
@@ -67,6 +68,7 @@
       ansible.builtin.unarchive:
         src: /tmp/awscli-exe-linux-x86_64.zip
         dest: /tmp
+        remote_src: true
 
     - name: Run aws install with --update flag
       become: true
