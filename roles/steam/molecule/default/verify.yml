@@ -1,0 +1,26 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Check the Steam repository configuration
+      ansible.builtin.stat:
+        path: /etc/apt/sources.list.d/steam-stable.list
+      register: steam_repository
+
+    - name: Check the Steam signing key
+      ansible.builtin.stat:
+        path: /usr/share/keyrings/steam.gpg
+      register: steam_keyring
+
+    - name: Assert Steam is installed and configured
+      ansible.builtin.assert:
+        that:
+          - "'steam-launcher' in ansible_facts.packages"
+          - steam_repository.stat.exists
+          - steam_keyring.stat.exists
+        fail_msg: "The Steam launcher package or its APT configuration is missing"
+        success_msg: "The Steam launcher package and its APT configuration are installed"
