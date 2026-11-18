@@ -86,7 +86,6 @@ lint:
 
 molecule-images:
 	docker buildx build --build-arg BASE_IMAGE=debian:13 --tag molecule:debian13 --file molecule/Dockerfile $(MOLECULE_CACHE) --load .
-	docker buildx build --build-arg BASE_IMAGE=ubuntu:22.04 --tag molecule:ubuntu2204 --file molecule/Dockerfile $(MOLECULE_CACHE) --load .
 	docker buildx build --build-arg BASE_IMAGE=ubuntu:24.04 --tag molecule:ubuntu2404 --file molecule/Dockerfile $(MOLECULE_CACHE) --load .
 	docker buildx build --build-arg BASE_IMAGE=ubuntu:26.04 --tag molecule:ubuntu2604 --file molecule/Dockerfile $(MOLECULE_CACHE) --load .
 

@@ -15,8 +15,8 @@ platforms:
     tmpfs:
       - /run
       - /run/lock
-  - name: ubuntu2204
-    image: molecule:ubuntu2204
+  - name: ubuntu2404
+    image: molecule:ubuntu2404
     pre_build_image: true
     privileged: true
     override_command: false
