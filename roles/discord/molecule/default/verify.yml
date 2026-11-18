@@ -1,0 +1,21 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Check the discord binary
+      ansible.builtin.stat:
+        path: /usr/bin/discord
+      register: discord_binary
+
+    - name: Assert discord is installed
+      ansible.builtin.assert:
+        that:
+          - "'discord' in ansible_facts.packages"
+          - discord_binary.stat.exists
+          - discord_binary.stat.executable
+        fail_msg: "discord is not installed"
+        success_msg: "discord is installed"

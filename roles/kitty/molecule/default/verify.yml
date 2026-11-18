@@ -1,0 +1,73 @@
+---
+- name: Verify
+  hosts: all
+  vars_files:
+    - ../../../../roles/kitty/defaults/main.yml
+    - ../../../../roles/dotfiles/defaults/main.yml
+  tasks:
+    - name: Check kitty binary
+      ansible.builtin.stat:
+        path: "{{ ansible_facts.user_dir }}/.local/kitty.app/bin/kitty"
+      register: kitty_binary
+
+    - name: Read kitty version
+      ansible.builtin.command:
+        cmd: "{{ ansible_facts.user_dir }}/.local/kitty.app/bin/kitty --version"
+      register: kitty_version
+      changed_when: false
+
+    - name: Check kitty and kitten symlinks
+      ansible.builtin.stat:
+        path: "{{ ansible_facts.user_dir }}/.local/bin/{{ item }}"
+        follow: false
+      loop:
+        - kitty
+        - kitten
+      register: kitty_links
+
+    - name: Check kitty desktop files
+      ansible.builtin.stat:
+        path: "{{ ansible_facts.user_dir }}/.local/share/applications/{{ item }}"
+      loop:
+        - kitty.desktop
+        - kitty-open.desktop
+      register: kitty_desktop_files
+
+    - name: Read the xdg terminal list
+      ansible.builtin.slurp:
+        src: "{{ ansible_facts.user_dir }}/.config/xdg-terminals.list"
+      register: kitty_xdg_terminals
+
+    - name: Check kitty config symlinks
+      ansible.builtin.stat:
+        path: "{{ item.path }}"
+        follow: false
+      loop:
+        - { path: "{{ kitty_config_dir }}/kitty.conf", src: "{{ kitty_dotfiles_path }}/kitty.conf" }
+        - { path: "{{ kitty_config_dir }}/themes/Catppuccin-Frappe.conf", src: "{{ kitty_dotfiles_path }}/themes/Catppuccin-Frappe.conf" }
+      register: kitty_config_links
+
+    - name: Assert kitty is installed
+      ansible.builtin.assert:
+        that:
+          - kitty_binary.stat.exists
+          - kitty_binary.stat.executable
+          - kitty_version.rc == 0
+          - kitty_version.stdout is search('kitty')
+          - kitty_links.results | selectattr('stat.islnk') | list | length == kitty_links.results | length
+          - kitty_desktop_files.results | selectattr('stat.exists') | list | length == kitty_desktop_files.results | length
+          - (kitty_xdg_terminals.content | b64decode) == 'kitty.desktop'
+        fail_msg: "kitty is not installed correctly"
+        success_msg: "kitty is installed"
+
+    - name: Assert kitty is configured
+      ansible.builtin.assert:
+        that:
+          - item.stat.exists
+          - item.stat.islnk
+          - item.stat.lnk_source == item.item.src
+        fail_msg: "Expected {{ item.item.path }} to symlink to {{ item.item.src }}"
+        success_msg: "kitty config symlink is correct"
+      loop: "{{ kitty_config_links.results }}"
+      loop_control:
+        label: "{{ item.item.path }}"

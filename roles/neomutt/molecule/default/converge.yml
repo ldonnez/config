@@ -1,0 +1,8 @@
+---
+- name: Converge
+  hosts: all
+  vars:
+    secrets_directory: /tmp/neomutt-secrets
+    secrets_repository: /tmp/secrets-fixture
+  roles:
+    - role: neomutt

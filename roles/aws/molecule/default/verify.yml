@@ -1,0 +1,29 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Check the aws binary
+      ansible.builtin.stat:
+        path: /usr/local/bin/aws
+      register: aws_cli_binary
+
+    - name: Read the aws version
+      ansible.builtin.command:
+        cmd: /usr/local/bin/aws --version
+      register: aws_cli_version
+      changed_when: false
+
+    - name: Assert the AWS CLI is installed
+      ansible.builtin.assert:
+        that:
+          - "'unzip' in ansible_facts.packages"
+          - aws_cli_binary.stat.exists
+          - aws_cli_binary.stat.executable
+          - aws_cli_version.rc == 0
+          - aws_cli_version.stdout is search('aws-cli/2')
+        fail_msg: "The AWS CLI is not installed correctly"
+        success_msg: "The AWS CLI is installed"

@@ -1,0 +1,43 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Gather service facts
+      ansible.builtin.service_facts:
+
+    - name: Read the current user groups
+      ansible.builtin.command:
+        cmd: id -nG {{ ansible_user }}
+      register: virt_manager_user_groups
+      changed_when: false
+
+    - name: Assert virtualization packages are installed
+      ansible.builtin.assert:
+        that:
+          - "'qemu-system-x86' in ansible_facts.packages"
+          - "'libvirt-daemon-system' in ansible_facts.packages"
+          - "'libvirt-clients' in ansible_facts.packages"
+          - "'bridge-utils' in ansible_facts.packages"
+          - "'virt-manager' in ansible_facts.packages"
+        fail_msg: "The virtualization packages are not installed"
+        success_msg: "The virtualization packages are installed"
+
+    - name: Assert the user is allowed to manage virtual machines
+      ansible.builtin.assert:
+        that:
+          - "'libvirt' in virt_manager_user_groups.stdout.split()"
+          - "'kvm' in virt_manager_user_groups.stdout.split()"
+        fail_msg: "The user is not a member of the libvirt and kvm groups"
+        success_msg: "The user is a member of the libvirt and kvm groups"
+
+    - name: Assert libvirtd is enabled and running
+      ansible.builtin.assert:
+        that:
+          - ansible_facts.services['libvirtd.service'].status == 'enabled'
+          - ansible_facts.services['libvirtd.service'].state == 'running'
+        fail_msg: "libvirtd is not enabled and running"
+        success_msg: "libvirtd is enabled and running"

@@ -1,0 +1,21 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Assert pciutils is installed
+      ansible.builtin.assert:
+        that:
+          - "'pciutils' in ansible_facts.packages"
+        fail_msg: "pciutils is not installed"
+        success_msg: "pciutils is installed"
+
+    - name: Assert NVIDIA driver installation was skipped without an adapter
+      ansible.builtin.assert:
+        that:
+          - "'nvidia-driver' not in ansible_facts.packages"
+        fail_msg: "NVIDIA driver was installed without an NVIDIA graphics adapter"
+        success_msg: "NVIDIA driver installation was skipped without an NVIDIA graphics adapter"

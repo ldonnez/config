@@ -1,0 +1,33 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Check installed font files
+      ansible.builtin.stat:
+        path: "{{ item }}"
+      loop:
+        - "{{ ansible_facts.user_dir }}/.local/share/fonts/NerdFontsSymbolsOnly/10-nerd-font-symbols.conf"
+        - "{{ ansible_facts.user_dir }}/.local/share/fonts/NerdFontsSymbolsOnly/SymbolsNerdFont-Regular.ttf"
+        - "{{ ansible_facts.user_dir }}/.local/share/fonts/Hack/HackNerdFont-Regular.ttf"
+        - "{{ ansible_facts.user_dir }}/.local/share/fonts/Hack/HackNerdFontMono-Regular.ttf"
+      register: fonts_files
+
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: List available fonts
+      ansible.builtin.command:
+        cmd: fc-list
+      register: fonts_list
+      changed_when: false
+
+    - name: Assert fonts are installed
+      ansible.builtin.assert:
+        that:
+          - fonts_files.results | selectattr('stat.exists') | list | length == fonts_files.results | length
+          - "'fonts-hack-ttf' in ansible_facts.packages"
+          - fonts_list.stdout is search('Hack Nerd Font')
+          - fonts_list.stdout is search('Symbols Nerd Font')
+        fail_msg: "Fonts are not installed correctly"
+        success_msg: "Fonts are installed correctly"

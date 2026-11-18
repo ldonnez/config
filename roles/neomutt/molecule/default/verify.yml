@@ -1,0 +1,109 @@
+---
+- name: Verify
+  hosts: all
+  vars_files:
+    - ../../../../roles/dotfiles/defaults/main.yml
+  vars:
+    secrets_directory: /tmp/neomutt-secrets
+    secrets_repository: /tmp/secrets-fixture
+  tasks:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Read the neomutt version
+      ansible.builtin.command:
+        cmd: neomutt -v
+      register: neomutt_version
+      changed_when: false
+
+    - name: Check the neomutt config symlinks
+      ansible.builtin.stat:
+        path: "{{ item.path }}"
+        follow: false
+      loop:
+        - { path: "{{ ansible_facts.user_dir }}/.mbsyncrc", src: "{{ dotfiles_directory_path }}/.mbsyncrc" }
+        - { path: "{{ ansible_facts.user_dir }}/.muttrc", src: "{{ dotfiles_directory_path }}/.muttrc" }
+        - { path: "{{ ansible_facts.user_dir }}/.mutt", src: "{{ dotfiles_directory_path }}/.mutt" }
+        - { path: "{{ ansible_facts.user_dir }}/.msmtprc", src: "{{ dotfiles_directory_path }}/.msmtprc" }
+        - { path: "{{ ansible_facts.user_dir }}/.urlview", src: "{{ dotfiles_directory_path }}/.urlview" }
+        - { path: "{{ ansible_facts.user_dir }}/.mailcap", src: "{{ dotfiles_directory_path }}/.mailcap" }
+        - { path: "{{ ansible_facts.user_dir }}/.notmuch-config", src: "{{ dotfiles_directory_path }}/.notmuch-config" }
+      register: neomutt_config_links
+
+    - name: Check the restored mutt aliases
+      ansible.builtin.stat:
+        path: "{{ ansible_facts.user_dir }}/.mutt-alias"
+      register: neomutt_aliases
+
+    - name: Read the restored mutt aliases
+      ansible.builtin.slurp:
+        src: "{{ ansible_facts.user_dir }}/.mutt-alias"
+      register: neomutt_aliases_content
+      when: neomutt_aliases.stat.exists
+
+    - name: Check the mail directory
+      ansible.builtin.stat:
+        path: "{{ ansible_facts.user_dir }}/.mail/gmail"
+      register: neomutt_mail_directory
+
+    - name: Check the mbsync systemd user units
+      ansible.builtin.stat:
+        path: "{{ ansible_facts.user_dir }}/.config/systemd/user/{{ item }}"
+      loop:
+        - mbsync.service
+        - mbsync.timer
+      register: neomutt_units
+
+    - name: Get the mbsync timer state
+      ansible.builtin.systemd:
+        name: mbsync.timer
+        scope: user
+      register: neomutt_timer_state
+
+    - name: Assert neomutt is installed
+      ansible.builtin.assert:
+        that:
+          - "'neomutt' in ansible_facts.packages"
+          - "'isync' in ansible_facts.packages"
+          - "'msmtp' in ansible_facts.packages"
+          - "'notmuch' in ansible_facts.packages"
+          - "'notmuch-mutt' in ansible_facts.packages"
+          - "'urlview' in ansible_facts.packages"
+          - neomutt_version.rc == 0
+          - neomutt_version.stdout is search('NeoMutt')
+        fail_msg: "neomutt is not installed correctly"
+        success_msg: "neomutt is installed"
+
+    - name: Assert neomutt is configured
+      ansible.builtin.assert:
+        that:
+          - item.stat.exists
+          - item.stat.islnk
+          - item.stat.lnk_source == item.item.src
+        fail_msg: "Expected {{ item.item.path }} to symlink to {{ item.item.src }}"
+        success_msg: "neomutt config symlink is correct"
+      loop: "{{ neomutt_config_links.results }}"
+      loop_control:
+        label: "{{ item.item.path }}"
+
+    - name: Assert mutt aliases were restored from the secrets repository
+      ansible.builtin.assert:
+        that:
+          - neomutt_aliases.stat.exists
+          - neomutt_aliases.stat.isreg
+          - neomutt_aliases.stat.mode == '0700'
+          - "'molecule@example.com' in (neomutt_aliases_content.content | b64decode)"
+        fail_msg: "The .mutt-alias file was not restored correctly"
+        success_msg: "The .mutt-alias file was restored correctly"
+
+    - name: Assert the mail directory and mbsync units exist
+      ansible.builtin.assert:
+        that:
+          - neomutt_mail_directory.stat.exists
+          - neomutt_mail_directory.stat.isdir
+          - neomutt_units.results | selectattr('stat.exists') | list | length == neomutt_units.results | length
+          - neomutt_timer_state.status.UnitFileState == 'enabled'
+          - neomutt_timer_state.status.ActiveState == 'active'
+        fail_msg: "The mail directory or mbsync systemd units are not configured correctly"
+        success_msg: "The mail directory and mbsync systemd units are configured correctly"

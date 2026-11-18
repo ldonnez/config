@@ -1,0 +1,43 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Check the firefox binary
+      ansible.builtin.stat:
+        path: /usr/bin/firefox
+      register: firefox_binary
+
+    - name: Read the Mozilla repository configuration
+      ansible.builtin.slurp:
+        src: /etc/apt/sources.list.d/mozilla.sources
+      register: firefox_repository
+
+    - name: Read the Mozilla APT pinning configuration
+      ansible.builtin.slurp:
+        src: /etc/apt/preferences.d/mozilla
+      register: firefox_pinning
+
+    - name: Assert firefox is installed
+      ansible.builtin.assert:
+        that:
+          - "'firefox' in ansible_facts.packages"
+          - "'firefox-esr' not in ansible_facts.packages"
+          - firefox_binary.stat.exists
+          - firefox_binary.stat.executable
+        fail_msg: "firefox is not installed correctly"
+        success_msg: "firefox is installed"
+
+    - name: Assert the Mozilla repository is configured
+      ansible.builtin.assert:
+        that:
+          - "'https://packages.mozilla.org/apt' in (firefox_repository.content | b64decode)"
+          - "'Suites: mozilla' in (firefox_repository.content | b64decode)"
+          - "'Components: main' in (firefox_repository.content | b64decode)"
+          - "'Pin: origin packages.mozilla.org' in (firefox_pinning.content | b64decode)"
+          - "'Pin-Priority: 1000' in (firefox_pinning.content | b64decode)"
+        fail_msg: "The Mozilla repository is not configured correctly"
+        success_msg: "The Mozilla repository is configured correctly"

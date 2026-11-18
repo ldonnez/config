@@ -1,0 +1,30 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Check the calibre binary
+      ansible.builtin.stat:
+        path: /usr/bin/calibre
+      register: calibre_binary
+
+    - name: Read the calibre version
+      ansible.builtin.command:
+        cmd: /usr/bin/calibre --version
+      register: calibre_version
+      changed_when: false
+
+    - name: Assert calibre is installed
+      ansible.builtin.assert:
+        that:
+          - "'libxcb-cursor0' in ansible_facts.packages"
+          - "'libopengl0' in ansible_facts.packages"
+          - calibre_binary.stat.exists
+          - calibre_binary.stat.executable
+          - calibre_version.rc == 0
+          - calibre_version.stdout is search('calibre')
+        fail_msg: "calibre is not installed correctly"
+        success_msg: "calibre is installed"
