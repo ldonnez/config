@@ -38,12 +38,8 @@ provisioner:
     defaults:
       roles_path: ${MOLECULE_SCENARIO_DIRECTORY}/../../../../roles
   inventory:
-    host_vars:
-      debian13:
-        ansible_user: molecule
-      ubuntu2204:
-        ansible_user: molecule
-      ubuntu2604:
+    group_vars:
+      all:
         ansible_user: molecule
 
 verifier:
