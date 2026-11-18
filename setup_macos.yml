@@ -67,7 +67,6 @@
 
     homebrew_casks:
       - firefox@developer-edition
-      - docker
       - rectangle
       - calibre
       - google-chrome
@@ -294,6 +293,12 @@
         name: kitty
       tags:
         - kitty
+
+    - name: Configure docker
+      ansible.builtin.import_role:
+        name: docker
+      tags:
+        - docker
 
     - name: Configure linearmouse
       ansible.builtin.import_role:
