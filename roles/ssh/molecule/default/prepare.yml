@@ -1,0 +1,156 @@
+---
+- name: Prepare
+  hosts: all
+  tasks:
+    - name: Install SSH and Git
+      become: true
+      ansible.builtin.apt:
+        name:
+          - git
+          - openssh-client
+          - openssh-server
+        state: present
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Create a non-interactive GitHub CLI for authentication checks
+      become: true
+      ansible.builtin.copy:
+        dest: /usr/local/bin/gh
+        mode: "0755"
+        content: |
+          #!/bin/sh
+          if [ "$1" = "auth" ]; then
+            exit 0
+          fi
+          if [ -x /usr/bin/gh ]; then
+            exec /usr/bin/gh "$@"
+          fi
+          exit 0
+
+    - name: Ensure the secrets fixture repository exists
+      ansible.builtin.file:
+        path: /tmp/secrets-fixture
+        state: directory
+        owner: molecule
+        group: molecule
+        mode: "0755"
+
+    - name: Create a README in the secrets fixture repository
+      ansible.builtin.copy:
+        dest: /tmp/secrets-fixture/README.md
+        content: "Molecule secrets fixture\n"
+        owner: molecule
+        group: molecule
+        mode: "0644"
+
+    - name: Initialize the secrets fixture repository
+      ansible.builtin.command:
+        argv:
+          - git
+          - init
+          - --initial-branch=main
+          - /tmp/secrets-fixture
+      args:
+        creates: /tmp/secrets-fixture/.git
+
+    - name: Stage the secrets fixture files
+      ansible.builtin.command:
+        argv:
+          - git
+          - -C
+          - /tmp/secrets-fixture
+          - add
+          - .
+      changed_when: true
+
+    - name: Commit the secrets fixture repository
+      ansible.builtin.command:
+        argv:
+          - git
+          - -C
+          - /tmp/secrets-fixture
+          - -c
+          - user.name=Molecule
+          - -c
+          - user.email=molecule@example.com
+          - commit
+          - -m
+          - Initial commit
+      changed_when: true
+
+    - name: Ensure the SSH key fixture directory exists
+      ansible.builtin.file:
+        path: /tmp/ssh-key-fixture
+        state: directory
+        owner: molecule
+        group: molecule
+        mode: "0700"
+
+    - name: Generate a test SSH key pair
+      ansible.builtin.command:
+        argv:
+          - ssh-keygen
+          - -q
+          - -t
+          - rsa
+          - -b
+          - "3072"
+          - -N
+          - ""
+          - -f
+          - /tmp/ssh-key-fixture/id_rsa
+      args:
+        creates: /tmp/ssh-key-fixture/id_rsa
+
+    - name: Create the SSH config fixture
+      ansible.builtin.copy:
+        dest: /tmp/ssh-key-fixture/config.vault
+        content: |
+          Host molecule-test
+            HostName example.com
+            User molecule
+        owner: molecule
+        group: molecule
+        mode: "0600"
+
+    - name: Ensure the controller-side SSH fixture directory exists
+      ansible.builtin.file:
+        path: /tmp/ssh-backup-fixture/.ssh
+        state: directory
+        mode: "0700"
+      delegate_to: localhost
+
+    - name: Remove pre-generated SSH host keys
+      become: true
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /etc/ssh/ssh_host_rsa_key
+        - /etc/ssh/ssh_host_rsa_key.pub
+
+    - name: Fetch the test private key fixture
+      ansible.builtin.fetch:
+        src: /tmp/ssh-key-fixture/id_rsa
+        dest: /tmp/ssh-backup-fixture/.ssh/id_rsa.vault
+        flat: true
+
+    - name: Fetch the test public key fixture
+      ansible.builtin.fetch:
+        src: /tmp/ssh-key-fixture/id_rsa.pub
+        dest: /tmp/ssh-backup-fixture/.ssh/id_rsa.pub
+        flat: true
+
+    - name: Fetch the SSH config fixture
+      ansible.builtin.fetch:
+        src: /tmp/ssh-key-fixture/config.vault
+        dest: /tmp/ssh-backup-fixture/.ssh/config.vault
+        flat: true
+
+    - name: Secure the controller-side private key fixture
+      become: false
+      ansible.builtin.file:
+        path: /tmp/ssh-backup-fixture/.ssh/id_rsa.vault
+        mode: "0600"
+      delegate_to: localhost

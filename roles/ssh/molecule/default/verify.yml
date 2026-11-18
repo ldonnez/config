@@ -1,0 +1,97 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Check restored SSH files
+      ansible.builtin.stat:
+        path: "{{ item.path }}"
+      loop:
+        - path: "{{ ansible_facts.user_dir }}/.ssh/id_rsa"
+          mode: "0600"
+        - path: "{{ ansible_facts.user_dir }}/.ssh/id_rsa.pub"
+          mode: "0644"
+        - path: "{{ ansible_facts.user_dir }}/.ssh/config"
+          mode: "0600"
+        - path: /etc/ssh/ssh_host_rsa_key
+          mode: "0600"
+      register: ssh_files
+
+    - name: Read the restored SSH config
+      ansible.builtin.slurp:
+        src: "{{ ansible_facts.user_dir }}/.ssh/config"
+      register: ssh_config
+
+    - name: Read the restored SSH public key
+      ansible.builtin.command:
+        argv:
+          - ssh-keygen
+          - -lf
+          - "{{ ansible_facts.user_dir }}/.ssh/id_rsa.pub"
+      register: ssh_public_key
+      changed_when: false
+
+    - name: Validate the restored SSH private key
+      ansible.builtin.command:
+        argv:
+          - ssh-keygen
+          - -y
+          - -f
+          - "{{ ansible_facts.user_dir }}/.ssh/id_rsa"
+      register: ssh_private_key
+      changed_when: false
+
+    - name: Read the generated SSH host key
+      ansible.builtin.command:
+        argv:
+          - ssh-keygen
+          - -lf
+          - /etc/ssh/ssh_host_rsa_key.pub
+      register: ssh_host_key
+      changed_when: false
+
+    - name: Check the SSH agent login configuration
+      ansible.builtin.slurp:
+        src: "{{ ansible_facts.user_dir }}/.zprofile"
+      register: ssh_zprofile
+
+    - name: Assert SSH packages are installed
+      ansible.builtin.assert:
+        that:
+          - "'openssh-client' in ansible_facts.packages"
+          - "'openssh-server' in ansible_facts.packages"
+        fail_msg: "OpenSSH packages are not installed"
+        success_msg: "OpenSSH packages are installed"
+
+    - name: Assert SSH keys and configuration were restored
+      ansible.builtin.assert:
+        that:
+          - item.stat.exists
+          - item.stat.isreg
+          - item.stat.mode == item.item.mode
+        fail_msg: "SSH file {{ item.item.path }} is missing or has incorrect permissions"
+        success_msg: "SSH file {{ item.item.path }} is present with correct permissions"
+      loop: "{{ ssh_files.results }}"
+      loop_control:
+        label: "{{ item.item.path }}"
+
+    - name: Assert the restored SSH configuration is correct
+      ansible.builtin.assert:
+        that:
+          - "'Host molecule-test' in (ssh_config.content | b64decode)"
+          - "'HostName example.com' in (ssh_config.content | b64decode)"
+          - ssh_public_key.rc == 0
+          - ssh_private_key.rc == 0
+          - ssh_host_key.rc == 0
+        fail_msg: "SSH configuration or keys were not restored correctly"
+        success_msg: "SSH configuration and keys were restored correctly"
+
+    - name: Assert SSH agent configuration exists
+      ansible.builtin.assert:
+        that:
+          - "'SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock' in (ssh_zprofile.content | b64decode)"
+        fail_msg: "SSH agent login configuration is missing"
+        success_msg: "SSH agent login configuration is present"
