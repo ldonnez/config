@@ -22,11 +22,11 @@
     - install
 
 - name: Add the flathub flatpak repository remote
-  become: true
   community.general.flatpak_remote:
     name: flathub
     state: present
     flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+    method: user
   tags:
     - install
 
@@ -34,6 +34,7 @@
   community.general.flatpak:
     name: "{{ flatpak_apps }}"
     state: present
+    method: user
   tags:
     - install
 
@@ -41,5 +42,6 @@
   community.general.flatpak:
     name: "{{ flatpak_apps }}"
     state: latest
+    method: user
   tags:
     - update
