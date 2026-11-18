@@ -189,4 +189,4 @@ Notes:
 
 - `make test-roles` run per-role scenarios under `roles/<role>/molecule/default`.
 - `make test-scenarios` runs scenarios under `molecule/<scenario>`.
-- Test container images are built from `molecule/Dockerfile` (base images include Debian 13 and Ubuntu 22.04/24.04/26.04). Individual scenarios/platforms define which images they use.
+- Test container images are built from `molecule/Dockerfile` (base images include Debian 13 and Ubuntu 24.04/26.04). Individual scenarios/platforms define which images they use.
