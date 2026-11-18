@@ -44,7 +44,14 @@
 - name: Get latest kitty stable release
   ansible.builtin.uri:
     url: "https://api.github.com/repos/kovidgoyal/kitty/releases/latest"
+    headers: >-
+      {{
+        {'Authorization': 'Bearer ' ~ github_token}
+        if github_token | length > 0 else {}
+      }}
     return_content: true
+  vars:
+    github_token: "{{ lookup('ansible.builtin.env', 'GITHUB_TOKEN') }}"
   register: kitty_latest_release
   when: ansible_facts.os_family == "Debian"
   tags:

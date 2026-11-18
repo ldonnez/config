@@ -15,8 +15,15 @@
 - name: Get latest fzf release
   ansible.builtin.uri:
     url: https://api.github.com/repos/junegunn/fzf/releases/latest
-    return_content: true
     status_code: 200
+    headers: >-
+      {{
+        {'Authorization': 'Bearer ' ~ github_token}
+        if github_token | length > 0 else {}
+      }}
+    return_content: true
+  vars:
+    github_token: "{{ lookup('ansible.builtin.env', 'GITHUB_TOKEN') }}"
   register: fzf_latest_release
   tags:
     - install
