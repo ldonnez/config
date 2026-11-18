@@ -38,6 +38,14 @@
   tags:
     - install
 
+- name: "Ensure {{ i3_config_dir | dirname }}"
+  ansible.builtin.file:
+    name: "{{ i3_config_dir }} | dirname"
+    state: directory
+    recurse: true
+  tags:
+    - install
+
 - name: Symlink ~/.config/i3
   ansible.builtin.file:
     src: "{{ i3_dotfiles_path }}"

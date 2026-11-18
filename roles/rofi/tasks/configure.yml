@@ -1,4 +1,12 @@
 ---
+- name: "Ensure {{ rofi_config_dir | dirname }}"
+  ansible.builtin.file:
+    name: "{{ rofi_config_dir }} | dirname"
+    state: directory
+    recurse: true
+  tags:
+    - install
+
 - name: Symlink ~/.config/rofi
   ansible.builtin.file:
     src: "{{ rofi_dotfiles_path }}"
