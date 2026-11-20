@@ -2,6 +2,6 @@
 - name: Converge
   hosts: all
   vars:
-    secrets_directory: /tmp/gnupg-secrets
+    gnupg_secrets_directory: /tmp/gnupg-secrets
   roles:
     - role: gnupg
