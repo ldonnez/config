@@ -1,0 +1,162 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Check restored SSH files
+      ansible.builtin.stat:
+        path: "{{ item.path }}"
+      loop:
+        - path: "{{ ansible_facts.user_dir }}/.ssh/id_rsa"
+          mode: "0600"
+        - path: "{{ ansible_facts.user_dir }}/.ssh/id_rsa.pub"
+          mode: "0644"
+        - path: "{{ ansible_facts.user_dir }}/.ssh/config"
+          mode: "0600"
+      register: debian_ssh_files
+
+    - name: Validate the restored SSH private key
+      ansible.builtin.command:
+        argv:
+          - ssh-keygen
+          - -y
+          - -f
+          - "{{ ansible_facts.user_dir }}/.ssh/id_rsa"
+      register: debian_ssh_private_key
+      changed_when: false
+
+    - name: Read the restored SSH public key
+      ansible.builtin.slurp:
+        src: "{{ ansible_facts.user_dir }}/.ssh/id_rsa.pub"
+      register: debian_ssh_public_key
+
+    - name: Read the expected SSH public key
+      ansible.builtin.slurp:
+        src: /tmp/secrets-fixture/.ssh/id_rsa.pub
+      register: debian_ssh_expected_public_key
+
+    - name: Read the restored SSH config
+      ansible.builtin.slurp:
+        src: "{{ ansible_facts.user_dir }}/.ssh/config"
+      register: debian_ssh_config
+
+    - name: Check the restored GPG secret key and fingerprint
+      ansible.builtin.command:
+        argv:
+          - gpg
+          - --batch
+          - --with-colons
+          - --fingerprint
+          - --list-secret-keys
+          - lenny.donnez@gmail.com
+      register: debian_gpg_secret_key
+      changed_when: false
+
+    - name: Read the expected GPG key fingerprint
+      ansible.builtin.slurp:
+        src: /tmp/gpg-fixture/fingerprint
+      register: debian_gpg_expected_fingerprint
+
+    - name: Create a message to test the restored GPG secret key
+      ansible.builtin.copy:
+        dest: /tmp/gpg-restore-test.txt
+        content: "Molecule GPG restore test\n"
+        mode: "0600"
+
+    - name: Sign the test message with the restored GPG secret key
+      ansible.builtin.command:
+        argv:
+          - gpg
+          - --batch
+          - --yes
+          - --local-user
+          - lenny.donnez@gmail.com
+          - --detach-sign
+          - --output
+          - /tmp/gpg-restore-test.sig
+          - /tmp/gpg-restore-test.txt
+      changed_when: true
+
+    - name: Verify the signature from the restored GPG key
+      ansible.builtin.command:
+        argv:
+          - gpg
+          - --batch
+          - --verify
+          - /tmp/gpg-restore-test.sig
+          - /tmp/gpg-restore-test.txt
+      register: debian_gpg_signature
+      changed_when: false
+
+    - name: Assert the restored GPG secret key can sign and verify
+      ansible.builtin.assert:
+        that:
+          - debian_gpg_signature.rc == 0
+        fail_msg: "The restored GPG secret key could not sign and verify a message"
+        success_msg: "The restored GPG secret key can sign and verify a message"
+
+    - name: Check the secrets repository
+      ansible.builtin.stat:
+        path: /tmp/secrets/.git
+      register: debian_secrets_repository
+
+    - name: Check the mutt aliases
+      ansible.builtin.stat:
+        path: "{{ ansible_facts.user_dir }}/.mutt-alias"
+      register: debian_mutt_aliases
+
+    - name: Read the mutt aliases
+      ansible.builtin.slurp:
+        src: "{{ ansible_facts.user_dir }}/.mutt-alias"
+      register: debian_mutt_aliases_content
+      when: debian_mutt_aliases.stat.exists
+
+    - name: Assert the mocked SSH files were restored
+      ansible.builtin.assert:
+        that:
+          - item.stat.exists
+          - item.stat.isreg
+          - item.stat.mode == item.item.mode
+        fail_msg: "SSH file {{ item.item.path }} is missing or has incorrect permissions"
+        success_msg: "SSH file {{ item.item.path }} is present with correct permissions"
+      loop: "{{ debian_ssh_files.results }}"
+      loop_control:
+        label: "{{ item.item.path }}"
+
+    - name: Assert the SSH key pair and config were restored correctly
+      ansible.builtin.assert:
+        that:
+          - debian_ssh_private_key.rc == 0
+          - debian_ssh_private_key.stdout.split()[:2] == (debian_ssh_public_key.content | b64decode).split()[:2]
+          - (debian_ssh_public_key.content | b64decode).split()[:2] == (debian_ssh_expected_public_key.content | b64decode).split()[:2]
+          - "'Host molecule-test' in (debian_ssh_config.content | b64decode)"
+          - "'HostName example.com' in (debian_ssh_config.content | b64decode)"
+          - "'User molecule' in (debian_ssh_config.content | b64decode)"
+        fail_msg: "The SSH key pair or config was not restored correctly"
+        success_msg: "The SSH key pair and config were restored correctly"
+
+    - name: Assert the expected GPG secret key was restored
+      ansible.builtin.assert:
+        that:
+          - debian_gpg_secret_key.rc == 0
+          - "'sec:' in debian_gpg_secret_key.stdout"
+          - (debian_gpg_secret_key.stdout | regex_findall('(?m)^fpr:{9}([A-F0-9]+):'))[0] == (debian_gpg_expected_fingerprint.content | b64decode | trim)
+        fail_msg: "The expected GPG secret key was not restored"
+        success_msg: "The expected GPG secret key was restored"
+
+    - name: Assert the secrets repository was cloned
+      ansible.builtin.assert:
+        that:
+          - debian_secrets_repository.stat.exists
+          - debian_secrets_repository.stat.isdir
+        fail_msg: "The secrets repository was not cloned"
+        success_msg: "The secrets repository was cloned"
+
+    - name: Assert the mutt aliases were restored
+      ansible.builtin.assert:
+        that:
+          - debian_mutt_aliases.stat.exists
+          - debian_mutt_aliases.stat.isreg
+          - debian_mutt_aliases.stat.mode == '0700'
+          - "'molecule@example.com' in (debian_mutt_aliases_content.content | b64decode)"
+        fail_msg: "The .mutt-alias file was not restored correctly"
+        success_msg: "The .mutt-alias file was restored correctly"
