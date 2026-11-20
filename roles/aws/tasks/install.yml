@@ -57,6 +57,7 @@
   when: ansible_facts.os_family == "Debian"
   tags:
     - update
+    - never
   block:
     - name: Download awscliv2.zip
       ansible.builtin.get_url:

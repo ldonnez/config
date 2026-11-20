@@ -11,18 +11,12 @@
   tags:
     - install
 
-- name: Update apt cache
-  become: true
-  ansible.builtin.apt:
-    update_cache: true
-  tags:
-    - install
-
 - name: Install packages with apt
   ansible.builtin.apt:
     name: "{{ packages }}"
     state: present
     update_cache: true
+    cache_valid_time: 3600
   become: true
   tags:
     - install
@@ -35,3 +29,4 @@
     cache_valid_time: 3600
   tags:
     - update
+    - never
