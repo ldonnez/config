@@ -43,3 +43,4 @@
     executable: /bin/bash
   tags:
     - update
+    - never
