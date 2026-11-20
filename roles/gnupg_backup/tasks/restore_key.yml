@@ -1,5 +1,18 @@
 ---
+- name: Check whether GPG secret key is already present
+  ansible.builtin.command:
+    argv:
+      - gpg
+      - --batch
+      - --list-secret-keys
+      - --with-colons
+      - "{{ gnupg_backup_key_id }}"
+  register: gnupg_backup_existing_key
+  changed_when: false
+  failed_when: false
+
 - name: Secure GPG key restore for {{ gnupg_backup_key_id }}
+  when: "'sec:' not in gnupg_backup_existing_key.stdout"
   block:
     - name: Create temporary file for decrypted GPG import
       ansible.builtin.tempfile:
