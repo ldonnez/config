@@ -1,0 +1,334 @@
+---
+- name: Prepare
+  hosts: all
+  vars:
+    secrets_fixture_directory: /tmp/secrets-fixture
+    secrets_directory: /tmp/secrets
+    secrets_controller_fixture_directory: /tmp/secrets-controller-fixture
+    gpg_fixture_home: /tmp/gpg-fixture
+    gpg_fixture_key_id: lenny.donnez@gmail.com
+    fixture_vault_password: "{{ lookup('ansible.builtin.file', playbook_dir ~ '/.vault-pass') | trim }}"
+  tasks:
+    # Docker bind-mounts /etc/resolv.conf into containers for DNS. The
+    # systemd_resolved role replaces it with a symlink, but renaming over a bind
+    # mount fails with EBUSY. Unmount it here and recreate it as a regular file
+    # so DNS keeps working for the rest of prepare and converge.
+    - name: Read the container DNS configuration
+      ansible.builtin.slurp:
+        src: /etc/resolv.conf
+      register: debian_resolv_conf
+
+    - name: Unmount the container-managed /etc/resolv.conf
+      become: true
+      ansible.posix.mount:
+        path: /etc/resolv.conf
+        state: unmounted
+
+    - name: Recreate /etc/resolv.conf to preserve DNS
+      become: true
+      ansible.builtin.copy:
+        content: "{{ debian_resolv_conf.content | b64decode }}"
+        dest: /etc/resolv.conf
+        mode: "0644"
+
+    - name: Install fixture dependencies
+      become: true
+      ansible.builtin.apt:
+        name:
+          - git
+          - gnupg
+          - openssh-client
+        state: present
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Create a non-interactive GitHub CLI for authentication checks
+      become: true
+      ansible.builtin.copy:
+        dest: /usr/bin/gh
+        mode: "0755"
+        content: |
+          #!/bin/sh
+          if [ "$#" -eq 2 ] && [ "$1" = "auth" ] && [ "$2" = "status" ]; then
+            exit 0
+          fi
+          if [ "$#" -eq 2 ] && [ "$1" = "auth" ] && [ "$2" = "setup-git" ]; then
+            exit 0
+          fi
+          printf 'Unsupported gh invocation: %s\n' "$*" >&2
+          exit 1
+
+    - name: Ensure target-side fixture directories exist
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: directory
+        owner: molecule
+        group: molecule
+        mode: "{{ item.mode }}"
+      loop:
+        - path: "{{ secrets_fixture_directory }}"
+          mode: "0700"
+        - path: "{{ secrets_fixture_directory }}/.ssh"
+          mode: "0700"
+        - path: "{{ secrets_fixture_directory }}/mutt-alias"
+          mode: "0700"
+        - path: "{{ gpg_fixture_home }}"
+          mode: "0700"
+
+    - name: Ensure controller-side fixture directories exist
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: "0700"
+      loop:
+        - "{{ secrets_controller_fixture_directory }}/.ssh"
+        - "{{ secrets_directory }}/mutt-alias"
+      delegate_to: localhost
+      become: false
+
+    - name: Generate the SSH key pair fixture
+      become: true
+      become_user: molecule
+      ansible.builtin.command:
+        argv:
+          - ssh-keygen
+          - -q
+          - -t
+          - rsa
+          - -b
+          - "3072"
+          - -N
+          - ""
+          - -C
+          - molecule@example.com
+          - -f
+          - "{{ secrets_fixture_directory }}/.ssh/id_rsa"
+      args:
+        creates: "{{ secrets_fixture_directory }}/.ssh/id_rsa"
+
+    - name: Create the SSH config fixture
+      become: true
+      become_user: molecule
+      ansible.builtin.copy:
+        dest: "{{ secrets_fixture_directory }}/.ssh/config"
+        content: |
+          Host molecule-test
+            HostName example.com
+            User molecule
+        mode: "0600"
+
+    - name: Read the SSH private key fixture
+      ansible.builtin.slurp:
+        src: "{{ secrets_fixture_directory }}/.ssh/id_rsa"
+      register: debian_ssh_private_key_fixture
+
+    - name: Read the SSH public key fixture
+      ansible.builtin.slurp:
+        src: "{{ secrets_fixture_directory }}/.ssh/id_rsa.pub"
+      register: debian_ssh_public_key_fixture
+
+    - name: Read the SSH config fixture
+      ansible.builtin.slurp:
+        src: "{{ secrets_fixture_directory }}/.ssh/config"
+      register: debian_ssh_config_fixture
+
+    - name: Write the vault-encrypted SSH private key fixture
+      ansible.builtin.copy:
+        dest: "{{ secrets_fixture_directory }}/.ssh/id_rsa.vault"
+        content: "{{ debian_ssh_private_key_fixture.content | b64decode | ansible.builtin.vault(secret=fixture_vault_password, vault_id='default') }}"
+        owner: molecule
+        group: molecule
+        mode: "0600"
+        decrypt: false
+
+    - name: Write the vault-encrypted SSH config fixture
+      ansible.builtin.copy:
+        dest: "{{ secrets_fixture_directory }}/.ssh/config.vault"
+        content: "{{ debian_ssh_config_fixture.content | b64decode | ansible.builtin.vault(secret=fixture_vault_password, vault_id='default') }}"
+        owner: molecule
+        group: molecule
+        mode: "0600"
+        decrypt: false
+
+    - name: Write the vault-encrypted SSH private key to the controller fixture
+      ansible.builtin.copy:
+        dest: "{{ secrets_controller_fixture_directory }}/.ssh/id_rsa.vault"
+        content: "{{ debian_ssh_private_key_fixture.content | b64decode | ansible.builtin.vault(secret=fixture_vault_password, vault_id='default') }}"
+        mode: "0600"
+        decrypt: false
+      delegate_to: localhost
+      become: false
+
+    - name: Write the SSH public key to the controller fixture
+      ansible.builtin.copy:
+        dest: "{{ secrets_controller_fixture_directory }}/.ssh/id_rsa.pub"
+        content: "{{ debian_ssh_public_key_fixture.content | b64decode }}"
+        mode: "0644"
+      delegate_to: localhost
+      become: false
+
+    - name: Write the vault-encrypted SSH config to the controller fixture
+      ansible.builtin.copy:
+        dest: "{{ secrets_controller_fixture_directory }}/.ssh/config.vault"
+        content: "{{ debian_ssh_config_fixture.content | b64decode | ansible.builtin.vault(secret=fixture_vault_password, vault_id='default') }}"
+        mode: "0600"
+        decrypt: false
+      delegate_to: localhost
+      become: false
+
+    - name: Remove plaintext SSH fixtures from the secrets repository
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "{{ secrets_fixture_directory }}/.ssh/id_rsa"
+        - "{{ secrets_fixture_directory }}/.ssh/config"
+
+    - name: Create the GPG key batch file
+      become: true
+      become_user: molecule
+      ansible.builtin.copy:
+        dest: "{{ gpg_fixture_home }}/key.batch"
+        content: |
+          Key-Type: RSA
+          Key-Length: 2048
+          Name-Real: Molecule Test
+          Name-Email: {{ gpg_fixture_key_id }}
+          Expire-Date: 0
+          %no-protection
+          %commit
+        mode: "0600"
+
+    - name: Generate the GPG key fixture
+      become: true
+      become_user: molecule
+      ansible.builtin.command:
+        argv:
+          - gpg
+          - --batch
+          - --homedir
+          - "{{ gpg_fixture_home }}"
+          - --generate-key
+          - "{{ gpg_fixture_home }}/key.batch"
+      args:
+        creates: "{{ gpg_fixture_home }}/pubring.kbx"
+
+    - name: Export the GPG secret key fixture
+      become: true
+      become_user: molecule
+      ansible.builtin.command:
+        argv:
+          - gpg
+          - --batch
+          - --yes
+          - --homedir
+          - "{{ gpg_fixture_home }}"
+          - --armor
+          - --export-secret-keys
+          - --output
+          - "{{ gpg_fixture_home }}/{{ gpg_fixture_key_id }}.asc"
+          - "{{ gpg_fixture_key_id }}"
+
+    - name: Read the generated GPG key fingerprint
+      become: true
+      become_user: molecule
+      ansible.builtin.command:
+        argv:
+          - gpg
+          - --batch
+          - --homedir
+          - "{{ gpg_fixture_home }}"
+          - --with-colons
+          - --fingerprint
+          - --list-secret-keys
+          - "{{ gpg_fixture_key_id }}"
+      register: debian_gpg_fixture_fingerprint
+      changed_when: false
+
+    - name: Save the expected GPG key fingerprint
+      become: true
+      become_user: molecule
+      ansible.builtin.copy:
+        dest: "{{ gpg_fixture_home }}/fingerprint"
+        content: "{{ (debian_gpg_fixture_fingerprint.stdout | regex_findall('(?m)^fpr:{9}([A-F0-9]+):'))[0] }}"
+        mode: "0600"
+
+    - name: Read the GPG secret key fixture
+      ansible.builtin.slurp:
+        src: "{{ gpg_fixture_home }}/{{ gpg_fixture_key_id }}.asc"
+      register: debian_gpg_secret_key_fixture
+
+    - name: Write the vault-encrypted GPG secret key fixture
+      ansible.builtin.copy:
+        dest: "{{ secrets_fixture_directory }}/{{ gpg_fixture_key_id }}.asc.vault"
+        content: "{{ debian_gpg_secret_key_fixture.content | b64decode | ansible.builtin.vault(secret=fixture_vault_password, vault_id='default') }}"
+        owner: molecule
+        group: molecule
+        mode: "0600"
+        decrypt: false
+
+    - name: Write the vault-encrypted GPG secret key to the controller fixture
+      ansible.builtin.copy:
+        dest: "{{ secrets_controller_fixture_directory }}/{{ gpg_fixture_key_id }}.asc.vault"
+        content: "{{ debian_gpg_secret_key_fixture.content | b64decode | ansible.builtin.vault(secret=fixture_vault_password, vault_id='default') }}"
+        mode: "0600"
+        decrypt: false
+      delegate_to: localhost
+      become: false
+
+    - name: Install the mutt alias vault fixture in the secrets repository
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/../../roles/neomutt/molecule/default/files/mutt-alias.vault"
+        dest: "{{ secrets_fixture_directory }}/mutt-alias/latest"
+        owner: molecule
+        group: molecule
+        mode: "0600"
+
+    - name: Install the mutt alias vault fixture on the controller
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/../../roles/neomutt/molecule/default/files/mutt-alias.vault"
+        dest: "{{ secrets_directory }}/mutt-alias/latest"
+        mode: "0600"
+      delegate_to: localhost
+      become: false
+
+    - name: Initialize the secrets fixture repository
+      become: true
+      become_user: molecule
+      ansible.builtin.command:
+        argv:
+          - git
+          - init
+          - --initial-branch=main
+          - "{{ secrets_fixture_directory }}"
+      args:
+        creates: "{{ secrets_fixture_directory }}/.git"
+
+    - name: Stage the secrets fixture files
+      become: true
+      become_user: molecule
+      ansible.builtin.command:
+        argv:
+          - git
+          - -C
+          - "{{ secrets_fixture_directory }}"
+          - add
+          - .
+      changed_when: true
+
+    - name: Commit the secrets fixture repository
+      become: true
+      become_user: molecule
+      ansible.builtin.command:
+        argv:
+          - git
+          - -C
+          - "{{ secrets_fixture_directory }}"
+          - -c
+          - user.name=Molecule
+          - -c
+          - user.email=molecule@example.com
+          - commit
+          - -m
+          - Initial commit
+      changed_when: true

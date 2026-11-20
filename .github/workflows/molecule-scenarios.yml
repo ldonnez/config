@@ -10,6 +10,7 @@ on:
         type: choice
         options:
           - wsl_ubuntu
+          - debian
   schedule:
     - cron: "0 6 * * 1"
 
