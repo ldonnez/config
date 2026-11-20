@@ -25,6 +25,7 @@ provisioner:
     group_vars:
       all:
         ansible_user: molecule
+        secrets_directory: "{{ ansible_facts.user_dir }}/.secrets"
 
 verifier:
   name: ansible
