@@ -45,5 +45,6 @@
   changed_when: "'Already up to date' not in memo_upgrade_result.stdout"
   tags:
     - update
+    - never
   environment:
     PATH: "{{ ansible_facts.user_dir }}/.local/bin:{{ ansible_facts.env.PATH }}"

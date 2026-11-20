@@ -37,5 +37,6 @@
   changed_when: "'All tools are up to date' not in (mise_upgrade.stdout ~ mise_upgrade.stderr)"
   tags:
     - update
+    - never
   environment:
     PATH: "{{ ansible_facts.user_dir }}/.local/bin:{{ ansible_facts.env.PATH }}"

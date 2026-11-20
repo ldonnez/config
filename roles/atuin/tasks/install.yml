@@ -83,3 +83,4 @@
   changed_when: "'Updated atuin' in (atuin_update.stdout + atuin_update.stderr)"
   tags:
     - update
+    - never

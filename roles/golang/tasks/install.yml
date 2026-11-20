@@ -81,3 +81,4 @@
   changed_when: golang_update_packages.stdout != '' or golang_update_packages.stderr != ''
   tags:
     - update
+    - never
