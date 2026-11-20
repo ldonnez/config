@@ -9,6 +9,7 @@
       ansible.builtin.apt:
         name:
           - ansible-core
+          - openssh-client
         state: present
         update_cache: true
         cache_valid_time: 3600
@@ -25,21 +26,39 @@
         - "{{ ssh_backup_test_dir }}/src/.ssh"
         - "{{ ssh_backup_test_dir }}/backup/.ssh"
 
-    - name: Create SSH key and config fixtures
+    - name: Generate a valid SSH key pair fixture
+      become: false
+      ansible.builtin.command:
+        argv:
+          - ssh-keygen
+          - -q
+          - -t
+          - rsa
+          - -b
+          - "3072"
+          - -N
+          - ""
+          - -C
+          - molecule@example.com
+          - -f
+          - "{{ ssh_backup_test_dir }}/src/.ssh/id_rsa"
+      args:
+        creates: "{{ ssh_backup_test_dir }}/src/.ssh/id_rsa"
+
+    - name: Preserve the expected SSH public key
       become: false
       ansible.builtin.copy:
-        dest: "{{ item.path }}"
-        content: "{{ item.content }}"
-        mode: "{{ item.mode }}"
-      loop:
-        - path: "{{ ssh_backup_test_dir }}/src/.ssh/id_rsa"
-          content: "dummy-private-key"
-          mode: "0600"
-        - path: "{{ ssh_backup_test_dir }}/src/.ssh/id_rsa.pub"
-          content: "ssh-rsa AAAATEST dummy"
-          mode: "0644"
-        - path: "{{ ssh_backup_test_dir }}/src/.ssh/config"
-          content: |
-            Host example
+        src: "{{ ssh_backup_test_dir }}/src/.ssh/id_rsa.pub"
+        dest: "{{ ssh_backup_test_dir }}/expected_id_rsa.pub"
+        remote_src: true
+        mode: "0600"
+
+    - name: Create SSH config fixture
+      become: false
+      ansible.builtin.copy:
+        dest: "{{ ssh_backup_test_dir }}/src/.ssh/config"
+        content: |
+          Host molecule-test
             HostName example.com
-          mode: "0600"
+            User molecule
+        mode: "0600"
