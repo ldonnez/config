@@ -39,6 +39,7 @@
   changed_when: "' updated - ' in rust_update.stdout"
   tags:
     - update
+    - never
 
 - name: Install cargo-binstall with homebrew
   when:
@@ -91,6 +92,7 @@
     'Installing' in rust_update_cargo_binstall.stderr
   tags:
     - update
+    - never
 
 - name: Update cargo packages with cargo-binstall
   when: rust_cargo_packages | length > 0
@@ -105,3 +107,4 @@
     'Installing' in rust_cargo_binstall_update.stderr
   tags:
     - update
+    - never

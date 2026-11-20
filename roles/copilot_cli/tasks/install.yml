@@ -30,6 +30,7 @@
   changed_when: "'Update available' in (copilot_cli_update.stdout + copilot_cli_update.stderr)"
   tags:
     - update
+    - never
 
 - name: Install copilot cli with homebrew
   when: ansible_facts.os_family == "Darwin"
