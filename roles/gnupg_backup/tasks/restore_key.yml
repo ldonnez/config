@@ -22,7 +22,8 @@
           - --yes
           - --import
           - "{{ gnupg_backup_tmp.path }}"
-      changed_when: true
+      register: gnupg_backup_import
+      changed_when: "'secret keys imported: 1' in (gnupg_backup_import.stderr + gnupg_backup_import.stdout)"
 
   always:
     - name: Remove temporary decrypted GPG restore file
