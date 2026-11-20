@@ -61,21 +61,39 @@
       loop_control:
         label: "{{ item.item.path | basename }}"
 
-    - name: Read restored file contents
+    - name: Read restored SSH config
       ansible.builtin.slurp:
-        src: "{{ item.path }}"
-      register: ssh_backup_contents
-      loop:
-        - { path: "{{ ssh_backup_test_dir }}/src/.ssh/id_rsa", content: "dummy-private-key" }
-        - { path: "{{ ssh_backup_test_dir }}/src/.ssh/id_rsa.pub", content: "ssh-rsa AAAATEST dummy" }
-        - { path: "{{ ssh_backup_test_dir }}/src/.ssh/config", content: "Host example\nHostName example.com\n" }
-      loop_control:
-        label: "{{ item.path | basename }}"
+        src: "{{ ssh_backup_test_dir }}/src/.ssh/config"
+      register: ssh_backup_config
 
-    - name: Assert restored content matches
+    - name: Derive public key from restored private key
+      ansible.builtin.command:
+        argv:
+          - ssh-keygen
+          - -y
+          - -f
+          - "{{ ssh_backup_test_dir }}/src/.ssh/id_rsa"
+      register: ssh_backup_derived_public_key
+      changed_when: false
+
+    - name: Read restored SSH public key
+      ansible.builtin.slurp:
+        src: "{{ ssh_backup_test_dir }}/src/.ssh/id_rsa.pub"
+      register: ssh_backup_public_key
+
+    - name: Read expected SSH public key
+      ansible.builtin.slurp:
+        src: "{{ ssh_backup_test_dir }}/expected_id_rsa.pub"
+      register: ssh_backup_expected_public_key
+
+    - name: Assert restored key pair matches and config is intact
       ansible.builtin.assert:
         that:
-          - (item.content | b64decode) == item.item.content
-      loop: "{{ ssh_backup_contents.results }}"
-      loop_control:
-        label: "{{ item.item.path | basename }}"
+          - ssh_backup_derived_public_key.rc == 0
+          - ssh_backup_derived_public_key.stdout.split()[:2] == (ssh_backup_public_key.content | b64decode).split()[:2]
+          - (ssh_backup_public_key.content | b64decode).split()[:2] == (ssh_backup_expected_public_key.content | b64decode).split()[:2]
+          - "'Host molecule-test' in (ssh_backup_config.content | b64decode)"
+          - "'HostName example.com' in (ssh_backup_config.content | b64decode)"
+          - "'User molecule' in (ssh_backup_config.content | b64decode)"
+        fail_msg: "Restored SSH key pair or config does not match the fixture"
+        success_msg: "Restored SSH key pair and config match the fixture"
