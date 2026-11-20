@@ -20,13 +20,14 @@
         mode: "0755"
         content: |
           #!/bin/sh
-          if [ "$1" = "auth" ]; then
+          if [ "$#" -eq 2 ] && [ "$1" = "auth" ] && [ "$2" = "status" ]; then
             exit 0
           fi
-          if [ -x /usr/bin/gh ]; then
-            exec /usr/bin/gh "$@"
+          if [ "$#" -eq 2 ] && [ "$1" = "auth" ] && [ "$2" = "setup-git" ]; then
+            exit 0
           fi
-          exit 0
+          printf 'Unsupported gh invocation: %s\n' "$*" >&2
+          exit 1
 
     - name: Ensure the secrets fixture repository exists
       ansible.builtin.file:
