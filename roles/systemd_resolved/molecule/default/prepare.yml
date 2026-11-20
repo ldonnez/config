@@ -3,26 +3,22 @@
   hosts: all
   become: true
   tasks:
-    - name: Read the current resolver configuration
+    # Docker bind-mounts /etc/resolv.conf into containers for DNS. The role
+    # replaces it with a symlink, but renaming over a bind mount fails with
+    # EBUSY. Unmount it here and recreate it as a regular file so DNS keeps
+    # working for converge.
+    - name: Read the container DNS configuration
       ansible.builtin.slurp:
         src: /etc/resolv.conf
       register: systemd_resolved_resolv_conf
 
-    - name: Check whether /etc/resolv.conf is a mount point
-      ansible.builtin.command:
-        cmd: findmnt --noheadings /etc/resolv.conf
-      register: systemd_resolved_resolv_mount
-      changed_when: false
-      failed_when: false
-
     - name: Unmount the container-managed /etc/resolv.conf
-      ansible.builtin.command:
-        cmd: umount /etc/resolv.conf
-      when: systemd_resolved_resolv_mount.stdout | length > 0
+      ansible.posix.mount:
+        path: /etc/resolv.conf
+        state: unmounted
 
-    - name: Recreate /etc/resolv.conf as a regular file
+    - name: Recreate /etc/resolv.conf to preserve DNS
       ansible.builtin.copy:
         content: "{{ systemd_resolved_resolv_conf.content | b64decode }}"
         dest: /etc/resolv.conf
         mode: "0644"
-        force: true
