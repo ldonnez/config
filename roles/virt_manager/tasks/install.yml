@@ -18,19 +18,12 @@
   tags:
     - install
 
-- name: Enable service libvirtd and ensure it is not masked
+- name: Enable and start libvirtd and ensure it is not masked
   become: true
   ansible.builtin.systemd_service:
     name: libvirtd
     enabled: true
     masked: false
-  tags:
-    - install
-
-- name: Make sure libvirtd unit is running
-  become: true
-  ansible.builtin.systemd_service:
     state: started
-    name: libvirtd
   tags:
     - install
