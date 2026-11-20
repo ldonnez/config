@@ -6,7 +6,7 @@
     secrets_directory: /tmp/secrets
     secrets_controller_fixture_directory: /tmp/secrets-controller-fixture
     gpg_fixture_home: /tmp/gpg-fixture
-    gpg_fixture_key_id: lenny.donnez@gmail.com
+    gpg_fixture_key_id: molecule@example.com
     fixture_vault_password: "{{ lookup('ansible.builtin.file', playbook_dir ~ '/.vault-pass') | trim }}"
   tasks:
     # Docker bind-mounts /etc/resolv.conf into containers for DNS. The

@@ -5,6 +5,8 @@
 
   vars:
     dotfiles_repo: "https://github.com/ldonnez/dotfiles.git"
+    gnupg_gpg_key_ids:
+      - lenny.donnez@gmail.com
     dotfiles_directory_path: "{{ ansible_facts.user_dir }}/dotfiles"
 
     mise_tools:
