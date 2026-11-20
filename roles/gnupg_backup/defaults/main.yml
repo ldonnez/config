@@ -2,3 +2,5 @@
 # defaults file for gnupg_backup
 
 gnupg_backup_dir: "{{ secrets_directory }}"
+gnupg_backup_gpg_key_ids: []
+gnupg_backup_gpg_keys: []
