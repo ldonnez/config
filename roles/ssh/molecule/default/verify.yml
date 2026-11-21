@@ -20,6 +20,16 @@
           mode: "0600"
       register: ssh_files
 
+    - name: Read restored SSH public key contents
+      ansible.builtin.slurp:
+        src: "{{ ansible_facts.user_dir }}/.ssh/id_rsa.pub"
+      register: ssh_public_key_content
+
+    - name: Read expected SSH public key
+      ansible.builtin.slurp:
+        src: /tmp/ssh-key-fixture/id_rsa.pub
+      register: ssh_expected_public_key
+
     - name: Read the restored SSH config
       ansible.builtin.slurp:
         src: "{{ ansible_facts.user_dir }}/.ssh/config"
@@ -85,6 +95,8 @@
           - "'HostName example.com' in (ssh_config.content | b64decode)"
           - ssh_public_key.rc == 0
           - ssh_private_key.rc == 0
+          - ssh_private_key.stdout.split()[:2] == (ssh_public_key_content.content | b64decode).split()[:2]
+          - (ssh_public_key_content.content | b64decode).split()[:2] == (ssh_expected_public_key.content | b64decode).split()[:2]
           - ssh_host_key.rc == 0
         fail_msg: "SSH configuration or keys were not restored correctly"
         success_msg: "SSH configuration and keys were restored correctly"

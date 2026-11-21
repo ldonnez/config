@@ -26,3 +26,4 @@
     PATH: "{{ ansible_facts.user_dir }}/.opencode/bin:{{ ansible_facts.env.PATH }}"
   tags:
     - update
+    - never

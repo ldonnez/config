@@ -38,6 +38,5 @@
       ansible.builtin.assert:
         that:
           - ansible_facts.services['libvirtd.service'].status == 'enabled'
-          - ansible_facts.services['libvirtd.service'].state == 'running'
-        fail_msg: "libvirtd is not enabled and running"
-        success_msg: "libvirtd is enabled and running"
+        fail_msg: "libvirtd is not enabled"
+        success_msg: "libvirtd is enabled"

@@ -1,0 +1,3 @@
+---
+gnupg_secrets_directory: "{{ secrets_directory }}"
+gnupg_gpg_key_ids: []

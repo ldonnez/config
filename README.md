@@ -171,12 +171,12 @@ make test-roles ROLE=dotfiles
 make test-roles ROLES="dotfiles vault_backup"
 ```
 
-Run standalone Molecule scenarios from `molecule/` (e.g. `wsl_ubuntu`):
+Run standalone Molecule scenarios from `molecule/` (e.g. `wsl_ubuntu` or `debian`):
 
 ```zsh
 make test-scenarios
 # or
-make test-scenarios SCENARIO=wsl_ubuntu
+make test-scenarios SCENARIO=debian
 ```
 
 Run linting:

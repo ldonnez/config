@@ -1,0 +1,13 @@
+---
+- name: Converge
+  ansible.builtin.import_playbook: ../../setup_debian.yml
+  vars:
+    target_hosts: all
+    target_connection: docker
+    secrets_repository: /tmp/secrets-fixture
+    secrets_directory: /tmp/secrets
+    ssh_backup_dir: /tmp/secrets-controller-fixture/.ssh
+    gnupg_backup_dir: /tmp/secrets-controller-fixture
+    gnupg_gpg_key_ids:
+      - molecule@example.com
+    docker_desktop_enabled: false

@@ -73,5 +73,6 @@
   changed_when: "'already up to date' not in (mise_self_update.stdout ~ mise_self_update.stderr)"
   tags:
     - update
+    - never
   environment:
     PATH: "{{ ansible_facts.user_dir }}/.local/bin:{{ ansible_facts.env.PATH }}"

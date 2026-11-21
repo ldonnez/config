@@ -1,0 +1,9 @@
+---
+- name: Cleanup
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Remove controller-side secrets fixtures
+      ansible.builtin.file:
+        path: /tmp/secrets-controller-fixture
+        state: absent
