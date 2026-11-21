@@ -14,9 +14,11 @@ on:
   schedule:
     - cron: "0 6 * * 1"
 
+run-name: Scenario (${{ github.event_name == 'schedule' && 'wsl_ubuntu' || inputs.scenario }})
+
 jobs:
   molecule:
-    name: molecule
+    name: (${{ github.event_name == 'schedule' && 'wsl_ubuntu' || inputs.scenario }})
     runs-on: ubuntu-latest
     env:
       DOCKER_TIMEOUT: 300
