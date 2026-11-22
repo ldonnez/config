@@ -1,0 +1,109 @@
+---
+- name: Verify macOS secret restoration
+  hosts: localhost
+  connection: local
+  tags: always
+  vars:
+    fixture: /tmp/molecule-macos
+  tasks:
+    - name: Check SSH files
+      ansible.builtin.stat:
+        path: "{{ item.path }}"
+      loop:
+        - path: "{{ ansible_facts.user_dir }}/.ssh/id_rsa"
+          mode: "0600"
+        - path: "{{ ansible_facts.user_dir }}/.ssh/id_rsa.pub"
+          mode: "0644"
+        - path: "{{ ansible_facts.user_dir }}/.ssh/config"
+          mode: "0600"
+      register: ssh_files
+
+    - name: Derive public key from restored private key
+      ansible.builtin.command:
+        argv: [ssh-keygen, -y, -f, "{{ ansible_facts.user_dir }}/.ssh/id_rsa"]
+      register: ssh_derived
+      changed_when: false
+
+    - name: Read restored SSH public key and config
+      ansible.builtin.slurp:
+        src: "{{ item }}"
+      loop:
+        - "{{ ansible_facts.user_dir }}/.ssh/id_rsa.pub"
+        - "{{ ansible_facts.user_dir }}/.ssh/config"
+      register: ssh_contents
+
+    - name: Check restored GPG key
+      ansible.builtin.command:
+        argv: [gpg, --batch, --with-colons, --fingerprint, --list-secret-keys, molecule@example.com]
+      register: gpg_key
+      changed_when: false
+
+    - name: Read expected GPG fingerprint
+      ansible.builtin.slurp:
+        src: "{{ fixture }}/fingerprint"
+      register: expected_fingerprint
+
+    - name: Create test message
+      ansible.builtin.copy:
+        dest: "{{ fixture }}/message.txt"
+        content: "Molecule GPG restore test\n"
+        mode: "0600"
+
+    - name: Sign test message
+      ansible.builtin.command:
+        argv: [gpg, --batch, --yes, --local-user, molecule@example.com, --detach-sign, --output, "{{ fixture }}/message.sig", "{{ fixture }}/message.txt"]
+      changed_when: true
+
+    - name: Verify GPG signature
+      ansible.builtin.command:
+        argv: [gpg, --batch, --verify, "{{ fixture }}/message.sig", "{{ fixture }}/message.txt"]
+      register: gpg_signature
+      changed_when: false
+
+    - name: Check mutt alias and secrets repository
+      ansible.builtin.stat:
+        path: "{{ item }}"
+      loop:
+        - "{{ ansible_facts.user_dir }}/.mutt-alias"
+        - /tmp/molecule-macos/secrets/.git
+      register: restored_files
+
+    - name: Read mutt alias
+      ansible.builtin.slurp:
+        src: "{{ ansible_facts.user_dir }}/.mutt-alias"
+      register: mutt_alias
+
+    - name: Assert SSH restore correctness
+      ansible.builtin.assert:
+        that:
+          - item.stat.exists
+          - item.stat.isreg
+          - item.stat.mode == item.item.mode
+      loop: "{{ ssh_files.results }}"
+      loop_control:
+        label: "{{ item.item.path }}"
+
+    - name: Assert SSH key pair and config contents
+      ansible.builtin.assert:
+        that:
+          - ssh_derived.rc == 0
+          - ssh_derived.stdout.split()[:2] == (ssh_contents.results[0].content | b64decode).split()[:2]
+          - "'Host molecule-test' in (ssh_contents.results[1].content | b64decode)"
+          - "'HostName example.com' in (ssh_contents.results[1].content | b64decode)"
+          - "'User molecule' in (ssh_contents.results[1].content | b64decode)"
+
+    - name: Assert GPG fingerprint and signing
+      ansible.builtin.assert:
+        that:
+          - gpg_key.rc == 0
+          - "'sec:' in gpg_key.stdout"
+          - (gpg_key.stdout | regex_findall('(?m)^fpr:{9}([A-F0-9]+):'))[0] == (expected_fingerprint.content | b64decode | trim)
+          - gpg_signature.rc == 0
+
+    - name: Assert mutt alias and secrets repository
+      ansible.builtin.assert:
+        that:
+          - restored_files.results[0].stat.isreg
+          - restored_files.results[0].stat.mode == '0700'
+          - restored_files.results[1].stat.isdir
+          - "'molecule@example.com' in (mutt_alias.content | b64decode)"

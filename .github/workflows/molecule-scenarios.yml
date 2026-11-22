@@ -11,6 +11,7 @@ on:
         options:
           - wsl_ubuntu
           - debian
+          - macos
   schedule:
     - cron: "0 6 * * 1"
 
@@ -19,7 +20,7 @@ run-name: Scenario (${{ github.event_name == 'schedule' && 'wsl_ubuntu' || input
 jobs:
   molecule:
     name: (${{ github.event_name == 'schedule' && 'wsl_ubuntu' || inputs.scenario }})
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.scenario == 'macos' && 'macos-latest' || 'ubuntu-latest' }}
     env:
       DOCKER_TIMEOUT: 300
       SCENARIO: ${{ github.event_name == 'schedule' && 'wsl_ubuntu' || inputs.scenario }}
@@ -29,12 +30,20 @@ jobs:
         with:
           python-version: "3.13"
       - uses: docker/setup-buildx-action@v4
+        if: env.SCENARIO != 'macos'
       - name: Install test dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install ansible-core molecule "molecule-plugins[docker]"
+          pip install ansible-core molecule
+          if [ "$SCENARIO" != macos ]; then pip install "molecule-plugins[docker]"; fi
+          ansible-galaxy collection install -r requirements.yml
 
       - name: Run molecule scenario test
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: make test-scenarios SCENARIO="${SCENARIO}"
+        run: |
+          if [ "$SCENARIO" = macos ]; then
+            molecule test -s macos
+          else
+            make test-scenarios SCENARIO="$SCENARIO"
+          fi

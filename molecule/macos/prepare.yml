@@ -1,0 +1,134 @@
+---
+- name: Prepare native macOS restore fixtures
+  hosts: localhost
+  connection: local
+  tags: always
+  vars:
+    fixture: /tmp/molecule-macos
+    repository: /tmp/molecule-macos/secrets-fixture
+    gpg_home: /tmp/molecule-macos/gpg-fixture
+    key_id: molecule@example.com
+    vault_password: "{{ lookup('ansible.builtin.file', playbook_dir ~ '/.vault-pass') | trim }}"
+  tasks:
+    - name: Install GnuPG
+      community.general.homebrew:
+        name: gnupg
+        state: present
+
+    - name: Create fixture directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: "0700"
+      loop:
+        - "{{ repository }}/.ssh"
+        - "{{ repository }}/mutt-alias"
+        - "{{ gpg_home }}"
+        - "{{ fixture }}/gnupg"
+
+    - name: Generate SSH fixture
+      ansible.builtin.command:
+        argv: [ssh-keygen, -q, -t, ed25519, -N, "", -C, molecule@example.com, -f, "{{ fixture }}/id_ed25519"]
+      args:
+        creates: "{{ fixture }}/id_ed25519"
+
+    - name: Read SSH private fixture
+      ansible.builtin.slurp:
+        src: "{{ fixture }}/id_ed25519"
+      register: ssh_private
+
+    - name: Read SSH public fixture
+      ansible.builtin.slurp:
+        src: "{{ fixture }}/id_ed25519.pub"
+      register: ssh_public
+
+    - name: Write encrypted SSH private backup
+      ansible.builtin.copy:
+        dest: "{{ repository }}/.ssh/id_rsa.vault"
+        content: "{{ ssh_private.content | b64decode | ansible.builtin.vault(secret=vault_password, vault_id='default') }}"
+        mode: "0600"
+        decrypt: false
+
+    - name: Write SSH public and config backups
+      ansible.builtin.copy:
+        dest: "{{ item.path }}"
+        content: "{{ item.content }}"
+        mode: "{{ item.mode }}"
+        decrypt: "{{ item.decrypt | default(true) }}"
+      loop:
+        - path: "{{ repository }}/.ssh/id_rsa.pub"
+          content: "{{ ssh_public.content | b64decode }}"
+          mode: "0644"
+        - path: "{{ repository }}/.ssh/config.vault"
+          content: "{{ 'Host molecule-test\n  HostName example.com\n  User molecule\n' | ansible.builtin.vault(secret=vault_password, vault_id='default') }}"
+          mode: "0600"
+          decrypt: false
+
+    - name: Create GPG key batch
+      ansible.builtin.copy:
+        dest: "{{ gpg_home }}/key.batch"
+        content: |
+          Key-Type: RSA
+          Key-Length: 2048
+          Name-Real: Molecule Test
+          Name-Email: {{ key_id }}
+          Expire-Date: 0
+          %no-protection
+          %commit
+        mode: "0600"
+
+    - name: Generate GPG key fixture
+      ansible.builtin.command:
+        argv: [gpg, --batch, --homedir, "{{ gpg_home }}", --generate-key, "{{ gpg_home }}/key.batch"]
+      args:
+        creates: "{{ gpg_home }}/pubring.kbx"
+
+    - name: Export GPG secret key
+      ansible.builtin.command:
+        argv: [gpg, --batch, --yes, --homedir, "{{ gpg_home }}", --armor, --export-secret-keys, --output, "{{ gpg_home }}/{{ key_id }}.asc", "{{ key_id }}"]
+      changed_when: true
+
+    - name: Read GPG fingerprint
+      ansible.builtin.command:
+        argv: [gpg, --batch, --homedir, "{{ gpg_home }}", --with-colons, --fingerprint, --list-secret-keys, "{{ key_id }}"]
+      register: gpg_fingerprint
+      changed_when: false
+
+    - name: Save expected GPG fingerprint
+      ansible.builtin.copy:
+        dest: "{{ fixture }}/fingerprint"
+        content: "{{ (gpg_fingerprint.stdout | regex_findall('(?m)^fpr:{9}([A-F0-9]+):'))[0] }}"
+        mode: "0600"
+
+    - name: Read GPG secret key fixture
+      ansible.builtin.slurp:
+        src: "{{ gpg_home }}/{{ key_id }}.asc"
+      register: gpg_secret
+
+    - name: Write encrypted GPG and mutt alias backups
+      ansible.builtin.copy:
+        dest: "{{ item.path }}"
+        content: "{{ item.content | ansible.builtin.vault(secret=vault_password, vault_id='default') }}"
+        mode: "0600"
+        decrypt: false
+      loop:
+        - path: "{{ repository }}/{{ key_id }}.asc.vault"
+          content: "{{ gpg_secret.content | b64decode }}"
+        - path: "{{ repository }}/mutt-alias/latest"
+          content: "alias molecule molecule@example.com\n"
+
+    - name: Initialize local secrets repository
+      ansible.builtin.command:
+        argv: [git, init, --initial-branch=main, "{{ repository }}"]
+      args:
+        creates: "{{ repository }}/.git"
+
+    - name: Stage fixture files
+      ansible.builtin.command:
+        argv: [git, -C, "{{ repository }}", add, .]
+      changed_when: true
+
+    - name: Commit fixture files
+      ansible.builtin.command:
+        argv: [git, -C, "{{ repository }}", -c, user.name=Molecule, -c, user.email=molecule@example.com, commit, -m, "Initial fixture"]
+      changed_when: true

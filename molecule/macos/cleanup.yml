@@ -1,0 +1,29 @@
+---
+- name: Cleanup macOS Molecule fixtures
+  hosts: localhost
+  connection: local
+  tags: always
+  tasks:
+    - name: Remove temporary fixture directory
+      ansible.builtin.file:
+        path: /tmp/molecule-macos
+        state: absent
+
+    - name: Remove restored SSH fixtures
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "{{ ansible_facts.user_dir }}/.ssh/id_rsa"
+        - "{{ ansible_facts.user_dir }}/.ssh/id_rsa.pub"
+        - "{{ ansible_facts.user_dir }}/.ssh/config"
+
+    - name: Remove GPG agent configuration symlink
+      ansible.builtin.file:
+        path: "{{ ansible_facts.user_dir }}/.gnupg/gpg-agent.conf"
+        state: absent
+
+    - name: Remove restored mutt alias
+      ansible.builtin.file:
+        path: "{{ ansible_facts.user_dir }}/.mutt-alias"
+        state: absent
