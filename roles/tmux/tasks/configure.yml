@@ -74,25 +74,31 @@
   tags:
     - install
   block:
-    - name: Unload existing local.tmux-resurrect.plist
-      ansible.builtin.command:
-        cmd: launchctl unload -w {{ ansible_facts.user_dir }}/Library/LaunchAgents/local.tmux-resurrect.plist
+    - name: Check if local.tmux-resurrect is loaded
+      ansible.builtin.command: launchctl list local.tmux-resurrect
+      register: tmux_resurrect_loaded
+      changed_when: false
       failed_when: false
-
-    - name: Delete existing local.tmux-resurrect.plist
-      ansible.builtin.file:
-        path: "{{ ansible_facts.user_dir }}/Library/LaunchAgents/local.tmux-resurrect.plist"
-        state: absent
 
     - name: Install local.tmux-resurrect.plist
       ansible.builtin.template:
         src: local.tmux-resurrect.plist.j2
         dest: "{{ ansible_facts.user_dir }}/Library/LaunchAgents/local.tmux-resurrect.plist"
         mode: "0600"
+      register: tmux_resurrect_plist
+
+    - name: Unload existing local.tmux-resurrect.plist
+      ansible.builtin.command:
+        cmd: launchctl unload -w "{{ ansible_facts.user_dir }}/Library/LaunchAgents/local.tmux-resurrect.plist"
+      when:
+        - tmux_resurrect_loaded.rc == 0
+        - tmux_resurrect_plist.changed
 
     - name: Load local.tmux-resurrect.plist
       ansible.builtin.command:
-        cmd: launchctl load -w {{ ansible_facts.user_dir }}/Library/LaunchAgents/local.tmux-resurrect.plist
+        cmd: launchctl load -w "{{ ansible_facts.user_dir }}/Library/LaunchAgents/local.tmux-resurrect.plist"
+      when:
+        - tmux_resurrect_plist.changed or tmux_resurrect_loaded.rc != 0
 
 # systemd (user) status checks:
 #   systemctl --user status tmux-resurrect.timer
