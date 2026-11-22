@@ -1,5 +1,34 @@
 ---
+- name: Check SSH private key backup {{ item.name }}
+  ansible.builtin.stat:
+    path: "{{ ssh_backup_dir }}/{{ item.name }}.vault"
+  register: ssh_backup_private_key_backup
+  tags:
+    - restore
+
+- name: Check SSH public key backup {{ item.name }}
+  ansible.builtin.stat:
+    path: "{{ ssh_backup_dir }}/{{ item.name }}.pub"
+  register: ssh_backup_public_key_backup
+  tags:
+    - restore
+
+- name: Warn when SSH private key backup is missing {{ item.name }}
+  when: not ssh_backup_private_key_backup.stat.exists
+  ansible.builtin.debug:
+    msg: "Skipping SSH private key restore for {{ item.name }}: {{ ssh_backup_dir }}/{{ item.name }}.vault not found"
+  tags:
+    - restore
+
+- name: Warn when SSH public key backup is missing {{ item.name }}
+  when: not ssh_backup_public_key_backup.stat.exists
+  ansible.builtin.debug:
+    msg: "Skipping SSH public key restore for {{ item.name }}: {{ ssh_backup_dir }}/{{ item.name }}.pub not found"
+  tags:
+    - restore
+
 - name: Restore SSH private key
+  when: ssh_backup_private_key_backup.stat.exists
   tags:
     - restore
   ansible.builtin.copy:
@@ -9,6 +38,7 @@
     decrypt: true
 
 - name: Restore SSH public key
+  when: ssh_backup_public_key_backup.stat.exists
   tags:
     - restore
   ansible.builtin.copy:

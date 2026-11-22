@@ -4,6 +4,24 @@
   vars:
     ssh_backup_test_dir: /tmp/ssh_backup_test
   tasks:
+    - name: Check missing SSH restore targets remain absent
+      ansible.builtin.stat:
+        path: "{{ item }}"
+      loop:
+        - /tmp/ssh_backup_test/src/.ssh/id_ed25519
+        - /tmp/ssh_backup_test/src/.ssh/id_ed25519.pub
+        - /tmp/ssh_backup_test/src/.ssh/missing-config
+      register: ssh_backup_missing_targets
+
+    - name: Assert missing SSH backups are skipped
+      ansible.builtin.assert:
+        that:
+          - not item.stat.exists
+        fail_msg: "Unexpectedly restored missing SSH backup target {{ item.item }}"
+      loop: "{{ ssh_backup_missing_targets.results }}"
+      loop_control:
+        label: "{{ item.item }}"
+
     - name: Stat backup artifacts
       ansible.builtin.stat:
         path: "{{ item.path }}"
