@@ -46,6 +46,7 @@
 
     - name: Restart
       ansible.builtin.command: killall Dock
+      changed_when: false
 
 - name: Configure Finder
   tags:
@@ -86,6 +87,7 @@
 
     - name: Restart
       ansible.builtin.command: killall Finder
+      changed_when: false
 
 - name: Configure Keyboard
   tags:
@@ -240,25 +242,12 @@
   tags:
     - install
 
-- name: Install Cloudflare DNS over HTTPS profile
+- name: Prompt user to install Cloudflare DNS over HTTPS profile via GUI
+  ansible.builtin.command: open "{{ role_path }}/files/cloudflare-https.mobileconfig"
+  args:
+    creates: "/Library/Managed Preferences/{{ ansible_facts.user_id }}/com.apple.dnsSettings.managed.plist"
+  changed_when: false
+  when:
+    - not (ansible_facts.env.CI | default(false) | bool)
   tags:
     - install
-
-  block:
-    - name: Copy profile to /tmp
-      ansible.builtin.copy:
-        src: cloudflare-https.mobileconfig
-        dest: /tmp/cloudflare-https.mobileconfig
-        mode: "0644"
-        owner: "{{ ansible_facts.user_id }}"
-
-    - name: Prompt user to install profile via GUI # Check System Preferences to review and install the profile
-      ansible.builtin.command: open /tmp/cloudflare-https.mobileconfig
-      args:
-        creates: "/Library/Managed Preferences/{{ ansible_facts.user_id }}/com.apple.dnsSettings.managed.plist"
-
-  always:
-    - name: Cleanup /tmp/cloudflare-https.mobileconfig
-      ansible.builtin.file:
-        path: /tmp/cloudflare-https.mobileconfig
-        state: absent
