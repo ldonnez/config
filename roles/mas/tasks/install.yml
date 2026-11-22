@@ -18,3 +18,4 @@
     upgrade_all: true
   tags:
     - update
+    - never
