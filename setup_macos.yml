@@ -134,12 +134,6 @@
       tags:
         - fonts
 
-    - name: Configure terminal
-      ansible.builtin.import_role:
-        name: terminal
-      tags:
-        - terminal
-
     - name: Install synology drive
       ansible.builtin.import_role:
         name: synology_drive
