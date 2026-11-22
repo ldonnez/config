@@ -16,6 +16,7 @@
   register: synology_drive_sudo_password
   tags:
     - update
+    - never
 
 - name: Update synology-drive via homebrew cask
   when:
@@ -29,6 +30,7 @@
     sudo_password: "{{ synology_drive_sudo_password.user_input }}"
   tags:
     - update
+    - never
 
 - name: Install synology drive with flatpak
   when: ansible_facts.os_family == "Debian"
