@@ -148,6 +148,19 @@
         value: false
         state: present
 
+- name: Configure Mouse
+  tags:
+    - install
+
+  block:
+    - name: Turn off acceleration
+      community.general.osx_defaults:
+        domain: NSGlobalDomain
+        key: com.apple.mouse.linear
+        type: bool
+        value: true
+        state: present
+
 - name: Disable Siri
   tags:
     - install

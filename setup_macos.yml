@@ -302,12 +302,6 @@
       tags:
         - docker
 
-    - name: Configure linearmouse
-      ansible.builtin.import_role:
-        name: linearmouse
-      tags:
-        - linearmouse
-
     - name: Install homebrew casks
       ansible.builtin.import_role:
         name: casks
