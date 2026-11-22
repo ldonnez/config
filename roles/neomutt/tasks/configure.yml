@@ -136,28 +136,46 @@
   when: ansible_facts.os_family == "Darwin" and not neomutt_configure_with_cron
   tags:
     - install
-
+    - temp
   block:
+    - name: Check if homebrew isync service is loaded
+      ansible.builtin.command: launchctl list homebrew.mxcl.isync
+      register: neomutt_homebrew_isync_loaded
+      changed_when: false
+      failed_when: false
+
     - name: Stop homebrew isync services
       ansible.builtin.command: brew services stop isync
+      when: neomutt_homebrew_isync_loaded.rc == 0
 
     - name: Unload homebrew.mxcl.isync.plist
-      ansible.builtin.command: launchctl unload -w ~/Library/LaunchAgents/homebrew.mxcl.isync.plist
+      ansible.builtin.command: launchctl unload -w "{{ ansible_facts.user_dir }}/Library/LaunchAgents/homebrew.mxcl.isync.plist"
+      when: neomutt_homebrew_isync_loaded.rc == 0
 
     - name: Delete existing homebrew.mxcl.isync.plist
       ansible.builtin.file:
         path: "{{ ansible_facts.user_dir }}/Library/LaunchAgents/homebrew.mxcl.isync.plist"
         state: absent
 
+    - name: Check if local.isync is loaded
+      ansible.builtin.command: launchctl list local.isync
+      register: neomutt_local_isync_loaded
+      changed_when: false
+      failed_when: false
+
     - name: Install local.isync.plist
       ansible.builtin.copy:
         src: local.isync.plist
-        dest: "{{ ansible_facts.user_dir }}/Library/LaunchAgents/"
+        dest: "{{ ansible_facts.user_dir }}/Library/LaunchAgents/local.isync.plist"
         mode: "0600"
+      register: neomutt_local_isync_copy
 
     - name: Load local.isync.plist
-      ansible.builtin.command: "launchctl load {{ ansible_facts.user_dir }}/Library/LaunchAgents/local.isync.plist"
+      ansible.builtin.command: launchctl load "{{ ansible_facts.user_dir }}/Library/LaunchAgents/local.isync.plist"
+      when:
+        - neomutt_local_isync_copy.changed or neomutt_local_isync_loaded.rc != 0
 
     - name: Starting isync
       ansible.builtin.command: launchctl start local.isync
-      when: ansible_facts.os_family == "Darwin"
+      when:
+        - neomutt_local_isync_copy.changed or neomutt_local_isync_loaded.rc != 0
