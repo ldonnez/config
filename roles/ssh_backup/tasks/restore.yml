@@ -7,7 +7,22 @@
   loop_control:
     label: "{{ item.name }}"
 
+- name: Check SSH config backup
+  ansible.builtin.stat:
+    path: "{{ ssh_backup_config_backup_path }}"
+  register: ssh_backup_config_backup
+  tags:
+    - restore
+
+- name: Warn when SSH config backup is missing
+  when: not ssh_backup_config_backup.stat.exists
+  ansible.builtin.debug:
+    msg: "Skipping SSH config restore: {{ ssh_backup_config_backup_path }} not found"
+  tags:
+    - restore
+
 - name: Restore SSH config
+  when: ssh_backup_config_backup.stat.exists
   tags:
     - restore
   ansible.builtin.copy:

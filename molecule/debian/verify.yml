@@ -104,11 +104,18 @@
         path: "{{ ansible_facts.user_dir }}/.mutt-alias"
       register: debian_mutt_aliases
 
+    - name: Assert the mutt aliases file was restored
+      ansible.builtin.assert:
+        that:
+          - debian_mutt_aliases.stat.exists
+          - debian_mutt_aliases.stat.isreg
+          - debian_mutt_aliases.stat.mode == '0700'
+        fail_msg: "The .mutt-alias file is missing or has incorrect permissions"
+
     - name: Read the mutt aliases
       ansible.builtin.slurp:
         src: "{{ ansible_facts.user_dir }}/.mutt-alias"
       register: debian_mutt_aliases_content
-      when: debian_mutt_aliases.stat.exists
 
     - name: Assert the mocked SSH files were restored
       ansible.builtin.assert:
@@ -151,12 +158,9 @@
         fail_msg: "The secrets repository was not cloned"
         success_msg: "The secrets repository was cloned"
 
-    - name: Assert the mutt aliases were restored
+    - name: Assert the mutt aliases content was restored
       ansible.builtin.assert:
         that:
-          - debian_mutt_aliases.stat.exists
-          - debian_mutt_aliases.stat.isreg
-          - debian_mutt_aliases.stat.mode == '0700'
           - "'molecule@example.com' in (debian_mutt_aliases_content.content | b64decode)"
-        fail_msg: "The .mutt-alias file was not restored correctly"
+        fail_msg: "The .mutt-alias file content was not restored correctly"
         success_msg: "The .mutt-alias file was restored correctly"
