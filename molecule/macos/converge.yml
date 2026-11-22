@@ -1,0 +1,11 @@
+---
+- name: Run selected macOS setup roles
+  ansible.builtin.import_playbook: ../../setup_macos.yml
+  vars:
+    secrets_directory: /tmp/molecule-macos/secrets
+    secrets_repository: file:///tmp/molecule-macos/secrets-fixture
+    ssh_backup_dir: /tmp/molecule-macos/secrets/.ssh
+    gnupg_backup_dir: /tmp/molecule-macos/secrets
+    gnupg_gpg_key_ids:
+      - molecule@example.com
+    mas_apps: []
