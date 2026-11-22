@@ -24,11 +24,23 @@
         follow: false
       register: memo_config
 
+    - name: Check memo completions
+      ansible.builtin.stat:
+        path: "{{ item }}"
+      loop:
+        - "{{ ansible_facts.user_dir }}/.local/share/zsh/site-functions/_memo"
+        - "{{ ansible_facts.user_dir }}/.local/share/bash-completion/completions/memo"
+      register: memo_completions
+
     - name: Assert memo is configured
       ansible.builtin.assert:
         that:
           - memo_config.stat.exists
           - memo_config.stat.islnk
           - memo_config.stat.lnk_source == memo_dotfiles_path ~ '/config'
+          - memo_completions.results[0].stat.exists
+          - memo_completions.results[0].stat.isreg
+          - memo_completions.results[1].stat.exists
+          - memo_completions.results[1].stat.isreg
         fail_msg: "memo is not configured correctly"
         success_msg: "memo is configured correctly"
