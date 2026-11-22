@@ -65,7 +65,9 @@ jobs:
             jq -r '.[] | select(startswith("roles/")) | split("/")[1]' <<< "$ROLE_FILES" |
             sort -u |
             while IFS= read -r role; do
-              [[ -f "roles/$role/molecule/default/molecule.yml" ]] && echo "$role"
+              if [[ -f "roles/$role/molecule/default/molecule.yml" ]]; then
+                echo "$role"
+              fi
             done |
             xargs
           )
