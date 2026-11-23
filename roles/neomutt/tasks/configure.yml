@@ -144,12 +144,11 @@
       changed_when: false
       failed_when: false
 
-    - name: Stop homebrew isync services
-      ansible.builtin.command: brew services stop isync
-      when: neomutt_homebrew_isync_loaded.rc == 0
-
-    - name: Unload homebrew.mxcl.isync.plist
-      ansible.builtin.command: launchctl unload -w "{{ ansible_facts.user_dir }}/Library/LaunchAgents/homebrew.mxcl.isync.plist"
+    - name: Unload homebrew isync service
+      community.general.launchd:
+        name: homebrew.mxcl.isync
+        plist: homebrew.mxcl.isync.plist
+        state: unloaded
       when: neomutt_homebrew_isync_loaded.rc == 0
 
     - name: Delete existing homebrew.mxcl.isync.plist
@@ -170,12 +169,9 @@
         mode: "0600"
       register: neomutt_local_isync_copy
 
-    - name: Load local.isync.plist
-      ansible.builtin.command: launchctl load "{{ ansible_facts.user_dir }}/Library/LaunchAgents/local.isync.plist"
-      when:
-        - neomutt_local_isync_copy.changed or neomutt_local_isync_loaded.rc != 0
-
-    - name: Starting isync
-      ansible.builtin.command: launchctl start local.isync
+    - name: Reload local.isync launch agent
+      community.general.launchd:
+        name: local.isync
+        state: reloaded
       when:
         - neomutt_local_isync_copy.changed or neomutt_local_isync_loaded.rc != 0
