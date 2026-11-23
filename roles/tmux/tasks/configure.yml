@@ -87,16 +87,10 @@
         mode: "0600"
       register: tmux_resurrect_plist
 
-    - name: Unload existing local.tmux-resurrect.plist
-      ansible.builtin.command:
-        cmd: launchctl unload -w "{{ ansible_facts.user_dir }}/Library/LaunchAgents/local.tmux-resurrect.plist"
-      when:
-        - tmux_resurrect_loaded.rc == 0
-        - tmux_resurrect_plist.changed
-
-    - name: Load local.tmux-resurrect.plist
-      ansible.builtin.command:
-        cmd: launchctl load -w "{{ ansible_facts.user_dir }}/Library/LaunchAgents/local.tmux-resurrect.plist"
+    - name: Reload local.tmux-resurrect launch agent
+      community.general.launchd:
+        name: local.tmux-resurrect
+        state: reloaded
       when:
         - tmux_resurrect_plist.changed or tmux_resurrect_loaded.rc != 0
 
