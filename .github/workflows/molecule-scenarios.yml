@@ -14,7 +14,7 @@ on:
           - debian
           - macos
   schedule:
-    - cron: "0 6 * * 1"
+    - cron: "0 2 * * 0"
 
 run-name: Molecule ${{ github.event_name == 'schedule' && 'all' || inputs.scenario }}
 
