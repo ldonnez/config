@@ -1,4 +1,4 @@
-name: Molecule Scenarios
+name: Molecule scenarios
 
 on:
   workflow_dispatch:
@@ -6,39 +6,52 @@ on:
       scenario:
         description: "Molecule scenario to run"
         required: true
-        default: wsl_ubuntu
+        default: all
         type: choice
         options:
+          - all
           - wsl_ubuntu
           - debian
           - macos
   schedule:
     - cron: "0 6 * * 1"
 
-run-name: Scenario (${{ github.event_name == 'schedule' && 'wsl_ubuntu' || inputs.scenario }})
+run-name: Molecule ${{ github.event_name == 'schedule' && 'all' || inputs.scenario }}
 
 jobs:
   molecule:
-    name: (${{ github.event_name == 'schedule' && 'wsl_ubuntu' || inputs.scenario }})
-    runs-on: ${{ inputs.scenario == 'macos' && 'macos-latest' || 'ubuntu-latest' }}
+    name: ${{ matrix.scenario }}
+    runs-on: ${{ matrix.scenario == 'macos' && 'macos-latest' || 'ubuntu-latest' }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        scenario: ${{ fromJSON(github.event_name == 'schedule' && '["wsl_ubuntu","debian","macos"]' || inputs.scenario == 'all' && '["wsl_ubuntu","debian","macos"]' || format('["{0}"]', inputs.scenario)) }}
+
     env:
       DOCKER_TIMEOUT: 300
-      SCENARIO: ${{ github.event_name == 'schedule' && 'wsl_ubuntu' || inputs.scenario }}
+      SCENARIO: ${{ matrix.scenario }}
+
     steps:
       - uses: actions/checkout@v7
+
       - uses: actions/setup-python@v7
         with:
           python-version: "3.13"
+
       - uses: docker/setup-buildx-action@v4
-        if: env.SCENARIO != 'macos'
+        if: matrix.scenario != 'macos'
+
       - name: Install test dependencies
         run: |
           python -m pip install --upgrade pip
           pip install ansible-core molecule
-          if [ "$SCENARIO" != macos ]; then pip install "molecule-plugins[docker]"; fi
+          if [ "$SCENARIO" != macos ]; then
+            pip install "molecule-plugins[docker]"
+          fi
           ansible-galaxy collection install -r requirements.yml
 
-      - name: Run molecule scenario test
+      - name: Run Molecule scenario test
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
