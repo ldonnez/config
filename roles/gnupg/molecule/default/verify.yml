@@ -40,3 +40,22 @@
           - gnupg_agent_conf.stat.lnk_source == dotfiles_directory_path ~ '/.gnupg/gpg-agent.conf'
         fail_msg: "gnupg is not configured correctly"
         success_msg: "gnupg is configured correctly"
+
+    - name: Check missing-secrets-dir key was not restored
+      ansible.builtin.command:
+        argv:
+          - gpg
+          - --batch
+          - --list-secret-keys
+          - --with-colons
+          - DEADBEEFDEADBEEF
+      register: gnupg_missing_secret_key
+      changed_when: false
+      failed_when: false
+
+    - name: Assert missing secrets directory does not trigger restore
+      ansible.builtin.assert:
+        that:
+          - "'sec:' not in gnupg_missing_secret_key.stdout"
+        fail_msg: "gpg key was restored despite missing secrets directory"
+        success_msg: "missing secrets directory does not trigger gpg restore"

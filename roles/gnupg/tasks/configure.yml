@@ -23,6 +23,8 @@
     - install
 
 - name: Check if secrets directory exists
+  when:
+    - gnupg_secrets_directory is defined
   ansible.builtin.stat:
     path: "{{ gnupg_secrets_directory }}"
   register: gnupg_secrets_directory_stat
@@ -31,6 +33,7 @@
 
 - name: Restore gpg keys
   when:
+    - gnupg_secrets_directory is defined
     - gnupg_secrets_directory_stat.stat.exists
     - gnupg_gpg_key_ids | length > 0
   ansible.builtin.import_role:

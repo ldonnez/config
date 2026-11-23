@@ -5,3 +5,21 @@
     gnupg_secrets_directory: /tmp/gnupg-secrets
   roles:
     - role: gnupg
+
+- name: Converge when secrets directory does not exist
+  hosts: all
+  vars:
+    gnupg_secrets_directory: /tmp/gnupg-secrets-missing
+    gnupg_gpg_key_ids:
+      - DEADBEEFDEADBEEF
+  roles:
+    - role: gnupg
+
+- name: Converge when secrets directory is undefined
+  hosts: all
+  vars:
+    secrets_directory: null
+    gnupg_gpg_key_ids:
+      - DEADBEEFDEADBEEF
+  roles:
+    - role: gnupg
