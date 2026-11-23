@@ -10,5 +10,6 @@
 - name: Force link to make psql work
   ansible.builtin.command: brew link --force libpq
   when: ansible_facts.os_family == "Darwin"
+  changed_when: false
   tags:
     - install
