@@ -1,6 +1,8 @@
 ---
 - name: Prepare
   hosts: all
+  vars:
+    vault_password: "{{ lookup('ansible.builtin.file', playbook_dir ~ '/../../../vault_backup/molecule/default/.vault-pass') | trim }}"
   tasks:
     - name: Install SSH and Git
       become: true
@@ -69,17 +71,6 @@
       args:
         creates: /tmp/ssh-key-fixture/id_rsa
 
-    - name: Create the SSH config fixture
-      ansible.builtin.copy:
-        dest: /tmp/ssh-key-fixture/config.vault
-        content: |
-          Host molecule-test
-            HostName example.com
-            User molecule
-        owner: molecule
-        group: molecule
-        mode: "0600"
-
     - name: Ensure the SSH backup fixture directory exists in the secrets repository
       ansible.builtin.file:
         path: /tmp/secrets-fixture/.ssh
@@ -97,11 +88,16 @@
         - /etc/ssh/ssh_host_rsa_key
         - /etc/ssh/ssh_host_rsa_key.pub
 
-    - name: Install the test private key backup fixture in the secrets repository
-      ansible.builtin.copy:
+    - name: Read the test private key fixture
+      ansible.builtin.slurp:
         src: /tmp/ssh-key-fixture/id_rsa
+      register: ssh_private_key
+
+    - name: Install the encrypted private key backup fixture in the secrets repository
+      ansible.builtin.copy:
         dest: /tmp/secrets-fixture/.ssh/id_rsa.vault
-        remote_src: true
+        content: "{{ ssh_private_key.content | b64decode | ansible.builtin.vault(secret=vault_password, vault_id='default') }}"
+        decrypt: false
         owner: molecule
         group: molecule
         mode: "0600"
@@ -115,11 +111,11 @@
         group: molecule
         mode: "0644"
 
-    - name: Install the SSH config backup fixture in the secrets repository
+    - name: Install the encrypted SSH config backup fixture in the secrets repository
       ansible.builtin.copy:
-        src: /tmp/ssh-key-fixture/config.vault
         dest: /tmp/secrets-fixture/.ssh/config.vault
-        remote_src: true
+        content: "{{ 'Host molecule-test\n  HostName example.com\n  User molecule\n' | ansible.builtin.vault(secret=vault_password, vault_id='default') }}"
+        decrypt: false
         owner: molecule
         group: molecule
         mode: "0600"
