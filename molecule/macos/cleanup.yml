@@ -3,6 +3,14 @@
   hosts: localhost
   connection: local
   tags: always
+  pre_tasks:
+    - name: Prevent running the macOS Molecule scenario outside CI
+      ansible.builtin.assert:
+        that:
+          - lookup('ansible.builtin.env', 'CI') | bool
+        fail_msg: >-
+          The macOS Molecule scenario modifies the current user's home directory
+          and is only safe to run in CI.
   tasks:
     - name: Remove temporary fixture directory
       ansible.builtin.file:

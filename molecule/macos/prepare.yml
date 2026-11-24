@@ -9,6 +9,15 @@
     gpg_home: /tmp/molecule-macos/gpg-fixture
     key_id: molecule@example.com
     vault_password: "{{ lookup('ansible.builtin.file', playbook_dir ~ '/.vault-pass') | trim }}"
+  pre_tasks:
+    - name: Prevent running the macOS Molecule scenario outside CI
+      ansible.builtin.assert:
+        that:
+          - lookup('ansible.builtin.env', 'CI') | bool
+        fail_msg: >-
+          The macOS Molecule scenario modifies the current user's home directory
+          and is only safe to run in CI.
+
   tasks:
     - name: Install GnuPG
       community.general.homebrew:
