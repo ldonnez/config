@@ -4,6 +4,6 @@
   vars:
     secrets_directory: /tmp/ssh-secrets
     secrets_repository: /tmp/secrets-fixture
-    ssh_backup_dir: /tmp/ssh-backup-fixture/.ssh
+    ssh_backup_dir: /tmp/ssh-secrets/.ssh
   roles:
     - role: ssh
