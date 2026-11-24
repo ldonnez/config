@@ -18,6 +18,8 @@ platforms:
 
 provisioner:
   name: ansible
+  env:
+    ANSIBLE_VAULT_PASSWORD_FILE: ${MOLECULE_SCENARIO_DIRECTORY}/../../../vault_backup/molecule/default/.vault-pass
   config_options:
     defaults:
       roles_path: ${MOLECULE_SCENARIO_DIRECTORY}/../../../../roles
