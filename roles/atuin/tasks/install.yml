@@ -56,7 +56,6 @@
       - "{{ ansible_facts.user_dir }}/.local/share/zsh/site-functions"
   args:
     creates: "{{ ansible_facts.user_dir }}/.local/share/zsh/site-functions/_atuin"
-    executable: /bin/zsh
   environment:
     PATH: "{{ ansible_facts.user_dir }}/.atuin/bin:{{ ansible_facts.env.PATH }}"
   tags:
