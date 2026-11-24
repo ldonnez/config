@@ -29,7 +29,46 @@
         - "{{ secret_file_backup_test_dir }}/src/gpg-secret.txt"
         - "{{ secret_file_backup_test_dir }}/src/vault-secret.txt"
 
-    - name: Run secret_file_backup role (restore)
+    - name: Run secret_file_backup role (restore with latest symlinks)
+      ansible.builtin.include_role:
+        name: secret_file_backup
+        tasks_from: restore.yml
+
+    - name: Read files restored through latest symlinks
+      ansible.builtin.slurp:
+        src: "{{ item.path }}"
+      register: secret_file_backup_latest_contents
+      loop:
+        - { path: "{{ secret_file_backup_test_dir }}/src/gpg-secret.txt", content: "secret-gpg" }
+        - { path: "{{ secret_file_backup_test_dir }}/src/vault-secret.txt", content: "secret-vault" }
+      loop_control:
+        label: "{{ item.path | basename }}"
+
+    - name: Assert latest symlink restore content
+      ansible.builtin.assert:
+        that:
+          - (item.content | b64decode) == item.item.content
+      loop: "{{ secret_file_backup_latest_contents.results }}"
+      loop_control:
+        label: "{{ item.item.path | basename }}"
+
+    - name: Remove latest symlinks to exercise backup discovery during restore
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "{{ secret_file_backup_test_dir }}/backup/gpg/latest"
+        - "{{ secret_file_backup_test_dir }}/backup/vault/latest"
+
+    - name: Remove restored source files before fallback restore
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "{{ secret_file_backup_test_dir }}/src/gpg-secret.txt"
+        - "{{ secret_file_backup_test_dir }}/src/vault-secret.txt"
+
+    - name: Run secret_file_backup role (restore without latest symlinks)
       ansible.builtin.include_role:
         name: secret_file_backup
         tasks_from: restore.yml

@@ -35,10 +35,19 @@
         - "{{ ssh_backup_test_dir }}/src/.ssh/id_rsa.pub"
         - "{{ ssh_backup_test_dir }}/src/.ssh/config"
 
-    - name: Run ssh_backup role (restore)
+    - name: Run ssh_backup role (restore into a fresh SSH directory)
       ansible.builtin.include_role:
         name: ssh_backup
         tasks_from: restore.yml
+      vars:
+        ssh_backup_config_path: "{{ ssh_backup_test_dir }}/restore/.ssh/config"
+        ssh_backup_keys:
+          - name: id_rsa
+            private_key_path: "{{ ssh_backup_test_dir }}/restore/.ssh/id_rsa"
+            public_key_path: "{{ ssh_backup_test_dir }}/restore/.ssh/id_rsa.pub"
+          - name: id_ed25519
+            private_key_path: "{{ ssh_backup_test_dir }}/restore/.ssh/id_ed25519"
+            public_key_path: "{{ ssh_backup_test_dir }}/restore/.ssh/id_ed25519.pub"
 
     - name: Mark restore test done
       when: not ssh_backup_restore_marker.stat.exists
@@ -54,4 +63,4 @@
       vars:
         ssh_backup_keys: []
         ssh_backup_config_backup_path: "{{ ssh_backup_test_dir }}/backup/.ssh/missing-config.vault"
-        ssh_backup_config_path: "{{ ssh_backup_test_dir }}/src/.ssh/missing-config"
+        ssh_backup_config_path: "{{ ssh_backup_test_dir }}/restore/.ssh/missing-config"
