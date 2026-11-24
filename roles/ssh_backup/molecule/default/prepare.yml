@@ -25,6 +25,7 @@
         - "{{ ssh_backup_test_dir }}"
         - "{{ ssh_backup_test_dir }}/src/.ssh"
         - "{{ ssh_backup_test_dir }}/backup/.ssh"
+        - "{{ ssh_backup_test_dir }}/restore/.ssh"
 
     - name: Generate a valid SSH key pair fixture
       become: false

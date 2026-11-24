@@ -69,3 +69,39 @@
       ansible.builtin.assert:
         that:
           - atuin_backup_query.stdout == 'echo atuin-backup-test'
+
+    - name: Create isolated target for fallback restore test
+      ansible.builtin.file:
+        path: "{{ atuin_backup_test_dir }}/fallback"
+        state: directory
+        mode: "0700"
+
+    - name: Create empty fallback restore database
+      ansible.builtin.command:
+        argv:
+          - sqlite3
+          - "{{ atuin_backup_test_dir }}/fallback/history.db"
+          - "VACUUM;"
+      changed_when: true
+
+    - name: Restore without a latest symlink
+      ansible.builtin.include_role:
+        name: atuin_backup
+        tasks_from: restore.yml
+      vars:
+        atuin_backup_db_path: "{{ atuin_backup_test_dir }}/fallback/history.db"
+        atuin_backup_latest_backup_symlink: "{{ atuin_backup_test_dir }}/backup/missing-latest"
+
+    - name: Query database restored through backup discovery
+      ansible.builtin.command:
+        argv:
+          - sqlite3
+          - "{{ atuin_backup_test_dir }}/fallback/history.db"
+          - "SELECT command FROM history WHERE id='1';"
+      register: atuin_backup_fallback_query
+      changed_when: false
+
+    - name: Assert fallback restore selected an available backup
+      ansible.builtin.assert:
+        that:
+          - atuin_backup_fallback_query.stdout == 'echo atuin-backup-test'

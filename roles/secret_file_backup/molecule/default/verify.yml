@@ -27,15 +27,13 @@
         - "{{ secret_file_backup_test_dir }}/backup/gpg/latest"
         - "{{ secret_file_backup_test_dir }}/backup/vault/latest"
 
-    - name: Assert backup artifacts exist
+    - name: Assert backup artifacts exist and fallback was used
       ansible.builtin.assert:
         that:
           - secret_file_backup_gpg_files.matched == 1
           - secret_file_backup_vault_files.matched == 1
-          - secret_file_backup_latest.results[0].stat.exists
-          - secret_file_backup_latest.results[0].stat.islnk
-          - secret_file_backup_latest.results[1].stat.exists
-          - secret_file_backup_latest.results[1].stat.islnk
+          - not secret_file_backup_latest.results[0].stat.exists
+          - not secret_file_backup_latest.results[1].stat.exists
 
     - name: Check GPG backup is encrypted
       ansible.builtin.command:
