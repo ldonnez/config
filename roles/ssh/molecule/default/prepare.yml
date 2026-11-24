@@ -45,41 +45,6 @@
         group: molecule
         mode: "0644"
 
-    - name: Initialize the secrets fixture repository
-      ansible.builtin.command:
-        argv:
-          - git
-          - init
-          - --initial-branch=main
-          - /tmp/secrets-fixture
-      args:
-        creates: /tmp/secrets-fixture/.git
-
-    - name: Stage the secrets fixture files
-      ansible.builtin.command:
-        argv:
-          - git
-          - -C
-          - /tmp/secrets-fixture
-          - add
-          - .
-      changed_when: true
-
-    - name: Commit the secrets fixture repository
-      ansible.builtin.command:
-        argv:
-          - git
-          - -C
-          - /tmp/secrets-fixture
-          - -c
-          - user.name=Molecule
-          - -c
-          - user.email=molecule@example.com
-          - commit
-          - -m
-          - Initial commit
-      changed_when: true
-
     - name: Ensure the SSH key fixture directory exists
       ansible.builtin.file:
         path: /tmp/ssh-key-fixture
@@ -115,12 +80,13 @@
         group: molecule
         mode: "0600"
 
-    - name: Ensure the controller-side SSH fixture directory exists
+    - name: Ensure the SSH backup fixture directory exists in the secrets repository
       ansible.builtin.file:
-        path: /tmp/ssh-backup-fixture/.ssh
+        path: /tmp/secrets-fixture/.ssh
         state: directory
+        owner: molecule
+        group: molecule
         mode: "0700"
-      delegate_to: localhost
 
     - name: Remove pre-generated SSH host keys
       become: true
@@ -131,27 +97,64 @@
         - /etc/ssh/ssh_host_rsa_key
         - /etc/ssh/ssh_host_rsa_key.pub
 
-    - name: Fetch the test private key fixture
-      ansible.builtin.fetch:
+    - name: Install the test private key backup fixture in the secrets repository
+      ansible.builtin.copy:
         src: /tmp/ssh-key-fixture/id_rsa
-        dest: /tmp/ssh-backup-fixture/.ssh/id_rsa.vault
-        flat: true
-
-    - name: Fetch the test public key fixture
-      ansible.builtin.fetch:
-        src: /tmp/ssh-key-fixture/id_rsa.pub
-        dest: /tmp/ssh-backup-fixture/.ssh/id_rsa.pub
-        flat: true
-
-    - name: Fetch the SSH config fixture
-      ansible.builtin.fetch:
-        src: /tmp/ssh-key-fixture/config.vault
-        dest: /tmp/ssh-backup-fixture/.ssh/config.vault
-        flat: true
-
-    - name: Secure the controller-side private key fixture
-      become: false
-      ansible.builtin.file:
-        path: /tmp/ssh-backup-fixture/.ssh/id_rsa.vault
+        dest: /tmp/secrets-fixture/.ssh/id_rsa.vault
+        remote_src: true
+        owner: molecule
+        group: molecule
         mode: "0600"
-      delegate_to: localhost
+
+    - name: Install the test public key backup fixture in the secrets repository
+      ansible.builtin.copy:
+        src: /tmp/ssh-key-fixture/id_rsa.pub
+        dest: /tmp/secrets-fixture/.ssh/id_rsa.pub
+        remote_src: true
+        owner: molecule
+        group: molecule
+        mode: "0644"
+
+    - name: Install the SSH config backup fixture in the secrets repository
+      ansible.builtin.copy:
+        src: /tmp/ssh-key-fixture/config.vault
+        dest: /tmp/secrets-fixture/.ssh/config.vault
+        remote_src: true
+        owner: molecule
+        group: molecule
+        mode: "0600"
+
+    - name: Initialize the secrets fixture repository
+      ansible.builtin.command:
+        argv:
+          - git
+          - init
+          - --initial-branch=main
+          - /tmp/secrets-fixture
+      args:
+        creates: /tmp/secrets-fixture/.git
+
+    - name: Stage the secrets fixture files
+      ansible.builtin.command:
+        argv:
+          - git
+          - -C
+          - /tmp/secrets-fixture
+          - add
+          - .
+      changed_when: true
+
+    - name: Commit the secrets fixture repository
+      ansible.builtin.command:
+        argv:
+          - git
+          - -C
+          - /tmp/secrets-fixture
+          - -c
+          - user.name=Molecule
+          - -c
+          - user.email=molecule@example.com
+          - commit
+          - -m
+          - Initial commit
+      changed_when: true

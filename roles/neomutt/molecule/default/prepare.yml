@@ -99,16 +99,14 @@
           - Initial commit
       changed_when: true
 
-    - name: Ensure the controller-side secrets directory exists
+    - name: Ensure the secrets directory exists
       ansible.builtin.file:
         path: /tmp/neomutt-secrets/mutt-alias
         state: directory
         mode: "0700"
-      delegate_to: localhost
 
-    - name: Install the controller-side mutt alias vault fixture
+    - name: Install the mutt alias vault fixture
       ansible.builtin.copy:
         src: "{{ playbook_dir }}/files/mutt-alias.vault"
         dest: /tmp/neomutt-secrets/mutt-alias/latest
         mode: "0600"
-      delegate_to: localhost

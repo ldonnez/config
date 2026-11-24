@@ -20,24 +20,6 @@
         name: ssh_backup
         tasks_from: backup.yml
 
-    - name: Ensure controller backup directory exists
-      ansible.builtin.file:
-        path: "{{ ssh_backup_dir }}"
-        state: directory
-        mode: "0755"
-      delegate_to: localhost
-      become: false
-
-    - name: Fetch backups to controller for restore
-      ansible.builtin.fetch:
-        src: "{{ item }}"
-        dest: "{{ ssh_backup_dir }}/"
-        flat: true
-      loop:
-        - "{{ ssh_backup_dir }}/id_rsa.vault"
-        - "{{ ssh_backup_dir }}/id_rsa.pub"
-        - "{{ ssh_backup_dir }}/config.vault"
-
     - name: Check whether the restore test has already run
       ansible.builtin.stat:
         path: "{{ ssh_backup_test_dir }}/restore_test_done"

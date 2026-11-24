@@ -1,7 +1,12 @@
 ---
+- name: Vault_backup | Read encrypted backup with Ansible Vault
+  ansible.builtin.slurp:
+    src: "{{ vault_backup_source }}"
+  register: vault_backup_encrypted
+
 - name: Vault_backup | Decrypt backup with Ansible Vault
   ansible.builtin.copy:
-    src: "{{ vault_backup_source }}"
+    content: "{{ vault_backup_encrypted.content | b64decode }}"
     dest: "{{ vault_backup_destination }}"
     mode: "{{ vault_backup_mode | default('0600') }}"
     decrypt: true

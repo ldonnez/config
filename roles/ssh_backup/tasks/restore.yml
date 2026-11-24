@@ -23,10 +23,12 @@
 
 - name: Restore SSH config
   when: ssh_backup_config_backup.stat.exists
+  ansible.builtin.include_role:
+    name: vault_backup
+    tasks_from: decrypt.yml
+  vars:
+    vault_backup_source: "{{ ssh_backup_config_backup_path }}"
+    vault_backup_destination: "{{ ssh_backup_config_path }}"
+    vault_backup_mode: "0600"
   tags:
     - restore
-  ansible.builtin.copy:
-    src: "{{ ssh_backup_config_backup_path }}"
-    dest: "{{ ssh_backup_config_path }}"
-    mode: "0600"
-    decrypt: true

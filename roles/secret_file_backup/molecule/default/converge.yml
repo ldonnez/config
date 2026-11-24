@@ -21,20 +21,6 @@
         name: secret_file_backup
         tasks_from: backup.yml
 
-    - name: Ensure controller vault backup directory exists
-      ansible.builtin.file:
-        path: "{{ secret_file_backup_test_dir }}/backup/vault"
-        state: directory
-        mode: "0755"
-      delegate_to: localhost
-      become: false
-
-    - name: Fetch vault backup to controller for decrypt
-      ansible.builtin.fetch:
-        src: "{{ secret_file_backup_test_dir }}/backup/vault/latest"
-        dest: "{{ secret_file_backup_test_dir }}/backup/vault/"
-        flat: true
-
     - name: Remove source files to simulate restore target
       ansible.builtin.file:
         path: "{{ item }}"
