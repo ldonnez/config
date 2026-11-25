@@ -38,16 +38,17 @@ jobs:
 
   changes:
     needs: ansible-lint
-    if: github.event_name != 'workflow_dispatch'
     name: detect-changes
     runs-on: ubuntu-latest
     outputs:
       roles: ${{ steps.result.outputs.roles }}
+      roles_json: ${{ steps.result.outputs.roles_json }}
     steps:
       - uses: actions/checkout@v7
 
       - name: Detect changed paths
         id: filter
+        if: github.event_name != 'workflow_dispatch'
         uses: dorny/paths-filter@v4
         with:
           list-files: json
@@ -55,56 +56,168 @@ jobs:
             roles:
               - 'roles/**'
 
-      - name: Determine changed roles
+      - name: Determine test roles
         id: result
         shell: bash
         env:
           ROLE_FILES: ${{ steps.filter.outputs.roles_files }}
         run: |
-          roles=$(
-            jq -r '.[] | select(startswith("roles/")) | split("/")[1]' <<< "$ROLE_FILES" |
-            sort -u |
-            while IFS= read -r role; do
-              if [[ -f "roles/$role/molecule/default/molecule.yml" ]]; then
-                echo "$role"
-              fi
-            done |
-            xargs
-          )
+          if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
+            roles=$(
+              find roles -type f -path '*/molecule/default/molecule.yml' |
+              sed 's|^roles/||; s|/molecule/default/molecule.yml$||' |
+              sort |
+              xargs
+            )
+          else
+            roles=$(
+              jq -r '.[] | select(startswith("roles/")) | split("/")[1]' <<< "$ROLE_FILES" |
+              sort -u |
+              while IFS= read -r role; do
+                if [[ -f "roles/$role/molecule/default/molecule.yml" ]]; then
+                  echo "$role"
+                fi
+              done |
+              xargs
+            )
+          fi
+
+          roles_json=$(jq -cn --arg roles "$roles" '$roles | split(" ") | map(select(length > 0))')
 
           echo "roles=$roles" >> "$GITHUB_OUTPUT"
+          echo "roles_json=$roles_json" >> "$GITHUB_OUTPUT"
+
+  molecule-images:
+    needs: changes
+    if: needs.changes.outputs.roles != ''
+    name: prepare Molecule images
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: docker/setup-buildx-action@v4
+
+      - name: Build Debian 13 Molecule image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: molecule/Dockerfile
+          build-args: BASE_IMAGE=debian:13
+          tags: molecule:debian13
+          cache-from: type=gha,scope=molecule-debian13
+          cache-to: type=gha,scope=molecule-debian13,mode=max
+          load: true
+
+      - name: Build Ubuntu 24.04 Molecule image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: molecule/Dockerfile
+          build-args: BASE_IMAGE=ubuntu:24.04
+          tags: molecule:ubuntu2404
+          cache-from: type=gha,scope=molecule-ubuntu2404
+          cache-to: type=gha,scope=molecule-ubuntu2404,mode=max
+          load: true
+
+      - name: Build Ubuntu 26.04 Molecule image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: molecule/Dockerfile
+          build-args: BASE_IMAGE=ubuntu:26.04
+          tags: molecule:ubuntu2604
+          cache-from: type=gha,scope=molecule-ubuntu2604
+          cache-to: type=gha,scope=molecule-ubuntu2604,mode=max
+          load: true
+
+      - name: Save Molecule images
+        run: docker save molecule:debian13 molecule:ubuntu2404 molecule:ubuntu2604 --output molecule-images.tar
+
+      - name: Upload Molecule images
+        uses: actions/upload-artifact@v4
+        with:
+          name: molecule-images
+          path: molecule-images.tar
+          if-no-files-found: error
+          retention-days: 1
 
   molecule-role-tests:
     needs:
       - ansible-lint
       - changes
+      - molecule-images
     if: >-
       always() &&
       needs.ansible-lint.result == 'success' &&
-      (
-        github.event_name == 'workflow_dispatch' ||
-        (needs.changes.result == 'success' && needs.changes.outputs.roles != '')
-      )
-    name: molecule role tests
+      needs.changes.result == 'success' &&
+      needs.changes.outputs.roles != '' &&
+      needs.molecule-images.result == 'success'
+    name: molecule (${{ matrix.role }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 256
+      matrix:
+        role: ${{ fromJSON(needs.changes.outputs.roles_json) }}
     env:
       DOCKER_TIMEOUT: 300
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v7
+
+      - name: Download Molecule images
+        uses: actions/download-artifact@v8
+        with:
+          name: molecule-images
+
+      - name: Load Molecule images
+        run: docker load --input molecule-images.tar
 
       - uses: actions/setup-python@v7
         with:
           python-version: "3.13"
+          cache: pip
+          cache-dependency-path: requirements-molecule.txt
 
-      - uses: docker/setup-buildx-action@v4
+      - name: Cache Ansible collections
+        uses: actions/cache@v4
+        with:
+          path: ~/.ansible/collections
+          key: ansible-collections-${{ hashFiles('requirements.yml') }}
 
       - name: Install test dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install ansible-core molecule "molecule-plugins[docker]"
+          pip install -r requirements-molecule.txt
+          ansible-galaxy collection install -r requirements.yml
 
-      - name: Run Molecule tests
+      - name: Run Molecule role
+        run: make test-role ROLE="${{ matrix.role }}"
+
+  check-molecule-role-tests-results:
+    needs:
+      - changes
+      - molecule-role-tests
+    if: always()
+    name: Check test results
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check results
         env:
           ROLES: ${{ needs.changes.outputs.roles }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: make test-roles ROLES="$ROLES"
+          CHANGES_RESULT: ${{ needs.changes.result }}
+          MOLECULE_RESULT: ${{ needs.molecule-role-tests.result }}
+        run: |
+          if [[ "$CHANGES_RESULT" != "success" ]]; then
+            echo "Role change detection did not succeed."
+            exit 1
+          fi
+
+          if [[ -z "$ROLES" ]]; then
+            echo "No Molecule roles need testing."
+            exit 0
+          fi
+
+          if [[ "$MOLECULE_RESULT" != "success" ]]; then
+            echo "Molecule role tests did not succeed: $MOLECULE_RESULT"
+            exit 1
+          fi
