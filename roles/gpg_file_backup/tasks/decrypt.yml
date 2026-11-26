@@ -12,8 +12,8 @@
 
 - name: Gpg_file_backup | Checksum encrypted source plaintext for comparison
   # Decrypting to stdout and hashing lets us skip a redundant write when the
-  # destination already matches, without leaving plaintext on disk. shasum is
-  # available on both macOS and Linux.
+  # destination already matches, without leaving plaintext on disk. Use the
+  # checksum utility available on the target OS.
   when:
     - gpg_file_backup_source_file.stat.exists
     - gpg_file_backup_destination_file.stat.exists
@@ -21,7 +21,7 @@
   ansible.builtin.shell:
     cmd: |
       set -o pipefail
-      gpg --batch --quiet --decrypt {{ gpg_file_backup_source | quote }} | shasum -a 256 | cut -d ' ' -f 1
+      gpg --batch --quiet --decrypt {{ gpg_file_backup_source | quote }} | if command -v sha256sum >/dev/null 2>&1; then sha256sum; else shasum -a 256; fi | cut -d ' ' -f 1
     executable: /bin/bash
   register: gpg_file_backup_source_checksum
   changed_when: false
