@@ -39,6 +39,7 @@ scenario:
     - create
     - prepare
     - converge
+    - side_effect
     - idempotence
     - verify
     - destroy

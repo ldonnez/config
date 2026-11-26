@@ -41,6 +41,22 @@
         that:
           - vault_backup_encrypt_view.stdout == "vault-backup-encrypt"
 
+    - name: Decrypt updated destination to verify content
+      ansible.builtin.command:
+        argv:
+          - ansible-vault
+          - view
+          - --vault-password-file
+          - "{{ vault_backup_test_dir }}/.vault-pass"
+          - "{{ vault_backup_test_dir }}/encrypt-update-destination.vault"
+      register: vault_backup_update_view
+      changed_when: false
+
+    - name: Assert changed source was re-encrypted
+      ansible.builtin.assert:
+        that:
+          - vault_backup_update_view.stdout == "vault-backup-update-2"
+
     - name: Stat decrypted destination
       ansible.builtin.stat:
         path: "{{ vault_backup_test_dir }}/decrypt-destination.txt"

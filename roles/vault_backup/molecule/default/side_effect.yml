@@ -1,0 +1,20 @@
+---
+- name: Side effect
+  hosts: all
+  vars:
+    vault_backup_test_dir: /tmp/vault_backup_test
+  tasks:
+    - name: Modify update test source
+      ansible.builtin.copy:
+        dest: "{{ vault_backup_test_dir }}/encrypt-update-source.txt"
+        content: "vault-backup-update-2"
+        mode: "0644"
+
+    - name: Re-encrypt changed update test source using vault_backup role
+      ansible.builtin.include_role:
+        name: vault_backup
+        tasks_from: encrypt.yml
+      vars:
+        vault_backup_password_file: "{{ playbook_dir }}/files/password_file.vault"
+        vault_backup_source: "{{ vault_backup_test_dir }}/encrypt-update-source.txt"
+        vault_backup_destination: "{{ vault_backup_test_dir }}/encrypt-update-destination.vault"
