@@ -31,6 +31,7 @@
       loop:
         - { path: "{{ vault_backup_test_dir }}/.vault-pass", content: "molecule-secret\n", mode: "0644" }
         - { path: "{{ vault_backup_test_dir }}/encrypt-source.txt", content: "vault-backup-encrypt", mode: "0644" }
+        - { path: "{{ vault_backup_test_dir }}/encrypt-update-source.txt", content: "vault-backup-update-1", mode: "0644" }
 
     - name: Create encrypted decrypt fixture on the target
       ansible.builtin.copy:

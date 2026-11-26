@@ -56,6 +56,7 @@
       loop:
         - { path: "{{ gpg_file_backup_test_dir }}/encrypt-source.txt", content: "gpg-backup-encrypt" }
         - { path: "{{ gpg_file_backup_test_dir }}/decrypt-plain.txt", content: "gpg-backup-decrypt" }
+        - { path: "{{ gpg_file_backup_test_dir }}/checksum-changed-source.txt", content: "gpg-backup-checksum" }
 
     - name: Create encrypted fixture for decrypt test
       become: false

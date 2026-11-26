@@ -1,6 +1,40 @@
 ---
+- name: Gpg_file_backup | Check backup source
+  ansible.builtin.stat:
+    path: "{{ gpg_file_backup_source }}"
+  register: gpg_file_backup_source_file
+
+- name: Gpg_file_backup | Check existing destination
+  ansible.builtin.stat:
+    path: "{{ gpg_file_backup_destination }}"
+    checksum_algorithm: sha256
+  register: gpg_file_backup_destination_file
+
+- name: Gpg_file_backup | Checksum encrypted source plaintext for comparison
+  # Decrypting to stdout and hashing lets us skip a redundant write when the
+  # destination already matches, without leaving plaintext on disk. shasum is
+  # available on both macOS and Linux.
+  when:
+    - gpg_file_backup_source_file.stat.exists
+    - gpg_file_backup_destination_file.stat.exists
+    - not ansible_check_mode
+  ansible.builtin.shell:
+    cmd: |
+      set -o pipefail
+      gpg --batch --quiet --decrypt {{ gpg_file_backup_source | quote }} | shasum -a 256 | cut -d ' ' -f 1
+    executable: /bin/bash
+  register: gpg_file_backup_source_checksum
+  changed_when: false
+
 - name: Gpg_file_backup | Decrypt backup with GPG
-  # GPG is used directly to preserve the existing keyring-based decryption.
+  # Skip when the destination already contains the decrypted source bytes. GPG
+  # is used directly to preserve the existing keyring-based decryption.
+  when: >-
+    gpg_file_backup_source_file.stat.exists and
+    not ansible_check_mode and
+    (not gpg_file_backup_destination_file.stat.exists or
+    (gpg_file_backup_source_checksum.stdout is defined and
+    gpg_file_backup_source_checksum.stdout | trim != gpg_file_backup_destination_file.stat.checksum))
   ansible.builtin.command:
     argv:
       - gpg

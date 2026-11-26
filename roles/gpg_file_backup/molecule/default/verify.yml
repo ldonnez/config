@@ -67,3 +67,18 @@
       ansible.builtin.assert:
         that:
           - (gpg_file_backup_decrypted_content.content | b64decode) == "gpg-backup-decrypt"
+
+    - name: Decrypt re-encrypted destination
+      ansible.builtin.command:
+        argv:
+          - gpg
+          - --batch
+          - --decrypt
+          - "{{ gpg_file_backup_test_dir }}/checksum-changed-destination.gpg"
+      register: gpg_file_backup_changed_view
+      changed_when: false
+
+    - name: Assert re-encrypted content matches updated source
+      ansible.builtin.assert:
+        that:
+          - gpg_file_backup_changed_view.stdout == "gpg-backup-checksum-updated"

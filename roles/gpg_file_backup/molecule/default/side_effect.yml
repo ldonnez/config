@@ -1,0 +1,19 @@
+---
+- name: Side effect
+  hosts: all
+  vars:
+    gpg_file_backup_test_dir: /tmp/gpg_file_backup_test
+  tasks:
+    - name: Update changed source content
+      ansible.builtin.copy:
+        dest: "{{ gpg_file_backup_test_dir }}/checksum-changed-source.txt"
+        content: "gpg-backup-checksum-updated"
+        mode: "0644"
+
+    - name: Re-encrypt changed source
+      ansible.builtin.include_role:
+        name: gpg_file_backup
+        tasks_from: encrypt.yml
+      vars:
+        gpg_file_backup_source: "{{ gpg_file_backup_test_dir }}/checksum-changed-source.txt"
+        gpg_file_backup_destination: "{{ gpg_file_backup_test_dir }}/checksum-changed-destination.gpg"
